@@ -1,0 +1,16 @@
+{
+  "webProject": {
+    "projectFile": "./IntellitectTerminal.Web/IntellitectTerminal.Web.csproj"
+  },
+  "dataProject": {
+    "projectFile": "./IntellitectTerminal.Data/IntellitectTerminal.Data.csproj"
+  },
+
+  "rootGenerator": "Vue",
+
+  "generatorConfig": {
+    "Scripts": {
+      "targetDirectory": "../src"
+    }
+  }
+}

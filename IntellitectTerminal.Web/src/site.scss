@@ -1,0 +1,37 @@
+.v-application {
+  &.theme--light {
+    background: rgb(250, 250, 250) !important;
+  }
+  &.theme--dark {
+    background: #111 !important;
+  }
+}
+
+html {
+  overflow-y: scroll;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+a {
+  // Underlines on links are *sooo* 2005
+  text-decoration: none;
+}
+
+// Dense chips on v-select[multiple] lose their top/bottom margins. Re-add them.
+.v-select.v-input--dense .v-chip {
+  margin-top: 4px !important;
+}
+
+// Remove extra padding on the top of v-switch components when using dense styling
+// so they align nicely with other components.
+.v-input--switch.v-input--dense,
+.v-input--checkbox.v-input--dense {
+  margin-top: 0;
+  padding-top: 6px;
+  td & {
+    padding-top: 0;
+  }
+}
