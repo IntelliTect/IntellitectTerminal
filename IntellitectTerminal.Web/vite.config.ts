@@ -20,6 +20,7 @@ export default defineConfig(async ({ command, mode }) => {
     build: {
       outDir: "wwwroot",
       rollupOptions: {
+        external: ["node_modules/xterm/css/xterm.css"],
         output: {
           manualChunks(id) {
             if (id.match(/home/i)) return "index";
