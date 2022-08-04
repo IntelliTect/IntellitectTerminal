@@ -8,7 +8,6 @@
   @Component
   export default class CoalesceExample extends Vue {
     
-  
     helpView(term : Terminal) {
               term.write("\r\n");
               term.write("help - Displays this message");
