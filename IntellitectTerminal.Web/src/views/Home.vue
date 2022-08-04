@@ -6,7 +6,7 @@
   import { Terminal } from "xterm";
 
   @Component
-  export default class CoalesceExample extends Vue {
+  export default class Home extends Vue {
 
     async created() {
       var temp: string = "";
