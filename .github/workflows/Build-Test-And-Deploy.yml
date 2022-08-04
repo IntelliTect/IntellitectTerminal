@@ -1,0 +1,87 @@
+name: Build, Test, and Deploy Intellitect Terminal
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.x'
+          include-prerelease: false
+          
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+          cache-dependency-path: ./IntellitectTerminal.Web/package-lock.json
+      - name: Install npm packages
+        run: |
+           cd ./IntellitectTerminal.Web
+           npm ci
+           npm run build
+        shell: pwsh
+
+      - name: Build with dotnet
+        run: dotnet build --configuration Release
+        
+      - name: Ensure Coalesce has run
+        run: |
+              cd ./IntellitectTerminal.Web
+              echo 'Running Coalesce'
+              npm run coalesce
+              if ($LASTEXITCODE -ne 0) { throw "`npm run coalesce` exited with code $LASTEXITCODE" }
+              echo 'Adding Changed Files'
+              git add .
+              echo 'Checking Diff'
+              git diff HEAD --cached --exit-code
+              
+      - name: Run npm vite tests
+        run: |
+          cd ./IntellitectTerminal.Web
+          npm run test run
+
+      - name: Test with dotnet
+        run: dotnet test --no-build
+
+      - name: Dotnet Publish
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/IntellitectTerminal
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v2
+        with:
+          name: .net-app
+          path: ${{env.DOTNET_ROOT}}/IntellitectTerminal
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: .net-app
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'IntellitectTerminal'
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_EC11CF297AD94CFCADC4F7D9CC943606 }}
+          package: .
