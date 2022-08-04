@@ -7,7 +7,9 @@ namespace IntellitectTerminal.Data;
 [Coalesce]
 public class AppDbContext : DbContext
 {
-    public DbSet<ApplicationUser> ApplicationUsers => Set<ApplicationUser>();
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Challenge> Challenges => Set<Challenge>();
+    public DbSet<Submission> Submissions => Set<Submission>();
 
     public AppDbContext()
     {

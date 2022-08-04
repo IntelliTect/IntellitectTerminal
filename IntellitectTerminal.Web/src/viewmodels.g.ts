@@ -3,31 +3,80 @@ import * as $models from './models.g'
 import * as $apiClients from './api-clients.g'
 import { ViewModel, ListViewModel, ServiceViewModel, DeepPartial, defineProps } from 'coalesce-vue/lib/viewmodel'
 
-export interface ApplicationUserViewModel extends $models.ApplicationUser {
-  applicationUserId: number | null;
-  name: string | null;
+export interface ChallengeViewModel extends $models.Challenge {
+  challengeId: number | null;
+  question: string | null;
+  answer: string | null;
+  level: number | null;
+  compilationLanguage: $models.CompilationLanguages | null;
 }
-export class ApplicationUserViewModel extends ViewModel<$models.ApplicationUser, $apiClients.ApplicationUserApiClient, number> implements $models.ApplicationUser  {
+export class ChallengeViewModel extends ViewModel<$models.Challenge, $apiClients.ChallengeApiClient, number> implements $models.Challenge  {
   
-  constructor(initialData?: DeepPartial<$models.ApplicationUser> | null) {
-    super($metadata.ApplicationUser, new $apiClients.ApplicationUserApiClient(), initialData)
+  constructor(initialData?: DeepPartial<$models.Challenge> | null) {
+    super($metadata.Challenge, new $apiClients.ChallengeApiClient(), initialData)
   }
 }
-defineProps(ApplicationUserViewModel, $metadata.ApplicationUser)
+defineProps(ChallengeViewModel, $metadata.Challenge)
 
-export class ApplicationUserListViewModel extends ListViewModel<$models.ApplicationUser, $apiClients.ApplicationUserApiClient, ApplicationUserViewModel> {
+export class ChallengeListViewModel extends ListViewModel<$models.Challenge, $apiClients.ChallengeApiClient, ChallengeViewModel> {
   
   constructor() {
-    super($metadata.ApplicationUser, new $apiClients.ApplicationUserApiClient())
+    super($metadata.Challenge, new $apiClients.ChallengeApiClient())
+  }
+}
+
+
+export interface SubmissionViewModel extends $models.Submission {
+  submissionId: number | null;
+  user: UserViewModel | null;
+  challenge: ChallengeViewModel | null;
+  content: string | null;
+}
+export class SubmissionViewModel extends ViewModel<$models.Submission, $apiClients.SubmissionApiClient, number> implements $models.Submission  {
+  
+  constructor(initialData?: DeepPartial<$models.Submission> | null) {
+    super($metadata.Submission, new $apiClients.SubmissionApiClient(), initialData)
+  }
+}
+defineProps(SubmissionViewModel, $metadata.Submission)
+
+export class SubmissionListViewModel extends ListViewModel<$models.Submission, $apiClients.SubmissionApiClient, SubmissionViewModel> {
+  
+  constructor() {
+    super($metadata.Submission, new $apiClients.SubmissionApiClient())
+  }
+}
+
+
+export interface UserViewModel extends $models.User {
+  userId: string | null;
+  fileSystem: string | null;
+}
+export class UserViewModel extends ViewModel<$models.User, $apiClients.UserApiClient, string> implements $models.User  {
+  
+  constructor(initialData?: DeepPartial<$models.User> | null) {
+    super($metadata.User, new $apiClients.UserApiClient(), initialData)
+  }
+}
+defineProps(UserViewModel, $metadata.User)
+
+export class UserListViewModel extends ListViewModel<$models.User, $apiClients.UserApiClient, UserViewModel> {
+  
+  constructor() {
+    super($metadata.User, new $apiClients.UserApiClient())
   }
 }
 
 
 const viewModelTypeLookup = ViewModel.typeLookup = {
-  ApplicationUser: ApplicationUserViewModel,
+  Challenge: ChallengeViewModel,
+  Submission: SubmissionViewModel,
+  User: UserViewModel,
 }
 const listViewModelTypeLookup = ListViewModel.typeLookup = {
-  ApplicationUser: ApplicationUserListViewModel,
+  Challenge: ChallengeListViewModel,
+  Submission: SubmissionListViewModel,
+  User: UserListViewModel,
 }
 const serviceViewModelTypeLookup = ServiceViewModel.typeLookup = {
 }
