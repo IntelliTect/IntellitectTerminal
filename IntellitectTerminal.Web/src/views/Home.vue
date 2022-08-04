@@ -4,7 +4,6 @@
 <script lang="ts">
   import { Component, Prop, Vue } from "vue-property-decorator";
   import { Terminal } from "xterm";
-  import { FitAddon } from 'xterm-addon-fit';
 
   @Component
   export default class CoalesceExample extends Vue {
