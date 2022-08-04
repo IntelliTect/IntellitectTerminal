@@ -45,6 +45,7 @@ jobs:
               git add .
               echo 'Checking Diff'
               git diff HEAD --cached --exit-code
+        shell: pwsh
               
       - name: Run npm vite tests
         run: |
