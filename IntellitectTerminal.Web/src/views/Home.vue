@@ -3,13 +3,13 @@
 
 <script lang="ts">
   import { Component, Prop, Vue } from "vue-property-decorator";
- import { Terminal } from "xterm";
-import { FitAddon } from 'xterm-addon-fit';
-
+  import { Terminal } from "xterm";
+  import { FitAddon } from 'xterm-addon-fit';
 
   @Component
   export default class CoalesceExample extends Vue {
-
+    
+  
     helpView(term : Terminal) {
               term.write("\r\n");
               term.write("help - Displays this message");
@@ -34,20 +34,15 @@ import { FitAddon } from 'xterm-addon-fit';
     }
 
     async created() {
-      var userInput: string = "";
-      const fitAddon = new FitAddon();
+      var userInput: string = "";      
       var term = new Terminal({ cursorBlink: true });
-      term.loadAddon(fitAddon);
-      fitAddon.fit();
-      const input = document.getElementById('terminal');
       var welcomeMessage = "Welcome to the Intellitect CLI! View commands by typing help";
-      if (input != null) {
-        term.open(document.getElementById('terminal') as HTMLElement);
+      if (userInput != null) {
+        term.open(document.querySelector("#terminal") as HTMLElement);
         term.write(welcomeMessage);
         term.write("\r\n");
         term.write('\x1B[1;3;31mIntelliTect\x1B[0m $ ');
         term.onKey(e => {
-          //console.log(e.key);
           userInput += e.key;
           term.write(e.key);
           if (e.key == '\r') {
@@ -59,7 +54,6 @@ import { FitAddon } from 'xterm-addon-fit';
               term.write("\r\n");
               term.write('\x1B[1;3;31mIntelliTect\x1B[0m $ ');
             }
-            console.log(userInput); 
             userInput = "";
           }
         })  

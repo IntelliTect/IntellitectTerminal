@@ -1,0 +1,10 @@
+.terminal {
+    width: auto;
+    height: 1000px;
+    background-color: black;
+}
+
+.terminal-container {
+    background-color: black;
+    padding: 10px;
+}
