@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <DotnetCliToolTargetFramework>net6.0</DotnetCliToolTargetFramework>
+    <TypeScriptToolsVersion>4.6</TypeScriptToolsVersion>
   </PropertyGroup>
 
   <ItemGroup>
