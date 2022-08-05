@@ -20,8 +20,21 @@ export class UserApiClient extends ModelApiClient<$models.User> {
 
 export class CommandServiceApiClient extends ServiceApiClient<typeof $metadata.CommandService> {
   constructor() { super($metadata.CommandService) }
-  public requestCommand(userId: string | null, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<$models.Challenge>> {
-    const $method = this.$metadata.methods.requestCommand
+  public request(userId: string | null, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<$models.Challenge>> {
+    const $method = this.$metadata.methods.request
+    const $params =  {
+      userId,
+    }
+    return this.$invoke($method, $params, $config)
+  }
+  
+}
+
+
+export class UserServiceApiClient extends ServiceApiClient<typeof $metadata.UserService> {
+  constructor() { super($metadata.UserService) }
+  public initializeFileSystem(userId: string | null, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<$models.User>> {
+    const $method = this.$metadata.methods.initializeFileSystem
     const $params =  {
       userId,
     }

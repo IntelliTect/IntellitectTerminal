@@ -39,18 +39,12 @@ export const Challenge = domain.types.Challenge = {
       displayName: "Question",
       type: "string",
       role: "value",
-      rules: {
-        maxLength: val => !val || val.length <= 2147483647 || "Question may not be more than 2147483647 characters.",
-      }
     },
     answer: {
       name: "answer",
       displayName: "Answer",
       type: "string",
       role: "value",
-      rules: {
-        maxLength: val => !val || val.length <= 2147483647 || "Answer may not be more than 2147483647 characters.",
-      }
     },
     level: {
       name: "level",
@@ -108,9 +102,12 @@ export const Submission = domain.types.Submission = {
       displayName: "Content",
       type: "string",
       role: "value",
-      rules: {
-        maxLength: val => !val || val.length <= 2147483647 || "Content may not be more than 2147483647 characters.",
-      }
+    },
+    isCorrect: {
+      name: "isCorrect",
+      displayName: "Is Correct",
+      type: "boolean",
+      role: "value",
     },
   },
   methods: {
@@ -139,9 +136,6 @@ export const User = domain.types.User = {
       displayName: "File System",
       type: "string",
       role: "value",
-      rules: {
-        maxLength: val => !val || val.length <= 2147483647 || "File System may not be more than 2147483647 characters.",
-      }
     },
   },
   methods: {
@@ -155,9 +149,9 @@ export const CommandService = domain.services.CommandService = {
   type: "service",
   controllerRoute: "CommandService",
   methods: {
-    requestCommand: {
-      name: "requestCommand",
-      displayName: "Request Command",
+    request: {
+      name: "request",
+      displayName: "Request",
       transportType: "item",
       httpMethod: "POST",
       params: {
@@ -178,6 +172,35 @@ export const CommandService = domain.services.CommandService = {
     },
   },
 }
+export const UserService = domain.services.UserService = {
+  name: "UserService",
+  displayName: "User Service",
+  type: "service",
+  controllerRoute: "UserService",
+  methods: {
+    initializeFileSystem: {
+      name: "initializeFileSystem",
+      displayName: "Initialize File System",
+      transportType: "item",
+      httpMethod: "POST",
+      params: {
+        userId: {
+          name: "userId",
+          displayName: "User Id",
+          type: "string",
+          role: "value",
+        },
+      },
+      return: {
+        name: "$return",
+        displayName: "Result",
+        type: "model",
+        get typeDef() { return (domain.types.User as ModelType) },
+        role: "value",
+      },
+    },
+  },
+}
 
 interface AppDomain extends Domain {
   enums: {
@@ -190,6 +213,7 @@ interface AppDomain extends Domain {
   }
   services: {
     CommandService: typeof CommandService
+    UserService: typeof UserService
   }
 }
 

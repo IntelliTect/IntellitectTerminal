@@ -37,6 +37,7 @@ export interface Submission extends Model<typeof metadata.Submission> {
   user: User | null
   challenge: Challenge | null
   content: string | null
+  isCorrect: boolean | null
 }
 export class Submission {
   

@@ -1,26 +1,25 @@
-﻿using IntelliTect.Coalesce.Models;
-using IntellitectTerminal.Data;
-using IntellitectTerminal.Data.Models;
+﻿using IntellitectTerminal.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace IntellitectTerminal.Web;
+namespace IntellitectTerminal.Data.Services;
 
 public class CommandService : ICommandService
 {
     private AppDbContext Db { get; set; }
+    private UserService userService { get; set; }
 
     public CommandService(AppDbContext db)
     {
         this.Db = db;
+        this.userService = new UserService(db);
     }
 
-    public Challenge RequestCommand(Guid? userId)
+    public Challenge Request(Guid? userId)
     {
-        Challenge challenge = new();
-        challenge.ChallengeId = 1;
-        challenge.Level = 1;
-        challenge.Question = "This is the question";
-        challenge.Answer = "You did it right!";
-        challenge.CompilationLanguage = Challenge.CompilationLanguages.None;
-        return challenge;
+        User foundUser = Db.Users.Where(x => x.UserId == userId).FirstOrDefault() ?? userService.CreateAndSaveNewUser();
+        int highestCompletedLevel = Db.Submissions.Where(x => x.User == foundUser && x.IsCorrect == true)
+            .Select(x => x.Challenge.Level).ToList().DefaultIfEmpty(0).Max();
+        highestCompletedLevel++;
+        return Db.Challenges.Where(x => x.Level == highestCompletedLevel).OrderBy(x => EF.Functions.Random()).First();
     }
 }

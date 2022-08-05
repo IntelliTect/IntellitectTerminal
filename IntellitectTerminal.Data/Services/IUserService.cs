@@ -4,7 +4,7 @@ using IntellitectTerminal.Data.Models;
 namespace IntellitectTerminal.Data.Services;
 
 [Coalesce, Service]
-public interface ICommandService
+public interface IUserService
 {
-    Challenge Request(Guid? userId);
+    User InitializeFileSystem(Guid? userId);
 }

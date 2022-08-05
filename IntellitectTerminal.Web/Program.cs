@@ -1,4 +1,6 @@
 using IntelliTect.Coalesce;
+using IntellitectTerminal.Data;
+using IntellitectTerminal.Data.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
@@ -8,8 +10,6 @@ using System.Security.Claims;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using IntellitectTerminal.Data;
-using IntellitectTerminal.Web;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -39,6 +39,7 @@ services.AddDbContext<AppDbContext>(options =>
 
 services.AddCoalesce<AppDbContext>();
 services.AddScoped<ICommandService, CommandService>();
+services.AddScoped<IUserService, UserService>();
 
 services
     .AddMvc()

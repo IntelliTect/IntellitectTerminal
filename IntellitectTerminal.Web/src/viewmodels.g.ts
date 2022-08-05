@@ -31,6 +31,7 @@ export interface SubmissionViewModel extends $models.Submission {
   user: UserViewModel | null;
   challenge: ChallengeViewModel | null;
   content: string | null;
+  isCorrect: boolean | null;
 }
 export class SubmissionViewModel extends ViewModel<$models.Submission, $apiClients.SubmissionApiClient, number> implements $models.Submission  {
   
@@ -70,19 +71,38 @@ export class UserListViewModel extends ListViewModel<$models.User, $apiClients.U
 
 export class CommandServiceViewModel extends ServiceViewModel<typeof $metadata.CommandService, $apiClients.CommandServiceApiClient> {
   
-  public get requestCommand() {
-    const requestCommand = this.$apiClient.$makeCaller(
-      this.$metadata.methods.requestCommand,
-      (c, userId: string | null) => c.requestCommand(userId),
+  public get request() {
+    const request = this.$apiClient.$makeCaller(
+      this.$metadata.methods.request,
+      (c, userId: string | null) => c.request(userId),
       () => ({userId: null as string | null, }),
-      (c, args) => c.requestCommand(args.userId))
+      (c, args) => c.request(args.userId))
     
-    Object.defineProperty(this, 'requestCommand', {value: requestCommand});
-    return requestCommand
+    Object.defineProperty(this, 'request', {value: request});
+    return request
   }
   
   constructor() {
     super($metadata.CommandService, new $apiClients.CommandServiceApiClient())
+  }
+}
+
+
+export class UserServiceViewModel extends ServiceViewModel<typeof $metadata.UserService, $apiClients.UserServiceApiClient> {
+  
+  public get initializeFileSystem() {
+    const initializeFileSystem = this.$apiClient.$makeCaller(
+      this.$metadata.methods.initializeFileSystem,
+      (c, userId: string | null) => c.initializeFileSystem(userId),
+      () => ({userId: null as string | null, }),
+      (c, args) => c.initializeFileSystem(args.userId))
+    
+    Object.defineProperty(this, 'initializeFileSystem', {value: initializeFileSystem});
+    return initializeFileSystem
+  }
+  
+  constructor() {
+    super($metadata.UserService, new $apiClients.UserServiceApiClient())
   }
 }
 
@@ -99,5 +119,6 @@ const listViewModelTypeLookup = ListViewModel.typeLookup = {
 }
 const serviceViewModelTypeLookup = ServiceViewModel.typeLookup = {
   CommandService: CommandServiceViewModel,
+  UserService: UserServiceViewModel,
 }
 

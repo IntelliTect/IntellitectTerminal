@@ -20,29 +20,29 @@ using System.Threading.Tasks;
 
 namespace IntellitectTerminal.Web.Api
 {
-    [Route("api/CommandService")]
+    [Route("api/UserService")]
     [ServiceFilter(typeof(IApiActionFilter))]
-    public partial class CommandServiceController : Controller
+    public partial class UserServiceController : Controller
     {
-        protected IntellitectTerminal.Data.Services.ICommandService Service { get; }
+        protected IntellitectTerminal.Data.Services.IUserService Service { get; }
 
-        public CommandServiceController(IntellitectTerminal.Data.Services.ICommandService service)
+        public UserServiceController(IntellitectTerminal.Data.Services.IUserService service)
         {
             Service = service;
         }
 
         /// <summary>
-        /// Method: Request
+        /// Method: InitializeFileSystem
         /// </summary>
-        [HttpPost("Request")]
+        [HttpPost("InitializeFileSystem")]
         [Authorize]
-        public virtual ItemResult<ChallengeDtoGen> Request(System.Guid? userId)
+        public virtual ItemResult<UserDtoGen> InitializeFileSystem(System.Guid? userId)
         {
             IncludeTree includeTree = null;
             var _mappingContext = new MappingContext(User);
-            var _methodResult = Service.Request(userId);
-            var _result = new ItemResult<ChallengeDtoGen>();
-            _result.Object = Mapper.MapToDto<IntellitectTerminal.Data.Models.Challenge, ChallengeDtoGen>(_methodResult, _mappingContext, includeTree);
+            var _methodResult = Service.InitializeFileSystem(userId);
+            var _result = new ItemResult<UserDtoGen>();
+            _result.Object = Mapper.MapToDto<IntellitectTerminal.Data.Models.User, UserDtoGen>(_methodResult, _mappingContext, includeTree);
             return _result;
         }
     }

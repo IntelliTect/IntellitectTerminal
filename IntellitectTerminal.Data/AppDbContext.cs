@@ -1,6 +1,6 @@
-using Microsoft.EntityFrameworkCore;
-using IntellitectTerminal.Data.Models;
 using IntelliTect.Coalesce;
+using IntellitectTerminal.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace IntellitectTerminal.Data;
 
@@ -38,7 +38,7 @@ public class AppDbContext : DbContext
         try
         {
             this.Database.Migrate();
-            
+
             // TODO: Or, use Database.EnsureCreated() instead:
             // this.Database.EnsureCreated();
         }

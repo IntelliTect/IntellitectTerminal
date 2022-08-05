@@ -4,7 +4,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Terminal } from "xterm";
-import { CommandServiceViewModel } from '@/viewmodels.g';
+import { CommandServiceViewModel, UserServiceViewModel } from '@/viewmodels.g';
 
 class TreeNode {
   name: string;
@@ -92,6 +92,7 @@ export default class Home extends Vue {
 
   // Connects to the API
   commandservice = new CommandServiceViewModel();
+  userservice = new UserServiceViewModel();
 
   // The stored string the user is typing
   userInput: string = "";

@@ -4,6 +4,7 @@ using IntellitectTerminal.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IntellitectTerminal.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220805023634_IsCorrect bool on Submission Model")]
+    partial class IsCorrectboolonSubmissionModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,7 +33,8 @@ namespace IntellitectTerminal.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ChallengeId"), 1L, 1);
 
                     b.Property<string>("Answer")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2147483647)
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.Property<int>("CompilationLanguage")
                         .HasColumnType("int");
@@ -40,7 +43,8 @@ namespace IntellitectTerminal.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Question")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2147483647)
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.HasKey("ChallengeId");
 
@@ -59,7 +63,8 @@ namespace IntellitectTerminal.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2147483647)
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.Property<bool>("IsCorrect")
                         .HasColumnType("bit");
@@ -83,7 +88,8 @@ namespace IntellitectTerminal.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FileSystem")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2147483647)
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.HasKey("UserId");
 
