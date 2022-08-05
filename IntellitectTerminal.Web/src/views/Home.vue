@@ -7,65 +7,31 @@ import { Terminal } from "xterm";
 import { CommandServiceViewModel, UserServiceViewModel } from '@/viewmodels.g';
 
 class TreeNode {
-  name: string;
+  Value: string;
   isFile: boolean;
-  parent: TreeNode | null;
-  children: TreeNode[];
+  Parent: TreeNode | null;
+  Children: TreeNode[];
   constructor(name: string, isFile: boolean, parent: TreeNode | null, children: TreeNode[]) {
-    this.name = name;
+    this.Value = name;
     this.isFile = isFile;
-    this.parent = parent;
-    this.children = children;
+    this.Parent = parent;
+    this.Children = children;
   }
 }
 
 interface FileNode {
-  parent: string;
-  name: string;
+  Parent: string;
+  Value: string;
   isFile: boolean;
-  children: FileNode[];
-}
-
-const filesystem = {
-  name: "/",
-  parent: "",
-  isFile: false,
-  children: [
-    {
-      name: "home",
-      parent: "/",
-      isFile: false,
-      children: [
-        {
-          name: "username",
-          parent: "home",
-          isFile: false,
-          children: [
-            {
-              name: "file",
-              parent: "username",
-              isFile: true,
-              children: []
-            },
-            {
-              name: "file",
-              parent: "username",
-              isFile: true,
-              children: []
-            },
-          ]
-        }
-      ]
-    }
-  ]
+  Children: FileNode[];
 }
 
 function serializeFilesSystemToTree(node: FileNode | TreeNode) {
-  let parent = new TreeNode(node.name, node.isFile, null, []);
-  node.children.forEach((child) => {
+  let parent = new TreeNode(node.Value, node.isFile, null, []);
+  node.Children.forEach((child) => {
     let childNode: TreeNode = serializeFilesSystemToTree(child);
-    childNode.parent = parent;
-    parent.children.push(childNode);
+    childNode.Parent = parent;
+    parent.Children.push(childNode);
   });
   return parent;
 }
@@ -78,6 +44,7 @@ enum Keys {
   ARROW_RIGHT = "\x1B[C",
   ARROW_UP = "\x1B[A",
   ARROW_BOTTOM = "\x1B[B",
+  CTRL_L = "\f"
 }
 
 enum Commands {
@@ -85,6 +52,8 @@ enum Commands {
   REQUEST = "request",
   LS = "ls",
   CD = "cd",
+  CAT = "cat",
+  CLEAR = "clear"
 }
 
 @Component
@@ -97,12 +66,19 @@ export default class Home extends Vue {
   // The stored string the user is typing
   userInput: string = "";
 
-  // File path
-  path: TreeNode = serializeFilesSystemToTree(filesystem);
-  hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${filesystem.name}]$ `;
+  // Entire file system
+  filesystem: TreeNode = new TreeNode("/", false, null, []);
+
+  // Path we are on
+  path: TreeNode = new TreeNode("/", false, null, []);
+
+  // Hostname relative to path we are on
+  hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${this.path.Value}]$ `;
+
+  // Update the path we are on and display hostname correctly
   updatePath(location: TreeNode) {
     this.path = location;
-    this.hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${location.name}]$ `;
+    this.hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${location.Value}]$ `;
   }
 
   // Position the cursor is currently at. This is needed for back spaces.
@@ -114,16 +90,26 @@ export default class Home extends Vue {
 
   async created() {
 
-    console.log(serializeFilesSystemToTree(filesystem));
-
     // XTerms input
     const input = document.getElementById('terminal');
     if (input != null) {
-      console.log('here');
-      await this.userservice.initializeFileSystem("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
+
+      // Request for the file system
+      await this.userservice.initializeFileSystem(null);
+
+      // Get user
       let user = this.userservice.initializeFileSystem.result;
+
+      // Serialize and cache filesystem to a Tree
+      console.log(JSON.parse(user?.fileSystem!));
+      this.filesystem = serializeFilesSystemToTree(JSON.parse(user?.fileSystem!));
+      this.path = this.filesystem;
+
+      // Command services
       await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
       let challengeresult = this.commandservice.request.result;
+
+
       console.table(user);
       console.table(challengeresult);
       console.log(challengeresult);
@@ -196,6 +182,10 @@ export default class Home extends Vue {
       case Keys.ARROW_BOTTOM:
         break;
 
+      case Keys.CTRL_L:
+        this.term.clear();
+        break;
+
       default:
         console.log(event);
         this.term.write(event.key);
@@ -206,40 +196,37 @@ export default class Home extends Vue {
 
   async commandHandler(cmd: string, arg: string[]) {
 
-    function unknownArg(term: Terminal, unArg: string) {
-      term.write("Unknown argument: " + unArg + "\r\n");
+    function err(prefix: string, term: Terminal, msg: string) {
+      term.writeln(`${prefix}: ${msg}`);
     }
+
+    function unknownArg(prefix: string, term: Terminal, unArg: string) {
+      err(prefix, term, `Unknown argument '${unArg}'`);
+    }
+
 
     switch (cmd.toLocaleLowerCase()) {
       case Commands.HELP:
-        console.log(arg);
         if (arg.length > 0) {
-          unknownArg(this.term, arg[0]);
+          unknownArg(Commands.HELP, this.term, arg[0]);
           break;
         }
-        this.term.write(" help - Displays this message");
-        this.term.write("\r\n");
-        this.term.write(" ls - Lists all files in the current directory");
-        this.term.write("\r\n");
-        this.term.write(" cat - Displays the contents of a file");
-        this.term.write("\r\n");
-        this.term.write(" mkdir - Creates a directory");
-        this.term.write("\r\n");
-        this.term.write(" challenge - Requests a challenge");
-        this.term.write("\r\n");
-        this.term.write(" submit - Submits a challenge");
-        this.term.write("\r\n");
-        this.term.write(" edit - Edits a file");
-        this.term.write("\r\n");
-        this.term.write(" progress - Displays your progress");
-        this.term.write("\r\n");
-        this.term.write(" verify - Verifies a challenge");
-        this.term.write("\r\n");
+
+        this.term.writeln(" help - Displays this message");
+        this.term.writeln(" ls - Lists all files in the current directory");
+        this.term.writeln(" cat - Displays the contents of a file");
+        this.term.writeln(" mkdir - Creates a directory");
+        this.term.writeln(" clear - Clear the terminal");
+        this.term.writeln(" challenge - Requests a challenge");
+        this.term.writeln(" submit - Submits a challenge");
+        this.term.writeln(" edit - Edits a file");
+        this.term.writeln(" progress - Displays your progress");
+        this.term.writeln(" verify - Verifies a challenge");
         break;
 
       case Commands.REQUEST:
         if (arg.length > 0) {
-          unknownArg(this.term, arg[0]);
+          unknownArg(Commands.REQUEST, this.term, arg[0]);
           break;
         }
         console.log(
@@ -248,45 +235,98 @@ export default class Home extends Vue {
         break;
 
       case Commands.LS:
-        if (arg.length > 1) {
-          unknownArg(this.term, arg[1]);
+        if (arg.length > 0) {
+          unknownArg(Commands.LS, this.term, arg[0]);
           break;
         }
-        this.path.children.forEach((child: TreeNode) =>
-          this.term.write(child.name + "\r\n")
+        this.path.Children.forEach((child: TreeNode) =>
+          this.term.write(child.Value + "\r\n")
         );
         break;
 
+      // TODO: cd into a direct path ex: cd /home/user
       case Commands.CD:
+
+        function validatePath(start: TreeNode, directions: string[], term: Terminal): TreeNode {
+          // Start on the dir we are on
+          let traverse: TreeNode = start;
+          directions.every((direction: string) => {
+
+            // Navigate up one on ..
+            if (direction == "..") {
+              traverse = traverse.Parent!;
+              return true;
+            }
+
+            // Find the node that matches the path
+            let i = traverse.Children.find((child) => child.Value == direction);
+
+
+            // If no node is found, the path is errornous. Return.
+            if (i == undefined) {
+              err(Commands.CD, term, `Directory not found '${arg[0]}'`);
+              return;
+            }
+            if (i.isFile) {
+              err(Commands.CD, term, "Argument is a file and not a directory");
+              return;
+            }
+            traverse = i;
+            return true;
+          })
+          return traverse;
+        }
 
         // Arg[0] is required
         if (arg[0] == undefined || arg[0] == ".") {
           break;
         }
 
-        if (arg[0] == "..") {
-          if (this.path.parent != null) {
-            this.updatePath(this.path.parent);
-          }
+        // Root level navigation
+        if (arg[0].startsWith("/")) {
+
+          // Get each direction we need from the arg[0]. EX /home/user/file [home,user,file]
+          let directions = arg[0].split("/").filter(element => element == "" ? false : true);
+
+          this.updatePath(validatePath(this.filesystem, directions, this.term));
           break;
         }
 
-        // Search for the file
-        var location: TreeNode | null = null;
-        this.path.children.forEach(
-          (child: TreeNode) => location = child.name == arg[0] ? child : null
-        );
-        if (location == null) {
-          this.term.write("Directory not found: " + arg[0] +"\r\n");
+        // Directory level navigation. Endpoint must be inside of this.path
+        // Get each direction we need from the arg[0]. EX ./user/file [user,file]
+        let directions = arg[0].split("/").filter(element => element == "" || element == "." ? false : true);
+
+        this.updatePath(validatePath(this.path, directions, this.term));
+        break;
+
+      // TODO: cat into a direct path ex: cat /home/user/readme.txt
+      case Commands.CAT:
+        // Arg[0] is required
+        if (arg[0] == undefined) {
+          err(Commands.CAT, this.term, "Missing file argument path");
           break;
         }
+        let file: TreeNode | null = null;
+        this.path.Children.forEach((child) => file = (child.Value == arg[0]) ? child : null);
+        if (file == null) {
+          err(Commands.CAT, this.term, `File not found '${arg[0]}'`)
+          break;
+        }
+        if (!(file as TreeNode).isFile) {
+          err(Commands.CAT, this.term, "Argument is a directory and not a file");
+        }
+        break;
 
-        this.updatePath(location);
+      case Commands.CLEAR:
+        if (arg.length > 0) {
+          unknownArg(Commands.HELP, this.term, arg[0]);
+          break;
+        } 
+        this.term.clear();
         break;
 
       default:
-        this.term.write("Command not found.");
-        this.term.write("\r\n");
+        err("intelliterm", this.term, `Command not found '${cmd}'`)
     }
   }
 }
