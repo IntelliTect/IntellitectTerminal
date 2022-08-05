@@ -53,7 +53,8 @@ enum Commands {
   LS = "ls",
   CD = "cd",
   CAT = "cat",
-  CLEAR = "clear"
+  CLEAR = "clear",
+  PROGRESS = "progress"
 }
 
 @Component
@@ -331,6 +332,12 @@ export default class Home extends Vue {
           break;
         } 
         this.term.clear();
+        break;
+
+      case Commands.PROGRESS:
+        await this.commandservice.progress(this.user?.userId!);
+        let progressoutput = this.commandservice.progress.result;
+        this.term.write(`${progressoutput}\r\n`);
         break;
 
       default:
