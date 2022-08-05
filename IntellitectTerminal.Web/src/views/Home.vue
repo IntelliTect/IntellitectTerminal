@@ -6,11 +6,24 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { Terminal } from "xterm";
 import { CommandServiceViewModel } from '@/viewmodels.g';
 
+class TreeNode {
+  name: string;
+  isFile: boolean;
+  parent: TreeNode | null;
+  children: TreeNode[];
+  constructor(name: string, isFile: boolean, parent: TreeNode | null, children: TreeNode[]) {
+    this.name = name;
+    this.isFile = isFile;
+    this.parent = parent;
+    this.children = children;
+  }
+}
+
 interface FileNode {
-    parent: string;
-    name: string;
-    isFile: boolean;
-    children: Array<FileNode>;
+  parent: string;
+  name: string;
+  isFile: boolean;
+  children: FileNode[];
 }
 
 const filesystem = {
@@ -47,6 +60,17 @@ const filesystem = {
   ]
 }
 
+function serializeFilesSystemToTree(node: FileNode | TreeNode) {
+  let parent = new TreeNode(node.name, node.isFile, null, []);
+  node.children.forEach((child) => {
+    let childNode: TreeNode = serializeFilesSystemToTree(child);
+    childNode.parent = parent;
+    parent.children.push(childNode);
+  });
+  return parent;
+}
+
+
 enum Keys {
   BACKSPACE = "\x7F",
   ENTER = "\r",
@@ -60,6 +84,7 @@ enum Commands {
   HELP = "help",
   REQUEST = "request",
   LS = "ls",
+  CD = "cd",
 }
 
 @Component
@@ -72,9 +97,9 @@ export default class Home extends Vue {
   userInput: string = "";
 
   // File path
-  path: FileNode = filesystem;
+  path: TreeNode = serializeFilesSystemToTree(filesystem);
   hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${filesystem.name}]$ `;
-  updatePath(location: FileNode) {
+  updatePath(location: TreeNode) {
     this.path = location;
     this.hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${location.name}]$ `;
   }
@@ -87,6 +112,8 @@ export default class Home extends Vue {
   welcomeMessage = "Welcome to the Intellitect CLI! View commands by typing help";
 
   async created() {
+
+    console.log(serializeFilesSystemToTree(filesystem));
 
     // XTerms input
     const input = document.getElementById('terminal');
@@ -129,7 +156,8 @@ export default class Home extends Vue {
 
         // Do not allow a command that is blank to be ran.
         if (this.userInput.trim() != "") {
-          this.commandHandler(this.userInput.trim());
+          var cmd: string[] = this.userInput.trim().split(" ");
+          this.commandHandler(cmd[0], cmd.slice(1, cmd.length));
         }
 
         this.term.write(this.hostname);
@@ -167,9 +195,19 @@ export default class Home extends Vue {
     }
   }
 
-  async commandHandler(cmd: string) {
+  async commandHandler(cmd: string, arg: string[]) {
+
+    function unknownArg(term: Terminal, unArg: string) {
+      term.write("Unknown argument: " + unArg + "\r\n");
+    }
+
     switch (cmd.toLocaleLowerCase()) {
       case Commands.HELP:
+        console.log(arg);
+        if (arg.length > 0) {
+          unknownArg(this.term, arg[0]);
+          break;
+        }
         this.term.write(" help - Displays this message");
         this.term.write("\r\n");
         this.term.write(" ls - Lists all files in the current directory");
@@ -191,17 +229,51 @@ export default class Home extends Vue {
         break;
 
       case Commands.REQUEST:
+        if (arg.length > 0) {
+          unknownArg(this.term, arg[0]);
+          break;
+        }
         console.log(
           await this.commandservice.requestCommand("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F")
         );
         break;
 
       case Commands.LS:
-        this.path.children.forEach( (child: FileNode) =>
+        if (arg.length > 1) {
+          unknownArg(this.term, arg[1]);
+          break;
+        }
+        this.path.children.forEach((child: TreeNode) =>
           this.term.write(child.name + "\r\n")
         );
         break;
 
+      case Commands.CD:
+
+        // Arg[0] is required
+        if (arg[0] == undefined || arg[0] == ".") {
+          break;
+        }
+
+        if (arg[0] == "..") {
+          if (this.path.parent != null) {
+            this.updatePath(this.path.parent);
+          }
+          break;
+        }
+
+        // Search for the file
+        var location: TreeNode | null = null;
+        this.path.children.forEach(
+          (child: TreeNode) => location = child.name == arg[0] ? child : null
+        );
+        if (location == null) {
+          this.term.write("Directory not found: " + arg[0] +"\r\n");
+          break;
+        }
+
+        this.updatePath(location);
+        break;
 
       default:
         this.term.write("Command not found.");
