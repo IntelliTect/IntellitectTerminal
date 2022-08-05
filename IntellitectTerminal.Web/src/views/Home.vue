@@ -111,7 +111,8 @@ export default class Home extends Vue {
   cursorPosition = this.hostname.length;
   term = new Terminal({ cursorBlink: true });
 
-  history = [];
+  history: string[] = [];
+  history_index: number = -1;
   welcomeMessage = "Welcome to the Intellitect CLI! View commands by typing help";
 
   async created() {
@@ -141,6 +142,9 @@ export default class Home extends Vue {
 
   keyPressedHandler(event: { key: any; domEvent?: KeyboardEvent; }) {
 
+    // Reset bash history
+    this.history_index = -1;
+
     // Command keys
     switch (event.key) {
 
@@ -160,7 +164,9 @@ export default class Home extends Vue {
         // Do not allow a command that is blank to be ran.
         if (this.userInput.trim() != "") {
           var cmd: string[] = this.userInput.trim().split(" ");
-          this.commandHandler(cmd[0], cmd.slice(1, cmd.length));
+          this.commandHandler(cmd[0].trim(), cmd.slice(1, cmd.length));
+          console.log(cmd[0].trim())
+          this.history.push(this.userInput);
         }
 
         this.term.write(this.hostname);
@@ -184,6 +190,11 @@ export default class Home extends Vue {
 
       // Breaks functionality that xterm already gives arrows
       case Keys.ARROW_UP:
+        this.history_index++;
+        this.cursorPosition = this.hostname.length;
+        this.term.write("\r\n");
+        this.term.write(this.hostname + this.history[this.history_index]);
+        this.userInput = this.history[this.history_index];
         break;
 
       // Breaks functionality that xterm already gives arrows
@@ -191,16 +202,7 @@ export default class Home extends Vue {
         break;
 
       case Keys.CTRL_L:
-        this.term.write("\r");
-        this.userInput += "\r"
-        this.term.write("\n");
-
-        // Clear terminal
-        for (let i = 0; i < 50; i++) {
-          this.term.write("\n");
-        }
-
-        this.term.write(this.hostname);
+        this.term.clear();
         this.userInput = "";
         this.cursorPosition = this.hostname.length;
         return;
@@ -301,14 +303,10 @@ export default class Home extends Vue {
           break;
         }
 
-        // Clear terminal
-        for (let i = 0; i < 50; i++) {
-          this.term.write("\n");
-        }
-
+        this.term.clear();
         this.userInput = "";
         this.cursorPosition = this.hostname.length;
-      break;
+        break;
 
       default:
         this.term.write("Command not found.");
