@@ -53,7 +53,7 @@ jobs:
           npm run test run
 
       - name: Test with dotnet
-        run: dotnet test --no-build
+        run: dotnet test --no-build --configuration Release
 
       - name: Dotnet Publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/IntellitectTerminal

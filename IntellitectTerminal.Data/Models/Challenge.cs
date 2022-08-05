@@ -9,12 +9,8 @@ public class Challenge
 {
     public int ChallengeId { get; set; }
 
-    [Column(TypeName = "nvarchar(MAX)")]
-    [MaxLength(int.MaxValue)]
     public string Question { get; set; }
 
-    [Column(TypeName = "nvarchar(MAX)")]
-    [MaxLength(int.MaxValue)]
     public string? Answer { get; set; }
 
     public int Level { get; set; }

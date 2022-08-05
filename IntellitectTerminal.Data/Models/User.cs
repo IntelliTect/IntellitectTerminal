@@ -9,8 +9,6 @@ public class User
 {
     public Guid UserId { get; set; }
 
-    [Column(TypeName = "nvarchar(MAX)")]
-    [MaxLength(int.MaxValue)]
     public string FileSystem { get; set; }
 
 #nullable restore

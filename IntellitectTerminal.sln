@@ -8,14 +8,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntellitectTerminal.Web", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{609092D6-B426-4AFA-B33E-D4200ADAF917}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{052426CE-FBCC-427E-AD06-18CEF42032DB}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1F813226-5E1D-4DE2-A070-CB91749FE77A}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		coalesce.json = coalesce.json
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntellitectTerminal.Tests", "IntellitectTerminal.Tests\IntellitectTerminal.Tests.csproj", "{CA811D34-0AAE-452E-A249-D2980395866F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +51,18 @@ Global
 		{47B24900-4B6C-4252-8EDF-2F2262CE7BF5}.Release|x64.Build.0 = Release|Any CPU
 		{47B24900-4B6C-4252-8EDF-2F2262CE7BF5}.Release|x86.ActiveCfg = Release|Any CPU
 		{47B24900-4B6C-4252-8EDF-2F2262CE7BF5}.Release|x86.Build.0 = Release|Any CPU
+		{CA811D34-0AAE-452E-A249-D2980395866F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA811D34-0AAE-452E-A249-D2980395866F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA811D34-0AAE-452E-A249-D2980395866F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CA811D34-0AAE-452E-A249-D2980395866F}.Debug|x64.Build.0 = Debug|Any CPU
+		{CA811D34-0AAE-452E-A249-D2980395866F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CA811D34-0AAE-452E-A249-D2980395866F}.Debug|x86.Build.0 = Debug|Any CPU
+		{CA811D34-0AAE-452E-A249-D2980395866F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA811D34-0AAE-452E-A249-D2980395866F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA811D34-0AAE-452E-A249-D2980395866F}.Release|x64.ActiveCfg = Release|Any CPU
+		{CA811D34-0AAE-452E-A249-D2980395866F}.Release|x64.Build.0 = Release|Any CPU
+		{CA811D34-0AAE-452E-A249-D2980395866F}.Release|x86.ActiveCfg = Release|Any CPU
+		{CA811D34-0AAE-452E-A249-D2980395866F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
