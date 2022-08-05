@@ -130,5 +130,40 @@ namespace IntellitectTerminal.Tests
             Assert.NotNull(submission.Content);
             Assert.Equal($"{file.Name}_{user.UserId}", submission.Content);
         }
+
+        [Fact]
+        public void Submit_FullWorkflow_SubmitSuccessfully()
+        {
+            var fileName = @"../../../Samples/sample_script.py";
+            using FileStream fs = File.OpenRead(fileName);
+            IntelliTect.Coalesce.Models.File file = new(fs);
+            _ =TestData.AddNewChallenge(1);
+            Challenge LevelTwo = TestData.AddNewPythonChallenge(2);
+            Challenge LevelThree = TestData.AddNewPythonChallenge(3);
+            User user = userService.InitializeFileSystem(null);
+            UnderTest.Request(user.UserId);
+            Assert.Equal(1, Db.Submissions.Count());
+            UnderTest.SubmitUserInput("Correct", user.UserId);
+            Assert.Equal(1, Db.Submissions.Count());
+            UnderTest.Verify(user.UserId);
+            Assert.Equal("Correct", Db.Submissions.First().Content);
+            Assert.Equal(true, Db.Submissions.First().IsCorrect);
+            UnderTest.Request(user.UserId);
+            Assert.Equal(2, Db.Submissions.Count());
+            UnderTest.SubmitFile(file, user.UserId);
+            Assert.Equal(2, Db.Submissions.Count());
+            UnderTest.Verify(user.UserId);
+            Assert.Equal(true, Db.Submissions.First().IsCorrect);
+            Submission submission = Db.Submissions.Where(x => x.User == user && x.Challenge == LevelTwo).First();
+            Assert.Equal($"{file.Name}_{user.UserId}", submission.Content);
+            UnderTest.Request(user.UserId);
+            Assert.Equal(3, Db.Submissions.Count());
+            file.Name += "1";
+            UnderTest.SubmitFile(file, user.UserId);
+            Assert.Equal(3, Db.Submissions.Count());
+            Assert.Equal(true, Db.Submissions.First().IsCorrect);
+            submission = Db.Submissions.Where(x => x.User == user && x.Challenge == LevelThree).First();
+            Assert.Equal($"{file.Name}_{user.UserId}", submission.Content);
+        }
     }
 }
