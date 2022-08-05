@@ -20,6 +20,6 @@ public class CommandService : ICommandService
         int highestCompletedLevel = Db.Submissions.Where(x => x.User == foundUser && x.IsCorrect == true)
             .Select(x => x.Challenge.Level).ToList().DefaultIfEmpty(0).Max();
         highestCompletedLevel++;
-        return Db.Challenges.Where(x => x.Level == highestCompletedLevel).OrderBy(x => EF.Functions.Random()).First();
+        return Db.Challenges.Where(x => x.Level == highestCompletedLevel).OrderBy(x => EF.Functions.Random()).FirstOrDefault() ?? throw new InvalidOperationException("Challenge to be returned cannot be found");
     }
 }

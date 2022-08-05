@@ -35,5 +35,11 @@ namespace IntellitectTerminal.Tests
             TestData.AddSubmission(user, challenge, true);
             Assert.Equal(2, UnderTest.Request(user.UserId).Level);
         }
+
+        [Fact]
+        public void Request_EmptyDatabase_ReturnsException()
+        {
+            Assert.Throws<InvalidOperationException>(() => UnderTest.Request(Guid.NewGuid()));
+        }
     }
 }
