@@ -56,5 +56,18 @@ namespace IntellitectTerminal.Web.Api
             _result.Object = _methodResult;
             return _result;
         }
+
+        /// <summary>
+        /// Method: Progress
+        /// </summary>
+        [HttpPost("Progress")]
+        [AllowAnonymous]
+        public virtual ItemResult<string> Progress(System.Guid userId)
+        {
+            var _methodResult = Service.Progress(userId);
+            var _result = new ItemResult<string>();
+            _result.Object = _methodResult;
+            return _result;
+        }
     }
 }

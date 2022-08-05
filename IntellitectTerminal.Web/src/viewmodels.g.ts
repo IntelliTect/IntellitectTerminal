@@ -93,6 +93,17 @@ export class CommandServiceViewModel extends ServiceViewModel<typeof $metadata.C
     return cat
   }
   
+  public get progress() {
+    const progress = this.$apiClient.$makeCaller(
+      this.$metadata.methods.progress,
+      (c, userId: string | null) => c.progress(userId),
+      () => ({userId: null as string | null, }),
+      (c, args) => c.progress(args.userId))
+    
+    Object.defineProperty(this, 'progress', {value: progress});
+    return progress
+  }
+  
   constructor() {
     super($metadata.CommandService, new $apiClients.CommandServiceApiClient())
   }

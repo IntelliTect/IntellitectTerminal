@@ -195,6 +195,26 @@ export const CommandService = domain.services.CommandService = {
         role: "value",
       },
     },
+    progress: {
+      name: "progress",
+      displayName: "Progress",
+      transportType: "item",
+      httpMethod: "POST",
+      params: {
+        userId: {
+          name: "userId",
+          displayName: "User Id",
+          type: "string",
+          role: "value",
+        },
+      },
+      return: {
+        name: "$return",
+        displayName: "Result",
+        type: "string",
+        role: "value",
+      },
+    },
   },
 }
 export const UserService = domain.services.UserService = {
