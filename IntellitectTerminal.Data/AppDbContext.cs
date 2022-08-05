@@ -10,7 +10,6 @@ public class AppDbContext : DbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<Challenge> Challenges => Set<Challenge>();
     public DbSet<Submission> Submissions => Set<Submission>();
-    public DbSet<UploadedFile> UploadedFiles => Set<UploadedFile>();
 
     public AppDbContext()
     {
@@ -29,17 +28,6 @@ public class AppDbContext : DbContext
         {
             relationship.DeleteBehavior = DeleteBehavior.Restrict;
         }
-
-        builder
-        .Entity<UploadedFile>()
-        .ToTable("UploadedFiles")
-        .HasOne(c => c.AttachmentContent)
-        .WithOne()
-        .HasForeignKey<FileAttachmentContent>(c => c.FileId);
-            builder
-                .Entity<FileAttachmentContent>()
-                .ToTable("UploadedFiles")
-                .HasKey(d => d.FileId);
     }
 
     /// <summary>

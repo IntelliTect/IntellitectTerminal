@@ -10,11 +10,16 @@ export const CompilationLanguages = domain.enums.CompilationLanguages = {
   name: "CompilationLanguages",
   displayName: "Compilation Languages",
   type: "enum",
-  ...getEnumMeta<"None">([
+  ...getEnumMeta<"None"|"Python">([
   {
     value: 0,
     strValue: "None",
     displayName: "None",
+  },
+  {
+    value: 1,
+    strValue: "Python",
+    displayName: "Python",
   },
   ]),
 }
@@ -232,6 +237,58 @@ export const CommandService = domain.services.CommandService = {
         name: "$return",
         displayName: "Result",
         type: "boolean",
+        role: "value",
+      },
+    },
+    submitFile: {
+      name: "submitFile",
+      displayName: "Submit File",
+      transportType: "item",
+      httpMethod: "POST",
+      params: {
+        file: {
+          name: "file",
+          displayName: "File",
+          type: "file",
+          role: "value",
+        },
+        userId: {
+          name: "userId",
+          displayName: "User Id",
+          type: "string",
+          role: "value",
+        },
+      },
+      return: {
+        name: "$return",
+        displayName: "Result",
+        type: "void",
+        role: "value",
+      },
+    },
+    submitUserInput: {
+      name: "submitUserInput",
+      displayName: "Submit User Input",
+      transportType: "item",
+      httpMethod: "POST",
+      params: {
+        input: {
+          name: "input",
+          displayName: "Input",
+          type: "string",
+          role: "value",
+        },
+        userId: {
+          name: "userId",
+          displayName: "User Id",
+          type: "string",
+          role: "value",
+        },
+      },
+      return: {
+        name: "$return",
+        displayName: "Result",
+        type: "void",
         role: "value",
       },
     },

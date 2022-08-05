@@ -53,6 +53,24 @@ export class CommandServiceApiClient extends ServiceApiClient<typeof $metadata.C
     return this.$invoke($method, $params, $config)
   }
   
+  public submitFile(file: File | null, userId: string | null, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<void>> {
+    const $method = this.$metadata.methods.submitFile
+    const $params =  {
+      file,
+      userId,
+    }
+    return this.$invoke($method, $params, $config)
+  }
+  
+  public submitUserInput(input: string | null, userId: string | null, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<void>> {
+    const $method = this.$metadata.methods.submitUserInput
+    const $params =  {
+      input,
+      userId,
+    }
+    return this.$invoke($method, $params, $config)
+  }
+  
 }
 
 
