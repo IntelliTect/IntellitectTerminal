@@ -161,7 +161,6 @@ export default class Home extends Vue {
           var cmd: string[] = this.userInput.trim().split(" ");
           this.commandHandler(cmd[0].trim(), cmd.slice(1, cmd.length));
           console.log(cmd[0].trim())
-          this.history.push(this.userInput);
         }
 
         this.term.write(this.hostname);
