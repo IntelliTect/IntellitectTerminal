@@ -86,6 +86,7 @@ enum Commands {
   REQUEST = "request",
   LS = "ls",
   CD = "cd",
+  CLEAR = "clear",
 }
 
 @Component
@@ -285,12 +286,27 @@ export default class Home extends Vue {
           (child: TreeNode) => location = child.name == arg[0] ? child : null
         );
         if (location == null) {
-          this.term.write("Directory not found: " + arg[0] +"\r\n");
+          this.term.write("Directory not found: " + arg[0] + "\r\n");
           break;
         }
 
         this.updatePath(location);
         break;
+
+      case Commands.CLEAR:
+        if (arg.length > 0) {
+          unknownArg(this.term, arg[0]);
+          break;
+        }
+
+        // Clear terminal
+        for (let i = 0; i < 50; i++) {
+          this.term.write("\n");
+        }
+
+        this.userInput = "";
+        this.cursorPosition = this.hostname.length;
+      break;
 
       default:
         this.term.write("Command not found.");
