@@ -241,15 +241,38 @@ export default class Home extends Vue {
       // TODO: cd into a direct path ex: cd /home/user
       case Commands.CD:
 
-        // Arg[0] is required
-        if (arg[0] == undefined || arg[0] == ".") {
-          break;
+        function validatePath(start: TreeNode, directions: string[], term: Terminal): TreeNode {
+          // Start on the dir we are on
+          let traverse: TreeNode = start;
+          directions.every((direction: string) => {
+
+            // Navigate up one on ..
+            if (direction == "..") {
+              traverse = traverse.Parent!;
+              return true;
+            }
+
+            // Find the node that matches the path
+            let i = traverse.Children.find((child) => child.Value == direction);
+
+
+            // If no node is found, the path is errornous. Return.
+            if (i == undefined) {
+              err(Commands.CD, term, `Directory not found '${arg[0]}'`);
+              return;
+            }
+            if (i.isFile) {
+              err(Commands.CD, term, "Argument is a file and not a directory");
+              return;
+            }
+            traverse = i;
+            return true;
+          })
+          return traverse;
         }
 
-        if (arg[0] == "..") {
-          if (this.path.Parent != null) {
-            this.updatePath(this.path.Parent);
-          }
+        // Arg[0] is required
+        if (arg[0] == undefined || arg[0] == ".") {
           break;
         }
 
@@ -257,43 +280,17 @@ export default class Home extends Vue {
         if (arg[0].startsWith("/")) {
 
           // Get each direction we need from the arg[0]. EX /home/user/file [home,user,file]
-          let pathMap = arg[0].split("/").filter(element => element == "" ? false: true);
+          let directions = arg[0].split("/").filter(element => element == "" ? false : true);
 
-          console.log(pathMap);
-          let traverse: TreeNode = this.filesystem;
-          console.log(traverse);
-          pathMap.every((direction: string) => {
-
-            // Find the node that matches the path
-            let i = traverse.Children.find((child) => child.Value == direction);
-
-            // If no node is found, the path is errornous. Return.
-            if (i == undefined) {
-              err(Commands.CD, this.term, `Directory not found '${arg[0]}'`);
-              return;
-            }
-            traverse = i;
-          })
-
-          this.updatePath(traverse);
+          this.updatePath(validatePath(this.filesystem, directions, this.term));
           break;
         }
 
-        // Search for the file
-        var location: TreeNode | null = null;
-        this.path.Children.forEach(
-          (child: TreeNode) => location = child.Value == arg[0] ? child : null
-        );
-        if (location == null) {
-          err(Commands.CD, this.term, `Directory not found '${arg[0]}'`);
-          break;
-        }
-        if ((location as TreeNode).isFile) {
-          err(Commands.CD, this.term, "Argument is a file and not a directory");
-          break;
-        }
+        // Directory level navigation. Endpoint must be inside of this.path
+        // Get each direction we need from the arg[0]. EX ./user/file [user,file]
+        let directions = arg[0].split("/").filter(element => element == "" || element == "." ? false : true);
 
-        this.updatePath(location);
+        this.updatePath(validatePath(this.path, directions, this.term));
         break;
 
       // TODO: cat into a direct path ex: cat /home/user/readme.txt
