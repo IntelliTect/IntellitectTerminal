@@ -239,6 +239,7 @@ export default class Home extends Vue {
         );
         break;
 
+      // TODO: cd into a direct path ex: cd /home/user
       case Commands.CD:
 
         // Arg[0] is required
@@ -270,6 +271,7 @@ export default class Home extends Vue {
         this.updatePath(location);
         break;
 
+      // TODO: cat into a direct path ex: cat /home/user/readme.txt
       case Commands.CAT:
         // Arg[0] is required
         if (arg[0] == undefined) {
