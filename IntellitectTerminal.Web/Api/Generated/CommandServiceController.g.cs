@@ -43,5 +43,18 @@ namespace IntellitectTerminal.Web.Api
             _result.Object = _methodResult;
             return _result;
         }
+
+        /// <summary>
+        /// Method: Cat
+        /// </summary>
+        [HttpPost("Cat")]
+        [AllowAnonymous]
+        public virtual ItemResult<string> Cat(System.Guid userId, string fileName)
+        {
+            var _methodResult = Service.Cat(userId, fileName);
+            var _result = new ItemResult<string>();
+            _result.Object = _methodResult;
+            return _result;
+        }
     }
 }
