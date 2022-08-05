@@ -69,10 +69,10 @@ public class TreeNode<T>
     {
         return new[] { Value }.Concat(children.SelectMany(x => x.Flatten()));
     }
-    public TreeNode<T> InsertChild(TreeNode<T> parent, T value) 
-    { 
-        var node = new TreeNode<T>(value) { Parent = parent }; 
-        parent.children.Add(node); 
-        return node; 
+    public TreeNode<T> InsertChild(TreeNode<T> parent, T value)
+    {
+        var node = new TreeNode<T>(value) { Parent = parent };
+        parent.children.Add(node);
+        return node;
     }
 }

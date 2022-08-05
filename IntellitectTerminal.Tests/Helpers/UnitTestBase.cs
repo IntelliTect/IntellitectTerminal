@@ -1,8 +1,5 @@
-﻿using Moq.AutoMock;
-using IntellitectTerminal.Data;
-using IntellitectTerminal.Data.Models;
-using System;
-using System.Security.Claims;
+﻿using IntellitectTerminal.Data;
+using Moq.AutoMock;
 
 namespace IntellitectTerminal.Tests.Helpers;
 

@@ -1,6 +1,4 @@
-﻿using IntelliTect.Coalesce.Models;
-using IntellitectTerminal.Data;
-using IntellitectTerminal.Data.Models;
+﻿using IntellitectTerminal.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace IntellitectTerminal.Data.Services;
@@ -22,6 +20,6 @@ public class CommandService : ICommandService
         int highestCompletedLevel = Db.Submissions.Where(x => x.User == foundUser && x.IsCorrect == true)
             .Select(x => x.Challenge.Level).ToList().DefaultIfEmpty(0).Max();
         highestCompletedLevel++;
-        return Db.Challenges.Where(x => x.Level == highestCompletedLevel).OrderBy(x=>EF.Functions.Random()).First();
+        return Db.Challenges.Where(x => x.Level == highestCompletedLevel).OrderBy(x => EF.Functions.Random()).First();
     }
 }
