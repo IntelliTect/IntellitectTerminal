@@ -326,7 +326,7 @@ export default class Home extends Vue {
       case Commands.PROGRESS:
         await this.commandservice.progress(this.user?.userId!);
         let progressoutput = this.commandservice.progress.result;
-        this.term.write(`${progressoutput}\r\n`);
+        this.term.writeln(`${progressoutput}`);
         break;
 
       case Commands.PWD:
