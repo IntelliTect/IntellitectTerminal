@@ -96,9 +96,10 @@ export default class Home extends Vue {
         this.cursorPosition++;
         return;
 
+      // By breaking we dont allow xterm to handle the arrow key itself
       case Keys.ARROW_UP:
         break;
-
+      // By breaking we dont allow xterm to handle the arrow key itself
       case Keys.ARROW_BOTTOM:
         break;
 
