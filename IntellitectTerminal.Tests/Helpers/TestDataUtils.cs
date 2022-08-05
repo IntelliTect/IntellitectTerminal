@@ -23,6 +23,10 @@ public class TestDataUtils
             challenges.Add(newChallenge);
             newChallenge = new() { Question = "Incorrect Question", Answer = "Incorrect", CompilationLanguage = Challenge.CompilationLanguages.None, Level = i };
             challenges.Add(newChallenge);
+            newChallenge = new() { Question = "Correct Question", Answer = "Correct", CompilationLanguage = Challenge.CompilationLanguages.Python, Level = i };
+            challenges.Add(newChallenge);
+            newChallenge = new() { Question = "Incorrect Question", Answer = "Incorrect", CompilationLanguage = Challenge.CompilationLanguages.Python, Level = i };
+            challenges.Add(newChallenge);
         }
         Db.Challenges.AddRange(challenges);
         return challenges;
@@ -31,6 +35,13 @@ public class TestDataUtils
     public Challenge AddNewChallenge(int level)
     {
         Challenge newChallenge = new() { Question = "Correct Question", Answer = "Correct", CompilationLanguage = Challenge.CompilationLanguages.None, Level = level };
+        Db.Challenges.Add(newChallenge);
+        return newChallenge;
+    }
+
+    public Challenge AddNewPythonChallenge(int level)
+    {
+        Challenge newChallenge = new() { Question = "Correct Question", Answer = "Sucess", CompilationLanguage = Challenge.CompilationLanguages.Python, Level = level };
         Db.Challenges.Add(newChallenge);
         return newChallenge;
     }
