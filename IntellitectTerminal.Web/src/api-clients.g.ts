@@ -45,6 +45,14 @@ export class CommandServiceApiClient extends ServiceApiClient<typeof $metadata.C
     return this.$invoke($method, $params, $config)
   }
   
+  public verify(userId: string | null, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<boolean>> {
+    const $method = this.$metadata.methods.verify
+    const $params =  {
+      userId,
+    }
+    return this.$invoke($method, $params, $config)
+  }
+  
 }
 
 

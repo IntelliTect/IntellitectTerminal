@@ -69,5 +69,18 @@ namespace IntellitectTerminal.Web.Api
             _result.Object = _methodResult;
             return _result;
         }
+
+        /// <summary>
+        /// Method: Verify
+        /// </summary>
+        [HttpPost("Verify")]
+        [AllowAnonymous]
+        public virtual ItemResult<bool> Verify(System.Guid userId)
+        {
+            var _methodResult = Service.Verify(userId);
+            var _result = new ItemResult<bool>();
+            _result.Object = _methodResult;
+            return _result;
+        }
     }
 }

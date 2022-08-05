@@ -215,6 +215,26 @@ export const CommandService = domain.services.CommandService = {
         role: "value",
       },
     },
+    verify: {
+      name: "verify",
+      displayName: "Verify",
+      transportType: "item",
+      httpMethod: "POST",
+      params: {
+        userId: {
+          name: "userId",
+          displayName: "User Id",
+          type: "string",
+          role: "value",
+        },
+      },
+      return: {
+        name: "$return",
+        displayName: "Result",
+        type: "boolean",
+        role: "value",
+      },
+    },
   },
 }
 export const UserService = domain.services.UserService = {

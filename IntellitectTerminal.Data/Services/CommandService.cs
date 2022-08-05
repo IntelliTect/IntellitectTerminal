@@ -1,6 +1,7 @@
 ﻿using IntellitectTerminal.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace IntellitectTerminal.Data.Services;
 
@@ -78,7 +79,28 @@ public class CommandService : ICommandService
         return $"You have completed {highestLevel} out of 3 challenge levels!";
     }
 
-    private int GetHighestCompletedChallengeLevel(User? user)
+    public bool Verify(Guid userId)
+    {
+
+        string fileName = @"C:\Users\BenjaminMichaelis\Downloads\sample_script.py";
+
+        Process? p = Process.Start(new ProcessStartInfo(@"python", fileName)
+        {
+            RedirectStandardOutput = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        });
+
+        string output = p.StandardOutput.ReadToEnd();
+        p.WaitForExit();
+
+        Console.WriteLine(output);
+
+        Console.ReadLine();
+        return true;
+    }
+
+        private int GetHighestCompletedChallengeLevel(User? user)
     {
         return Db.Submissions.AsNoTracking().Where(x => x.User == user && x.IsCorrect == true)
                     .Select(x => x.Challenge.Level).ToList().DefaultIfEmpty(0).Max();

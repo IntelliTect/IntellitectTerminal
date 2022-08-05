@@ -104,6 +104,17 @@ export class CommandServiceViewModel extends ServiceViewModel<typeof $metadata.C
     return progress
   }
   
+  public get verify() {
+    const verify = this.$apiClient.$makeCaller(
+      this.$metadata.methods.verify,
+      (c, userId: string | null) => c.verify(userId),
+      () => ({userId: null as string | null, }),
+      (c, args) => c.verify(args.userId))
+    
+    Object.defineProperty(this, 'verify', {value: verify});
+    return verify
+  }
+  
   constructor() {
     super($metadata.CommandService, new $apiClients.CommandServiceApiClient())
   }

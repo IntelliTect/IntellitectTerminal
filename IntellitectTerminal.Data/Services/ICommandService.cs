@@ -13,4 +13,6 @@ public interface ICommandService
     string Cat(Guid userId, string fileName);
     [Execute(PermissionLevel = SecurityPermissionLevels.AllowAll)]
     public string Progress(Guid userId);
+    [Execute(PermissionLevel = SecurityPermissionLevels.AllowAll)]
+    public bool Verify(Guid userId);
 }
