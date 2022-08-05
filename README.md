@@ -1,13 +1,7 @@
 <a name="readme-top"></a>
 
 <!-- PROJECT SHIELDS -->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-
+[![Build, Test, and Deploy Intellitect Terminal](https://github.com/IntelliTect/IntellitectTerminal/actions/workflows/Build-Test-And-Deploy.yml/badge.svg?event=push)](https://github.com/IntelliTect/IntellitectTerminal/actions/workflows/Build-Test-And-Deploy.yml)
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -71,30 +65,31 @@ Of course, no one terminal will serve all your need since your needs may be diff
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
-* npm
+
   ```sh
-  npm ci
+  npm 
   ```
 
 ### Installation
-
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
 
 1. Clone the repo
    ```sh
    git clone https://github.com/your_username_/Project-Name.git
    ```
-2. Install NPM packages (inside ./Web directory)
+2. Cd into Web
+   ```sh
+   cd IntellitectTerminal.Web/
+   ```
+   
+3. Install NPM packages (inside ./Web directory)
    ```sh
    npm ci
    ```
-3. Open Web Browser
+   
+4. Open Web Browser
    ```js
    localhost:3000
    ```
@@ -104,9 +99,7 @@ _Below is an example of how you can instruct your audience on installing and set
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
+_For more examples, please refer to the [Documentation](https://intellitect.com)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -118,7 +111,6 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 - [ ] Add Additional Questions
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 <!-- LICENSE -->
 ## License
