@@ -106,13 +106,13 @@ export default class Home extends Vue {
       this.path = this.filesystem;
 
       // Command services
-      await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
-      let challengeresult = this.commandservice.request.result;
+      //await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
+      //let challengeresult = this.commandservice.request.result;
 
 
-      console.table(user);
-      console.table(challengeresult);
-      console.log(challengeresult);
+      //console.table(user);
+      //console.table(challengeresult);
+      //console.log(challengeresult);
       this.initTerminal(input)
     }
   }
