@@ -230,7 +230,8 @@ export default class Home extends Vue {
           unknownArg(Commands.REQUEST, this.term, arg[0]);
           break;
         }
-        this.term.writeln("requesting a challenge...")
+        
+        this.term.writeln("intelliterm: mounting a challenge in /home/user/challenges");
 
         // Grab the result from the server
         await this.commandservice.request(this.user?.userId!);
@@ -242,14 +243,16 @@ export default class Home extends Vue {
           // Serialize the file system
           this.fileSystemTree = serializeFilesSystemToTree(JSON.parse(updatedFileSystem));
 
-          this.term.writeln("challenge found!");
-
           // WARNING: Kinda weird.
           // Use PWD to navigate to the folder that we were on when the filesystem is updated.
           let tempPwd = this.pwd;
           this.updatePath(this.fileSystemTree);
           this.updatePath(
-            validatePath(this.fileSystemTree, tempPwd.split("/").filter(element => element == "" ? false : true), this.term, tempPwd)
+            validatePath(
+              this.fileSystemTree, 
+              tempPwd.split("/")
+                .filter(element => element == "" ? false : true), 
+              this.term, tempPwd)
           );
         }
         else {
@@ -257,6 +260,7 @@ export default class Home extends Vue {
         }
         break;
 
+      // TODO: ls into a direct path ex: cat /home/user/readme.txt
       case Commands.LS:
         if (arg.length > 0) {
           unknownArg(Commands.LS, this.term, arg[0]);
