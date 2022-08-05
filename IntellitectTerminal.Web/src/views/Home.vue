@@ -5,6 +5,7 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Terminal } from "xterm";
 import { CommandServiceViewModel, UserServiceViewModel } from '@/viewmodels.g';
+import { User } from "@/models.g";
 
 class TreeNode {
   Name: string;
@@ -62,6 +63,9 @@ export default class Home extends Vue {
   // Connects to the API
   commandservice = new CommandServiceViewModel();
   userservice = new UserServiceViewModel();
+  user: User | null = null;
+
+  
 
   // The stored string the user is typing
   userInput: string = "";
@@ -98,11 +102,11 @@ export default class Home extends Vue {
       await this.userservice.initializeFileSystem(null);
 
       // Get user
-      let user = this.userservice.initializeFileSystem.result;
+      this.user = this.userservice.initializeFileSystem.result;
 
       // Serialize and cache filesystem to a Tree
-      console.log(JSON.parse(user?.fileSystem!));
-      this.filesystem = serializeFilesSystemToTree(JSON.parse(user?.fileSystem!));
+      console.log(JSON.parse(this.user?.fileSystem!));
+      this.filesystem = serializeFilesSystemToTree(JSON.parse(this.user?.fileSystem!));
       this.path = this.filesystem;
 
       // Command services
@@ -230,7 +234,7 @@ export default class Home extends Vue {
           break;
         }
         console.log(
-          await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F")
+          await this.commandservice.request(this.user!.userId)
         );
         break;
 
