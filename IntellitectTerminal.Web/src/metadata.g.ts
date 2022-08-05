@@ -40,12 +40,6 @@ export const Challenge = domain.types.Challenge = {
       type: "string",
       role: "value",
     },
-    answer: {
-      name: "answer",
-      displayName: "Answer",
-      type: "string",
-      role: "value",
-    },
     level: {
       name: "level",
       displayName: "Level",
@@ -57,6 +51,12 @@ export const Challenge = domain.types.Challenge = {
       displayName: "Compilation Language",
       type: "enum",
       get typeDef() { return domain.enums.CompilationLanguages },
+      role: "value",
+    },
+    answer: {
+      name: "answer",
+      displayName: "Answer",
+      type: "string",
       role: "value",
     },
   },
@@ -97,16 +97,16 @@ export const Submission = domain.types.Submission = {
       role: "value",
       dontSerialize: true,
     },
-    content: {
-      name: "content",
-      displayName: "Content",
-      type: "string",
-      role: "value",
-    },
     isCorrect: {
       name: "isCorrect",
       displayName: "Is Correct",
       type: "boolean",
+      role: "value",
+    },
+    content: {
+      name: "content",
+      displayName: "Content",
+      type: "string",
       role: "value",
     },
   },
@@ -165,8 +165,7 @@ export const CommandService = domain.services.CommandService = {
       return: {
         name: "$return",
         displayName: "Result",
-        type: "model",
-        get typeDef() { return (domain.types.Challenge as ModelType) },
+        type: "string",
         role: "value",
       },
     },

@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using IntellitectTerminal.Data.Models;
+using Newtonsoft.Json;
+using System.Collections.ObjectModel;
 
 namespace IntellitectTerminal.Data.Services;
 
@@ -9,16 +11,25 @@ public class TreeNode<T>
     public TreeNode<T>? Parent { get; private set; }
     public bool isFile { get; set; }
 
-    public TreeNode(T value)
+    public TreeNode(T name)
     {
-        name = value;
+        this.name = name;
         isFile = false;
     }
 
-    public TreeNode(T value, bool isFile)
+    public TreeNode(T name, bool isFile)
     {
-        name = value;
+        this.name = name;
         this.isFile = isFile;
+    }
+
+    [JsonConstructor]
+    public TreeNode(T name, bool isFile, List<TreeNode<T>> children, TreeNode<T>? parent)
+    {
+        this.name = name;
+        this.isFile = isFile;
+        this.children = children;
+        this.Parent = parent;
     }
 
     public TreeNode<T> this[int i]
@@ -27,7 +38,7 @@ public class TreeNode<T>
     }
 
 
-    public T Value { get { return name; } }
+    public T Name { get { return name; } }
 
     public ReadOnlyCollection<TreeNode<T>> Children
     {
@@ -58,21 +69,45 @@ public class TreeNode<T>
         return children.Remove(node);
     }
 
-    public void Traverse(Action<T> action)
+    public IEnumerable<TreeNode<T>> Traverse(Func<TreeNode<T>, TreeNode<T>> action)
     {
-        action(Value);
+        yield return action(this);
         foreach (var child in children)
-            child.Traverse(action);
+            foreach (var child1 in child.Traverse(action))
+                yield return child1;
     }
 
     public IEnumerable<T> Flatten()
     {
-        return new[] { Value }.Concat(children.SelectMany(x => x.Flatten()));
+        return new[] { Name }.Concat(children.SelectMany(x => x.Flatten()));
     }
     public TreeNode<T> InsertChild(TreeNode<T> parent, T value)
     {
         var node = new TreeNode<T>(value) { Parent = parent };
         parent.children.Add(node);
         return node;
+    }
+    public static TreeNode<string> GetChild(TreeNode<string> foundUsersFileSystem, string dirOrFileName, bool isFile)
+    {
+        IEnumerable<TreeNode<string>> traverseResult = foundUsersFileSystem.Traverse(delegate (TreeNode<string> node)
+        {
+            return node.Children.FirstOrDefault(x => x.Name == dirOrFileName && x.isFile == isFile);
+        }).Where(x=>x!=null);
+        return traverseResult.First();
+    }
+    public static TreeNode<string> DeserializeFileSystem(User foundUser)
+    {
+        return JsonConvert.DeserializeObject<TreeNode<string>>(foundUser.FileSystem) ?? throw new InvalidOperationException("Deserializing User File System Failed");
+    }
+    public static TreeNode<string> DeserializeFileSystem(string fileStructure)
+    {
+        return JsonConvert.DeserializeObject<TreeNode<string>>(fileStructure) ?? throw new InvalidOperationException("Deserializing User File System Failed");
+    }
+    public static string SerializeFileSystem(TreeNode<string> fileStructure)
+    {
+        return JsonConvert.SerializeObject(fileStructure, new JsonSerializerSettings()
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        });
     }
 }

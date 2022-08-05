@@ -14,32 +14,48 @@ namespace IntellitectTerminal.Tests
         }
 
         [Fact]
-        public void Request_InvalidGuid_ReturnsLevelOneQuestion()
+        public void Request_InvalidGuid_ReturnsFileSystemWithLevelOneQuestion()
         {
             TestData.AddNewChallenges();
-            Assert.Equal(1, UnderTest.Request(null).Level);
+            string fileSystem = UnderTest.Request(null);
+            TreeNode<string> deserializedFileSystem = TreeNode<string>.DeserializeFileSystem(fileSystem);
+            Assert.NotNull(TreeNode<string>.GetChild(deserializedFileSystem, "challenges", false));
+            Assert.NotNull(TreeNode<string>.GetChild(deserializedFileSystem, "challenge_1.txt", true));
         }
 
         [Fact]
         public void Request_ExistingUser_ReturnsLevelOneQuestion()
         {
             TestData.AddNewChallenges();
-            Assert.Equal(1, UnderTest.Request(TestData.AddUserWithOnlyGuid().UserId).Level);
+            User user = TestData.AddFullUser();
+            string fileSystem = UnderTest.Request(user.UserId);
+            TreeNode<string> deserializedFileSystem = TreeNode<string>.DeserializeFileSystem(fileSystem);
+            Assert.NotNull(TreeNode<string>.GetChild(deserializedFileSystem, "challenges", false));
+            Assert.NotNull(TreeNode<string>.GetChild(deserializedFileSystem, "challenge_1.txt", true));
         }
 
         [Fact]
-        public void Request_ExistingUserWithLevelOneSubmission_ReturnsLevelTwoQuestion()
+        public void Request_ExistingUserWithLevelOneSubmission_ReturnsFileSystemWithLevelTwoQuestion()
         {
             Challenge challenge = TestData.AddNewChallenges().Where(x => x.Level == 1).First();
-            User user = TestData.AddUserWithOnlyGuid();
+            User user = TestData.AddFullUser();
             TestData.AddSubmission(user, challenge, true);
-            Assert.Equal(2, UnderTest.Request(user.UserId).Level);
+            string fileSystem = UnderTest.Request(user.UserId);
+            TreeNode<string> deserializedFileSystem = TreeNode<string>.DeserializeFileSystem(fileSystem);
+            Assert.NotNull(TreeNode<string>.GetChild(deserializedFileSystem, "challenges", false));
+            Assert.NotNull(TreeNode<string>.GetChild(deserializedFileSystem, "challenge_2.txt", true));
         }
 
         [Fact]
-        public void Request_EmptyDatabase_ReturnsException()
+        public void Request_ExistingUserWithAllThreeLevels_ReturnsNull()
         {
-            Assert.Throws<InvalidOperationException>(() => UnderTest.Request(Guid.NewGuid()));
+            User user = TestData.AddFullUser();
+            Challenge challenge = TestData.AddNewChallenges().Where(x => x.Level == 3).First();
+            TestData.AddSubmission(user, challenge, true);
+            string fileSystem = UnderTest.Request(user.UserId);
+            TreeNode<string> deserializedFileSystem = TreeNode<string>.DeserializeFileSystem(fileSystem);
+            Assert.NotNull(TreeNode<string>.GetChild(deserializedFileSystem, "challenges", false));
+            Assert.Throws<InvalidOperationException>(() => TreeNode<string>.GetChild(deserializedFileSystem, "challenge_4.txt", true));
         }
     }
 }

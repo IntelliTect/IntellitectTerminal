@@ -8,5 +8,5 @@ namespace IntellitectTerminal.Data.Services;
 public interface ICommandService
 {
     [Execute(PermissionLevel = SecurityPermissionLevels.AllowAll)]
-    Challenge Request(Guid? userId);
+    string Request(Guid? userId);
 }

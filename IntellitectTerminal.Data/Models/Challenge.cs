@@ -8,7 +8,6 @@ public class Challenge
 
     public string Question { get; set; }
 
-    public string? Answer { get; set; }
 
     public int Level { get; set; }
 
@@ -19,4 +18,5 @@ public class Challenge
         None,
     }
 #nullable restore
+    public string? Answer { get; set; }
 }

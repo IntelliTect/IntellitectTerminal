@@ -15,8 +15,8 @@ namespace IntellitectTerminal.Web.Models
         private int? _SubmissionId;
         private IntellitectTerminal.Web.Models.UserDtoGen _User;
         private IntellitectTerminal.Web.Models.ChallengeDtoGen _Challenge;
-        private string _Content;
         private bool? _IsCorrect;
+        private string _Content;
 
         public int? SubmissionId
         {
@@ -33,15 +33,15 @@ namespace IntellitectTerminal.Web.Models
             get => _Challenge;
             set { _Challenge = value; Changed(nameof(Challenge)); }
         }
-        public string Content
-        {
-            get => _Content;
-            set { _Content = value; Changed(nameof(Content)); }
-        }
         public bool? IsCorrect
         {
             get => _IsCorrect;
             set { _IsCorrect = value; Changed(nameof(IsCorrect)); }
+        }
+        public string Content
+        {
+            get => _Content;
+            set { _Content = value; Changed(nameof(Content)); }
         }
 
         /// <summary>
@@ -55,8 +55,8 @@ namespace IntellitectTerminal.Web.Models
             // Fill the properties of the object.
 
             this.SubmissionId = obj.SubmissionId;
-            this.Content = obj.Content;
             this.IsCorrect = obj.IsCorrect;
+            this.Content = obj.Content;
             if (tree == null || tree[nameof(this.User)] != null)
                 this.User = obj.User.MapToDto<IntellitectTerminal.Data.Models.User, UserDtoGen>(context, tree?[nameof(this.User)]);
 
@@ -75,8 +75,8 @@ namespace IntellitectTerminal.Web.Models
             if (OnUpdate(entity, context)) return;
 
             if (ShouldMapTo(nameof(SubmissionId))) entity.SubmissionId = (SubmissionId ?? entity.SubmissionId);
+            if (ShouldMapTo(nameof(IsCorrect))) entity.IsCorrect = IsCorrect;
             if (ShouldMapTo(nameof(Content))) entity.Content = Content;
-            if (ShouldMapTo(nameof(IsCorrect))) entity.IsCorrect = (IsCorrect ?? entity.IsCorrect);
         }
     }
 }

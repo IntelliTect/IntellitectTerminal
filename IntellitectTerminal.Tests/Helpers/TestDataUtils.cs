@@ -7,7 +7,7 @@ namespace IntellitectTerminal.Tests.Helpers;
 
 public class TestDataUtils
 {
-    private AppDbContext Db { get; }
+    public AppDbContext Db { get; }
 
     public TestDataUtils(AppDbContext db)
     {
