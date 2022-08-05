@@ -111,8 +111,6 @@ export default class Home extends Vue {
   cursorPosition = this.hostname.length;
   term = new Terminal({ cursorBlink: true });
 
-  history: string[] = [];
-  history_index: number = -1;
   welcomeMessage = "Welcome to the Intellitect CLI! View commands by typing help";
 
   async created() {
@@ -141,9 +139,6 @@ export default class Home extends Vue {
   }
 
   keyPressedHandler(event: { key: any; domEvent?: KeyboardEvent; }) {
-
-    // Reset bash history
-    this.history_index = -1;
 
     // Command keys
     switch (event.key) {
@@ -190,11 +185,6 @@ export default class Home extends Vue {
 
       // Breaks functionality that xterm already gives arrows
       case Keys.ARROW_UP:
-        this.history_index++;
-        this.cursorPosition = this.hostname.length;
-        this.term.write("\r\n");
-        this.term.write(this.hostname + this.history[this.history_index]);
-        this.userInput = this.history[this.history_index];
         break;
 
       // Breaks functionality that xterm already gives arrows
