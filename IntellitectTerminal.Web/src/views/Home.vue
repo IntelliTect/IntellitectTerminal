@@ -4,10 +4,12 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Terminal } from "xterm";
+import { CommandServiceViewModel } from '@/viewmodels.g';
 
 @Component
 export default class Home extends Vue {
 
+  commandservice = new CommandServiceViewModel();
   helpView(term: Terminal) {
     term.write("\r\n");
     term.write("help - Displays this message");
@@ -50,6 +52,8 @@ export default class Home extends Vue {
     const input = document.getElementById('terminal');
     if (input != null) {
       term.open(input);
+      let challengeresult = await this.commandservice.requestCommand("test");
+
       term.write(welcomeMessage);
       term.write("\r\n");
       term.write(PATH);

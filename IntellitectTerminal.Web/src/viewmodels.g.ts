@@ -68,6 +68,25 @@ export class UserListViewModel extends ListViewModel<$models.User, $apiClients.U
 }
 
 
+export class CommandServiceViewModel extends ServiceViewModel<typeof $metadata.CommandService, $apiClients.CommandServiceApiClient> {
+  
+  public get requestCommand() {
+    const requestCommand = this.$apiClient.$makeCaller(
+      this.$metadata.methods.requestCommand,
+      (c, userId: string | null) => c.requestCommand(userId),
+      () => ({userId: null as string | null, }),
+      (c, args) => c.requestCommand(args.userId))
+    
+    Object.defineProperty(this, 'requestCommand', {value: requestCommand});
+    return requestCommand
+  }
+  
+  constructor() {
+    super($metadata.CommandService, new $apiClients.CommandServiceApiClient())
+  }
+}
+
+
 const viewModelTypeLookup = ViewModel.typeLookup = {
   Challenge: ChallengeViewModel,
   Submission: SubmissionViewModel,
@@ -79,5 +98,6 @@ const listViewModelTypeLookup = ListViewModel.typeLookup = {
   User: UserListViewModel,
 }
 const serviceViewModelTypeLookup = ServiceViewModel.typeLookup = {
+  CommandService: CommandServiceViewModel,
 }
 

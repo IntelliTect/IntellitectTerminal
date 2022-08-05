@@ -149,6 +149,35 @@ export const User = domain.types.User = {
   dataSources: {
   },
 }
+export const CommandService = domain.services.CommandService = {
+  name: "CommandService",
+  displayName: "Command Service",
+  type: "service",
+  controllerRoute: "CommandService",
+  methods: {
+    requestCommand: {
+      name: "requestCommand",
+      displayName: "Request Command",
+      transportType: "item",
+      httpMethod: "POST",
+      params: {
+        userId: {
+          name: "userId",
+          displayName: "User Id",
+          type: "string",
+          role: "value",
+        },
+      },
+      return: {
+        name: "$return",
+        displayName: "Result",
+        type: "model",
+        get typeDef() { return (domain.types.Challenge as ModelType) },
+        role: "value",
+      },
+    },
+  },
+}
 
 interface AppDomain extends Domain {
   enums: {
@@ -160,6 +189,7 @@ interface AppDomain extends Domain {
     User: typeof User
   }
   services: {
+    CommandService: typeof CommandService
   }
 }
 

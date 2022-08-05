@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using IntellitectTerminal.Data;
+using IntellitectTerminal.Web;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -37,6 +38,7 @@ services.AddDbContext<AppDbContext>(options =>
     ));
 
 services.AddCoalesce<AppDbContext>();
+services.AddScoped<ICommandService, CommandService>();
 
 services
     .AddMvc()
