@@ -9,4 +9,6 @@ public interface ICommandService
 {
     [Execute(PermissionLevel = SecurityPermissionLevels.AllowAll)]
     string Request(Guid? userId);
+    [Execute(PermissionLevel = SecurityPermissionLevels.AllowAll)]
+    string Cat(Guid userId, string fileName);
 }
