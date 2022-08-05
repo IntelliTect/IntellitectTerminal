@@ -11,16 +11,25 @@ public class TreeNode<T>
     public TreeNode<T>? Parent { get; private set; }
     public bool isFile { get; set; }
 
-    public TreeNode(T value)
+    public TreeNode(T name)
     {
-        name = value;
+        this.name = name;
         isFile = false;
     }
 
-    public TreeNode(T value, bool isFile)
+    public TreeNode(T name, bool isFile)
     {
-        name = value;
+        this.name = name;
         this.isFile = isFile;
+    }
+
+    [JsonConstructor]
+    public TreeNode(T name, bool isFile, List<TreeNode<T>> children, TreeNode<T>? parent)
+    {
+        this.name = name;
+        this.isFile = isFile;
+        this.children = children;
+        this.Parent = parent;
     }
 
     public TreeNode<T> this[int i]
@@ -60,11 +69,12 @@ public class TreeNode<T>
         return children.Remove(node);
     }
 
-    public void Traverse(Action<T> action)
+    public IEnumerable<TreeNode<T>> Traverse(Func<TreeNode<T>, TreeNode<T>> action)
     {
-        action(Name);
+        yield return action(this);
         foreach (var child in children)
-            child.Traverse(action);
+            foreach (var child1 in child.Traverse(action))
+                yield return child1;
     }
 
     public IEnumerable<T> Flatten()
@@ -76,6 +86,14 @@ public class TreeNode<T>
         var node = new TreeNode<T>(value) { Parent = parent };
         parent.children.Add(node);
         return node;
+    }
+    public static TreeNode<string> GetChild(TreeNode<string> foundUsersFileSystem, string dirOrFileName, bool isFile)
+    {
+        IEnumerable<TreeNode<string>> traverseResult = foundUsersFileSystem.Traverse(delegate (TreeNode<string> node)
+        {
+            return node.Children.FirstOrDefault(x => x.Name == dirOrFileName && x.isFile == isFile);
+        }).Where(x=>x!=null);
+        return traverseResult.First();
     }
     public static TreeNode<string> DeserializeFileSystem(User foundUser)
     {
