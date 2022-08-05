@@ -256,6 +256,10 @@ export default class Home extends Vue {
           this.term.write(`cd: Directory not found '${arg[0]}' \r\n`);
           break;
         }
+        if ((location as TreeNode).isFile) {
+          this.term.write(`cd: Argument is a file and not a directory. \r\n`);
+          break;
+        }
 
         this.updatePath(location);
         break;
@@ -273,7 +277,7 @@ export default class Home extends Vue {
           break;
         }
         if (!(file as TreeNode).isFile) {
-          this.term.write("cat: Argument is a directory not a file." + "\r\n");
+          this.term.write("cat: Argument is a directory and not a file." + "\r\n");
         }
         break;
 
