@@ -3,7 +3,7 @@ using IntellitectTerminal.Data;
 using IntellitectTerminal.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace IntellitectTerminal.Web;
+namespace IntellitectTerminal.Data.Services;
 
 public class CommandService : ICommandService
 {
@@ -16,11 +16,6 @@ public class CommandService : ICommandService
 
     public Challenge Request(Guid? userId)
     {
-        // Check if userId is a Guid
-        if (userId is null)
-        {
-            throw new InvalidOperationException($"userId {userId} is not a valid Guid");
-        }
         User foundUser = Db.Users.Where(x => x.UserId == userId).FirstOrDefault() ?? CreateAndSaveNewUser();
         int highestCompletedLevel = Db.Submissions.Where(x => x.User == foundUser && x.IsCorrect == true)
             .Select(x => x.Challenge.Level).ToList().DefaultIfEmpty(0).Max();
@@ -30,7 +25,7 @@ public class CommandService : ICommandService
 
     private User CreateAndSaveNewUser()
     {
-        User user = new User { UserId = Guid.NewGuid() };
+        User user = new() { UserId = Guid.NewGuid() };
         Db.Users.Add(user);
         Db.SaveChanges();
         return user;

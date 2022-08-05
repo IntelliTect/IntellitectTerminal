@@ -24,9 +24,9 @@ namespace IntellitectTerminal.Web.Api
     [ServiceFilter(typeof(IApiActionFilter))]
     public partial class CommandServiceController : Controller
     {
-        protected IntellitectTerminal.Web.ICommandService Service { get; }
+        protected IntellitectTerminal.Data.Services.ICommandService Service { get; }
 
-        public CommandServiceController(IntellitectTerminal.Web.ICommandService service)
+        public CommandServiceController(IntellitectTerminal.Data.Services.ICommandService service)
         {
             Service = service;
         }

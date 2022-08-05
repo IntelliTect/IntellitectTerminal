@@ -9,7 +9,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using IntellitectTerminal.Data;
-using IntellitectTerminal.Web;
+using IntellitectTerminal.Data.Services;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {

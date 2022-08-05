@@ -3,7 +3,7 @@ using IntelliTect.Coalesce.DataAnnotations;
 using IntelliTect.Coalesce.Models;
 using IntellitectTerminal.Data.Models;
 
-namespace IntellitectTerminal.Web;
+namespace IntellitectTerminal.Data.Services;
 
 [Coalesce, Service]
 public interface ICommandService

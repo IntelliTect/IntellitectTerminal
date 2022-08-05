@@ -13,8 +13,6 @@ public class Submission
 
     public Challenge Challenge { get; set; }
 
-    [Column(TypeName = "nvarchar(MAX)")]
-    [MaxLength(int.MaxValue)]
     public string Content { get; set; }
     public bool IsCorrect { get; set; }
 
