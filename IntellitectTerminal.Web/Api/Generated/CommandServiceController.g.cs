@@ -32,15 +32,15 @@ namespace IntellitectTerminal.Web.Api
         }
 
         /// <summary>
-        /// Method: RequestCommand
+        /// Method: Request
         /// </summary>
-        [HttpPost("RequestCommand")]
+        [HttpPost("Request")]
         [Authorize]
-        public virtual ItemResult<ChallengeDtoGen> RequestCommand(System.Guid? userId)
+        public virtual ItemResult<ChallengeDtoGen> Request(System.Guid? userId)
         {
             IncludeTree includeTree = null;
             var _mappingContext = new MappingContext(User);
-            var _methodResult = Service.RequestCommand(userId);
+            var _methodResult = Service.Request(userId);
             var _result = new ItemResult<ChallengeDtoGen>();
             _result.Object = Mapper.MapToDto<IntellitectTerminal.Data.Models.Challenge, ChallengeDtoGen>(_methodResult, _mappingContext, includeTree);
             return _result;

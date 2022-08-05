@@ -161,9 +161,9 @@ export const CommandService = domain.services.CommandService = {
   type: "service",
   controllerRoute: "CommandService",
   methods: {
-    requestCommand: {
-      name: "requestCommand",
-      displayName: "Request Command",
+    request: {
+      name: "request",
+      displayName: "Request",
       transportType: "item",
       httpMethod: "POST",
       params: {

@@ -8,5 +8,5 @@ namespace IntellitectTerminal.Web;
 [Coalesce, Service]
 public interface ICommandService
 {
-    Challenge RequestCommand(Guid? userId);
+    Challenge Request(Guid? userId);
 }

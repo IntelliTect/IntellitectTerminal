@@ -71,15 +71,15 @@ export class UserListViewModel extends ListViewModel<$models.User, $apiClients.U
 
 export class CommandServiceViewModel extends ServiceViewModel<typeof $metadata.CommandService, $apiClients.CommandServiceApiClient> {
   
-  public get requestCommand() {
-    const requestCommand = this.$apiClient.$makeCaller(
-      this.$metadata.methods.requestCommand,
-      (c, userId: string | null) => c.requestCommand(userId),
+  public get request() {
+    const request = this.$apiClient.$makeCaller(
+      this.$metadata.methods.request,
+      (c, userId: string | null) => c.request(userId),
       () => ({userId: null as string | null, }),
-      (c, args) => c.requestCommand(args.userId))
+      (c, args) => c.request(args.userId))
     
-    Object.defineProperty(this, 'requestCommand', {value: requestCommand});
-    return requestCommand
+    Object.defineProperty(this, 'request', {value: request});
+    return request
   }
   
   constructor() {

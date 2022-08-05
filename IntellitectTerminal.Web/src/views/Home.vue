@@ -41,7 +41,7 @@ export default class Home extends Vue {
     const input = document.getElementById('terminal');
     if (input != null) {
       this.initTerminal(input)
-    let challengeresult = await this.commandservice.requestCommand("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
+    let challengeresult = await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
     console.table(challengeresult);
     console.log(challengeresult);
     }

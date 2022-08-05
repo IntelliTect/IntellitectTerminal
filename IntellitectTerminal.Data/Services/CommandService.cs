@@ -14,7 +14,7 @@ public class CommandService : ICommandService
         this.Db = db;
     }
 
-    public Challenge RequestCommand(Guid? userId)
+    public Challenge Request(Guid? userId)
     {
         // Check if userId is a Guid
         if (userId is null)
