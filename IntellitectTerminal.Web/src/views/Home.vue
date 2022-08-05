@@ -7,23 +7,23 @@ import { Terminal } from "xterm";
 import { CommandServiceViewModel, UserServiceViewModel } from '@/viewmodels.g';
 
 class TreeNode {
-  name: string;
+  Value: string;
   isFile: boolean;
-  parent: TreeNode | null;
-  children: TreeNode[];
+  Parent: TreeNode | null;
+  Children: TreeNode[];
   constructor(name: string, isFile: boolean, parent: TreeNode | null, children: TreeNode[]) {
-    this.name = name;
+    this.Value = name;
     this.isFile = isFile;
-    this.parent = parent;
-    this.children = children;
+    this.Parent = parent;
+    this.Children = children;
   }
 }
 
 interface FileNode {
-  parent: string;
-  name: string;
+  Parent: string;
+  Value: string;
   isFile: boolean;
-  children: FileNode[];
+  Children: FileNode[];
 }
 
 const filesystem = {
@@ -61,11 +61,11 @@ const filesystem = {
 }
 
 function serializeFilesSystemToTree(node: FileNode | TreeNode) {
-  let parent = new TreeNode(node.name, node.isFile, null, []);
-  node.children.forEach((child) => {
+  let parent = new TreeNode(node.Value, node.isFile, null, []);
+  node.Children.forEach((child) => {
     let childNode: TreeNode = serializeFilesSystemToTree(child);
-    childNode.parent = parent;
-    parent.children.push(childNode);
+    childNode.Parent = parent;
+    parent.Children.push(childNode);
   });
   return parent;
 }
@@ -98,11 +98,11 @@ export default class Home extends Vue {
   userInput: string = "";
 
   // File path
-  path: TreeNode = serializeFilesSystemToTree(filesystem);
+  path: TreeNode = new TreeNode("", false, null, []);
   hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${filesystem.name}]$ `;
   updatePath(location: TreeNode) {
     this.path = location;
-    this.hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${location.name}]$ `;
+    this.hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${location.Value}]$ `;
   }
 
   // Position the cursor is currently at. This is needed for back spaces.
@@ -114,16 +114,25 @@ export default class Home extends Vue {
 
   async created() {
 
-    console.log(serializeFilesSystemToTree(filesystem));
-
     // XTerms input
     const input = document.getElementById('terminal');
     if (input != null) {
-      console.log('here');
-      await this.userservice.initializeFileSystem("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
+
+      // Request for the file system
+      await this.userservice.initializeFileSystem(null);
+
+      // Get user
       let user = this.userservice.initializeFileSystem.result;
+
+      // Serialize and cache filesystem to a Tree
+      console.log(JSON.parse(user?.fileSystem!));
+      this.path = serializeFilesSystemToTree(JSON.parse(user?.fileSystem!));
+
+      // Command services
       await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
       let challengeresult = this.commandservice.request.result;
+
+      
       console.table(user);
       console.table(challengeresult);
       console.log(challengeresult);
@@ -252,8 +261,8 @@ export default class Home extends Vue {
           unknownArg(this.term, arg[1]);
           break;
         }
-        this.path.children.forEach((child: TreeNode) =>
-          this.term.write(child.name + "\r\n")
+        this.path.Children.forEach((child: TreeNode) =>
+          this.term.write(child.Value + "\r\n")
         );
         break;
 
@@ -265,16 +274,16 @@ export default class Home extends Vue {
         }
 
         if (arg[0] == "..") {
-          if (this.path.parent != null) {
-            this.updatePath(this.path.parent);
+          if (this.path.Parent != null) {
+            this.updatePath(this.path.Parent);
           }
           break;
         }
 
         // Search for the file
         var location: TreeNode | null = null;
-        this.path.children.forEach(
-          (child: TreeNode) => location = child.name == arg[0] ? child : null
+        this.path.Children.forEach(
+          (child: TreeNode) => location = child.Value == arg[0] ? child : null
         );
         if (location == null) {
           this.term.write("Directory not found: " + arg[0] +"\r\n");
