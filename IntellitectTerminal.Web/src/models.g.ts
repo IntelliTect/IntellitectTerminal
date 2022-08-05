@@ -3,6 +3,7 @@ import { Model, DataSource, convertToModel, mapToModel } from 'coalesce-vue/lib/
 
 export enum CompilationLanguages {
   None = 0,
+  Python = 1,
 }
 
 

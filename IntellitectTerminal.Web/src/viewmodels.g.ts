@@ -104,6 +104,39 @@ export class CommandServiceViewModel extends ServiceViewModel<typeof $metadata.C
     return progress
   }
   
+  public get verify() {
+    const verify = this.$apiClient.$makeCaller(
+      this.$metadata.methods.verify,
+      (c, userId: string | null) => c.verify(userId),
+      () => ({userId: null as string | null, }),
+      (c, args) => c.verify(args.userId))
+    
+    Object.defineProperty(this, 'verify', {value: verify});
+    return verify
+  }
+  
+  public get submitFile() {
+    const submitFile = this.$apiClient.$makeCaller(
+      this.$metadata.methods.submitFile,
+      (c, file: File | null, userId: string | null) => c.submitFile(file, userId),
+      () => ({file: null as File | null, userId: null as string | null, }),
+      (c, args) => c.submitFile(args.file, args.userId))
+    
+    Object.defineProperty(this, 'submitFile', {value: submitFile});
+    return submitFile
+  }
+  
+  public get submitUserInput() {
+    const submitUserInput = this.$apiClient.$makeCaller(
+      this.$metadata.methods.submitUserInput,
+      (c, input: string | null, userId: string | null) => c.submitUserInput(input, userId),
+      () => ({input: null as string | null, userId: null as string | null, }),
+      (c, args) => c.submitUserInput(args.input, args.userId))
+    
+    Object.defineProperty(this, 'submitUserInput', {value: submitUserInput});
+    return submitUserInput
+  }
+  
   constructor() {
     super($metadata.CommandService, new $apiClients.CommandServiceApiClient())
   }

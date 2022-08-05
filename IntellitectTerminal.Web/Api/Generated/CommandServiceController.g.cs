@@ -69,5 +69,42 @@ namespace IntellitectTerminal.Web.Api
             _result.Object = _methodResult;
             return _result;
         }
+
+        /// <summary>
+        /// Method: Verify
+        /// </summary>
+        [HttpPost("Verify")]
+        [AllowAnonymous]
+        public virtual ItemResult<bool> Verify(System.Guid userId)
+        {
+            var _methodResult = Service.Verify(userId);
+            var _result = new ItemResult<bool>();
+            _result.Object = _methodResult;
+            return _result;
+        }
+
+        /// <summary>
+        /// Method: SubmitFile
+        /// </summary>
+        [HttpPost("SubmitFile")]
+        [AllowAnonymous]
+        public virtual async Task<ItemResult> SubmitFile(Microsoft.AspNetCore.Http.IFormFile file, System.Guid userId)
+        {
+            await Service.SubmitFile(file == null ? null : new IntelliTect.Coalesce.Models.File { Name = file.FileName, ContentType = file.ContentType, Length = file.Length, Content = file.OpenReadStream() }, userId);
+            var _result = new ItemResult();
+            return _result;
+        }
+
+        /// <summary>
+        /// Method: SubmitUserInput
+        /// </summary>
+        [HttpPost("SubmitUserInput")]
+        [AllowAnonymous]
+        public virtual async Task<ItemResult> SubmitUserInput(string input, System.Guid userId)
+        {
+            await Service.SubmitUserInput(input, userId);
+            var _result = new ItemResult();
+            return _result;
+        }
     }
 }

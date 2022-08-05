@@ -16,6 +16,7 @@ public class Challenge
     public enum CompilationLanguages
     {
         None,
+        Python
     }
 #nullable restore
     public string? Answer { get; set; }
