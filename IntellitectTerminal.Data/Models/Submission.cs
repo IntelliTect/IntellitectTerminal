@@ -10,8 +10,8 @@ public class Submission
 
     public Challenge Challenge { get; set; }
 
-    public string Content { get; set; }
-    public bool IsCorrect { get; set; }
+    public bool? IsCorrect { get; set; }
 
 #nullable restore
+    public string? Content { get; set; }
 }

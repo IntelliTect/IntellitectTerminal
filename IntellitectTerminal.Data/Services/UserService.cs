@@ -46,10 +46,13 @@ public class UserService : IUserService
         return user;
     }
 
-    public static TreeNode<string> CreateDefaultFileSystem()
+    public static TreeNode CreateDefaultFileSystem()
     {
-        TreeNode<string> newFileSystem = new("/");
-        newFileSystem.AddChild("home").AddChild("localuser").AddChild("readme.txt", true);
+        TreeNode newFileSystem = new("/");
+        TreeNode homeNode = newFileSystem.AddChild("home");
+        TreeNode localuser = homeNode.AddChild("localuser");
+        localuser.AddChild("readme.txt", true);
+        localuser.AddChild("challenges", false);
         return newFileSystem;
     }
 
