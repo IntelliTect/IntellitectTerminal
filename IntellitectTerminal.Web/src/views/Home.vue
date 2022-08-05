@@ -111,7 +111,7 @@ export default class Home extends Vue {
     const input = document.getElementById('terminal');
     if (input != null) {
        // if user is in cookies, get user id from cookies
-      let userId = getCookies('userId');
+      let userId = getCookie('userId');
       let user;
       if (userId == null) {
         // if user is not in cookies, get user id from api
