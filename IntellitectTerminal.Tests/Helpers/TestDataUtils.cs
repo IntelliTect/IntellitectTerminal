@@ -27,6 +27,14 @@ public class TestDataUtils
         Db.Challenges.AddRange(challenges);
         return challenges;
     }
+
+    public Challenge AddNewChallenge(int level)
+    {
+        Challenge newChallenge = new() { Question = "Correct Question", Answer = "Correct", CompilationLanguage = Challenge.CompilationLanguages.None, Level = level };
+        Db.Challenges.Add(newChallenge);
+        return newChallenge;
+    }
+
     public User AddUserWithOnlyGuid()
     {
         User user = new() { UserId = Guid.NewGuid() };

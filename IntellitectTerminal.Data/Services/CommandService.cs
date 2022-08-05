@@ -42,11 +42,12 @@ public class CommandService : ICommandService
             catch (InvalidOperationException)
             {
                 challengesFolder.AddChild($"challenge_{highestCompletedLevel}.txt", true);
+                Db.Submissions.Add(new() { User = foundUser, Challenge = GetNewChallenge(foundUser), Content = null, IsCorrect = null });
                 foundUser.FileSystem = TreeNode<string>.SerializeFileSystem(foundUsersFileSystem);
                 Db.SaveChanges();
                 return foundUser.FileSystem;
             }
-            throw new InvalidOperationException($"challenge_{highestCompletedLevel}.txt unexpectidly exists");
+            throw new InvalidOperationException($"challenge_{highestCompletedLevel}.txt unexpectedly exists");
         }
     }
 
@@ -58,9 +59,11 @@ public class CommandService : ICommandService
             case string x when x.StartsWith("challenge_"):
                 if (!int.TryParse(fileName[10].ToString(), out int challengeNumber))
                 {
-                    throw new InvalidOperationException($"challenge number on file is unexpecidly not an integer. Value is {fileName[10]}");
+                    throw new InvalidOperationException($"challenge number on file is unexpectedly not an integer. Value is {fileName[10]}");
                 }
-                return Db.Submissions.Where(x => x.User == foundUser && x.Challenge.Level == challengeNumber).First().Challenge.Question;
+                IQueryable<Submission>? usersSubmission = Db.Submissions.Include(x=>x.Challenge).Where(x => x.User == foundUser && x.Challenge.Level == challengeNumber);
+                return usersSubmission.First().Challenge.Question;
+
             case string x when x.StartsWith("readme.txt"):
                 return "Welcome to the Intellitect Terminal!\nIf it is your first time, run help to learn all of the availabe commands";
             default:

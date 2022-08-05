@@ -23,6 +23,7 @@ public class UserService : IUserService
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 });
             }
+            Db.SaveChanges();
             return user;
         }
         else
