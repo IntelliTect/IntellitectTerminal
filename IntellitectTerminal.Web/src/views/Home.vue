@@ -6,6 +6,8 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { Terminal } from "xterm";
 import { CommandServiceViewModel, UserServiceViewModel } from '@/viewmodels.g';
 import { User } from "../models.g";
+import * as Cookies from 'tiny-cookie';
+import { isCookieEnabled, getCookie, setCookie, removeCookie } from 'tiny-cookie'
 
 class TreeNode {
   Name: string;
@@ -109,15 +111,16 @@ export default class Home extends Vue {
     const input = document.getElementById('terminal');
     if (input != null) {
        // if user is in cookies, get user id from cookies
-      let userId = Cookies.get('userId');
+      let userId = getCookies('userId');
       let user;
       if (userId == null) {
         // if user is not in cookies, get user id from api
         await this.userservice.initializeFileSystem(null);
         user = this.userservice.initializeFileSystem.result;
-        userId = user.userId;
-        // set user id in cookies
-        Cookies.set('userId', userId, { expires: 100 });
+        userId = user!.userId;
+        if(userId != null) {
+          setCookie('userId', userId, { expires: 100 });
+        } 
       } else {
         // if user is in cookies, get user from api
         // Request for the file system
