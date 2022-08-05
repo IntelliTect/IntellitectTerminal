@@ -112,6 +112,12 @@ export const Submission = domain.types.Submission = {
         maxLength: val => !val || val.length <= 2147483647 || "Content may not be more than 2147483647 characters.",
       }
     },
+    isCorrect: {
+      name: "isCorrect",
+      displayName: "Is Correct",
+      type: "boolean",
+      role: "value",
+    },
   },
   methods: {
   },

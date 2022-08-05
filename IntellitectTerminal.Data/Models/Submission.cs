@@ -16,6 +16,7 @@ public class Submission
     [Column(TypeName = "nvarchar(MAX)")]
     [MaxLength(int.MaxValue)]
     public string Content { get; set; }
+    public bool IsCorrect { get; set; }
 
 #nullable restore
 }

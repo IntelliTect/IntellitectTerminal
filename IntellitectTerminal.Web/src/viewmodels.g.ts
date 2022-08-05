@@ -31,6 +31,7 @@ export interface SubmissionViewModel extends $models.Submission {
   user: UserViewModel | null;
   challenge: ChallengeViewModel | null;
   content: string | null;
+  isCorrect: boolean | null;
 }
 export class SubmissionViewModel extends ViewModel<$models.Submission, $apiClients.SubmissionApiClient, number> implements $models.Submission  {
   

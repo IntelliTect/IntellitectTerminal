@@ -45,6 +45,7 @@ export default class Home extends Vue {
 
   initTerminal(input: HTMLElement) {
     this.term.open(input);
+    let challengeresult = await this.commandservice.requestCommand("test");
 
     // Message of the Day
     this.term.write(this.welcomeMessage);
