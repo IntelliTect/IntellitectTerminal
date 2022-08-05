@@ -30,7 +30,7 @@ namespace IntellitectTerminal.Tests
         [Fact]
         public void Request_ExistingUserWithLevelOneSubmission_ReturnsLevelTwoQuestion()
         {
-            Challenge challenge = TestData.AddNewChallenges().Where(x=>x.Level == 1).First();
+            Challenge challenge = TestData.AddNewChallenges().Where(x => x.Level == 1).First();
             User user = TestData.AddUserWithOnlyGuid();
             TestData.AddSubmission(user, challenge, true);
             Assert.Equal(2, UnderTest.Request(user.UserId).Level);

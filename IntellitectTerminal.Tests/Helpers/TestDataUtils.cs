@@ -1,8 +1,7 @@
 ﻿using IntellitectTerminal.Data;
-using IntellitectTerminal.Data.Services;
 using IntellitectTerminal.Data.Models;
+using IntellitectTerminal.Data.Services;
 using Newtonsoft.Json;
-using System;
 
 namespace IntellitectTerminal.Tests.Helpers;
 

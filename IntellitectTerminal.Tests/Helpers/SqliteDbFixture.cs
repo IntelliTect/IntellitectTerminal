@@ -1,7 +1,6 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using IntellitectTerminal.Data;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using IntellitectTerminal.Data;
-using System;
 
 namespace IntellitectTerminal.Tests.Helpers;
 

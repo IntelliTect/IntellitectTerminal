@@ -1,7 +1,4 @@
-﻿using IntelliTect.Coalesce.Models;
-using IntellitectTerminal.Data;
-using IntellitectTerminal.Data.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using IntellitectTerminal.Data.Models;
 using Newtonsoft.Json;
 
 namespace IntellitectTerminal.Data.Services;
@@ -36,10 +33,14 @@ public class UserService : IUserService
     }
     public User CreateAndSaveNewUser()
     {
-        User user = new() { UserId = Guid.NewGuid(), FileSystem = JsonConvert.SerializeObject(CreateDefaultFileSystem(), new JsonSerializerSettings()
+        User user = new()
         {
-            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-        })};
+            UserId = Guid.NewGuid(),
+            FileSystem = JsonConvert.SerializeObject(CreateDefaultFileSystem(), new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            })
+        };
         Db.Users.Add(user);
         Db.SaveChanges();
         return user;
