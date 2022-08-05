@@ -38,6 +38,7 @@ public class CommandService : ICommandService
             {
                 TreeNode<string>.GetChild(foundUsersFileSystem, $"challenge_{highestCompletedLevel}.txt", true);
             }
+            // If it can't find an existing file which should be the case, then add one.
             catch (InvalidOperationException)
             {
                 challengesFolder.AddChild($"challenge_{highestCompletedLevel}.txt", true);
