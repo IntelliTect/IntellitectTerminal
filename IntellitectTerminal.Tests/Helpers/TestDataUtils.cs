@@ -50,7 +50,7 @@ public class TestDataUtils
         return user;
     }
 
-    public Submission AddSubmission(User user, Challenge challenge, bool isCorrect)
+    public Submission AddSubmission(User user, Challenge challenge, bool? isCorrect)
     {
         Submission newSubmission = new() { Challenge = challenge, IsCorrect = isCorrect, User = user, Content = string.Empty };
         Db.Submissions.Add(newSubmission);

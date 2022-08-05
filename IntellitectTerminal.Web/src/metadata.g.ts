@@ -169,6 +169,32 @@ export const CommandService = domain.services.CommandService = {
         role: "value",
       },
     },
+    cat: {
+      name: "cat",
+      displayName: "Cat",
+      transportType: "item",
+      httpMethod: "POST",
+      params: {
+        userId: {
+          name: "userId",
+          displayName: "User Id",
+          type: "string",
+          role: "value",
+        },
+        fileName: {
+          name: "fileName",
+          displayName: "File Name",
+          type: "string",
+          role: "value",
+        },
+      },
+      return: {
+        name: "$return",
+        displayName: "Result",
+        type: "string",
+        role: "value",
+      },
+    },
   },
 }
 export const UserService = domain.services.UserService = {

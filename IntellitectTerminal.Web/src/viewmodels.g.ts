@@ -82,6 +82,17 @@ export class CommandServiceViewModel extends ServiceViewModel<typeof $metadata.C
     return request
   }
   
+  public get cat() {
+    const cat = this.$apiClient.$makeCaller(
+      this.$metadata.methods.cat,
+      (c, userId: string | null, fileName: string | null) => c.cat(userId, fileName),
+      () => ({userId: null as string | null, fileName: null as string | null, }),
+      (c, args) => c.cat(args.userId, args.fileName))
+    
+    Object.defineProperty(this, 'cat', {value: cat});
+    return cat
+  }
+  
   constructor() {
     super($metadata.CommandService, new $apiClients.CommandServiceApiClient())
   }

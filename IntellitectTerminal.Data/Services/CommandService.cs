@@ -49,6 +49,24 @@ public class CommandService : ICommandService
         }
     }
 
+    public string Cat(Guid userId, string fileName)
+    {
+        User foundUser = Db.Users.Where(x => x.UserId == userId).FirstOrDefault() ?? throw new InvalidOperationException($"User:{userId} not found");
+        switch (fileName)
+        {
+            case string x when x.StartsWith("challenge_"):
+                if (!int.TryParse(fileName[10].ToString(), out int challengeNumber))
+                {
+                    throw new InvalidOperationException($"challenge number on file is unexpecidly not an integer. Value is {fileName[10]}");
+                }
+                return Db.Submissions.Where(x => x.User == foundUser && x.Challenge.Level == challengeNumber).First().Challenge.Question;
+            case string x when x.StartsWith("readme.txt"):
+                return "Welcome to the Intellitect Terminal!\nIf it is your first time, run help to learn all of the availabe commands";
+            default:
+                return "Error: File contents cannot be displayed with cat";
+        }
+    }
+
     private int GetHighestCompletedChallengeLevel(User? user)
     {
         return Db.Submissions.AsNoTracking().Where(x => x.User == user && x.IsCorrect == true)

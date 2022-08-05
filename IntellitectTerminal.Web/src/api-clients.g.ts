@@ -28,6 +28,15 @@ export class CommandServiceApiClient extends ServiceApiClient<typeof $metadata.C
     return this.$invoke($method, $params, $config)
   }
   
+  public cat(userId: string | null, fileName: string | null, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<string>> {
+    const $method = this.$metadata.methods.cat
+    const $params =  {
+      userId,
+      fileName,
+    }
+    return this.$invoke($method, $params, $config)
+  }
+  
 }
 
 
