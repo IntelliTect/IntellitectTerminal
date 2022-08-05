@@ -90,6 +90,7 @@ public class CommandService : ICommandService
         {
             case Challenge.CompilationLanguages.None:
                 submission.IsCorrect = true;
+                Db.SaveChanges();
                 break;
 
             case Challenge.CompilationLanguages.Python:
