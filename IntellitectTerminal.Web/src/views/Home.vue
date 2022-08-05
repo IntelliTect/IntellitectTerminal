@@ -7,23 +7,23 @@ import { Terminal } from "xterm";
 import { CommandServiceViewModel, UserServiceViewModel } from '@/viewmodels.g';
 
 class TreeNode {
-  name: string;
+  Value: string;
   isFile: boolean;
-  parent: TreeNode | null;
-  children: TreeNode[];
+  Parent: TreeNode | null;
+  Children: TreeNode[];
   constructor(name: string, isFile: boolean, parent: TreeNode | null, children: TreeNode[]) {
-    this.name = name;
+    this.Value = name;
     this.isFile = isFile;
-    this.parent = parent;
-    this.children = children;
+    this.Parent = parent;
+    this.Children = children;
   }
 }
 
 interface FileNode {
-  parent: string;
-  name: string;
+  Parent: string;
+  Value: string;
   isFile: boolean;
-  children: FileNode[];
+  Children: FileNode[];
 }
 
 const filesystem = {
@@ -61,11 +61,11 @@ const filesystem = {
 }
 
 function serializeFilesSystemToTree(node: FileNode | TreeNode) {
-  let parent = new TreeNode(node.name, node.isFile, null, []);
-  node.children.forEach((child) => {
+  let parent = new TreeNode(node.Value, node.isFile, null, []);
+  node.Children.forEach((child) => {
     let childNode: TreeNode = serializeFilesSystemToTree(child);
-    childNode.parent = parent;
-    parent.children.push(childNode);
+    childNode.Parent = parent;
+    parent.Children.push(childNode);
   });
   return parent;
 }
@@ -78,7 +78,6 @@ enum Keys {
   ARROW_RIGHT = "\x1B[C",
   ARROW_UP = "\x1B[A",
   ARROW_BOTTOM = "\x1B[B",
-  CTRL_L = "\f"
 }
 
 enum Commands {
@@ -86,7 +85,6 @@ enum Commands {
   REQUEST = "request",
   LS = "ls",
   CD = "cd",
-  CLEAR = "clear",
 }
 
 @Component
@@ -100,17 +98,18 @@ export default class Home extends Vue {
   userInput: string = "";
 
   // File path
-  path: TreeNode = serializeFilesSystemToTree(filesystem);
+  path: TreeNode = new TreeNode("", false, null, []);
   hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${filesystem.name}]$ `;
   updatePath(location: TreeNode) {
     this.path = location;
-    this.hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${location.name}]$ `;
+    this.hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${location.Value}]$ `;
   }
 
   // Position the cursor is currently at. This is needed for back spaces.
   cursorPosition = this.hostname.length;
   term = new Terminal({ cursorBlink: true });
 
+  history = [];
   welcomeMessage = "Welcome to the Intellitect CLI! View commands by typing help";
 
   async created() {
@@ -118,6 +117,25 @@ export default class Home extends Vue {
     // XTerms input
     const input = document.getElementById('terminal');
     if (input != null) {
+
+      // Request for the file system
+      await this.userservice.initializeFileSystem(null);
+
+      // Get user
+      let user = this.userservice.initializeFileSystem.result;
+
+      // Serialize and cache filesystem to a Tree
+      console.log(JSON.parse(user?.fileSystem!));
+      this.path = serializeFilesSystemToTree(JSON.parse(user?.fileSystem!));
+
+      // Command services
+      await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
+      let challengeresult = this.commandservice.request.result;
+
+      
+      console.table(user);
+      console.table(challengeresult);
+      console.log(challengeresult);
       this.initTerminal(input)
     }
   }
@@ -157,8 +175,7 @@ export default class Home extends Vue {
         // Do not allow a command that is blank to be ran.
         if (this.userInput.trim() != "") {
           var cmd: string[] = this.userInput.trim().split(" ");
-          this.commandHandler(cmd[0].trim(), cmd.slice(1, cmd.length));
-          console.log(cmd[0].trim())
+          this.commandHandler(cmd[0], cmd.slice(1, cmd.length));
         }
 
         this.term.write(this.hostname);
@@ -187,12 +204,6 @@ export default class Home extends Vue {
       // Breaks functionality that xterm already gives arrows
       case Keys.ARROW_BOTTOM:
         break;
-
-      case Keys.CTRL_L:
-        this.term.clear();
-        this.userInput = "";
-        this.cursorPosition = this.hostname.length;
-        return;
 
       default:
         console.log(event);
@@ -223,8 +234,6 @@ export default class Home extends Vue {
         this.term.write("\r\n");
         this.term.write(" mkdir - Creates a directory");
         this.term.write("\r\n");
-        this.term.write(" clear - Clears the console");
-        this.term.write("\r\n");
         this.term.write(" challenge - Requests a challenge");
         this.term.write("\r\n");
         this.term.write(" submit - Submits a challenge");
@@ -242,9 +251,8 @@ export default class Home extends Vue {
           unknownArg(this.term, arg[0]);
           break;
         }
-          await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F")
         console.log(
-          this.commandservice.request.result
+          await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F")
         );
         break;
 
@@ -253,47 +261,36 @@ export default class Home extends Vue {
           unknownArg(this.term, arg[1]);
           break;
         }
-        this.path.children.forEach((child: TreeNode) =>
-          this.term.write(child.name + "\r\n")
+        this.path.Children.forEach((child: TreeNode) =>
+          this.term.write(child.Value + "\r\n")
         );
         break;
 
       case Commands.CD:
 
         // Arg[0] is required
-        if (arg[0] == undefined || arg[0] == "." || arg[0] == "./") {
+        if (arg[0] == undefined || arg[0] == ".") {
           break;
         }
 
-        if (arg[0] == ".." || arg[0] == "./..") {
-          if (this.path.parent != null) {
-            this.updatePath(this.path.parent);
+        if (arg[0] == "..") {
+          if (this.path.Parent != null) {
+            this.updatePath(this.path.Parent);
           }
           break;
         }
 
         // Search for the file
         var location: TreeNode | null = null;
-        this.path.children.forEach(
-          (child: TreeNode) => location = child.name == arg[0] ? child : null
+        this.path.Children.forEach(
+          (child: TreeNode) => location = child.Value == arg[0] ? child : null
         );
         if (location == null) {
-          this.term.write("Directory not found: " + arg[0] + "\r\n");
+          this.term.write("Directory not found: " + arg[0] +"\r\n");
           break;
         }
 
         this.updatePath(location);
-        break;
-
-      case Commands.CLEAR:
-        if (arg.length > 0) {
-          unknownArg(this.term, arg[0]);
-          break;
-        }
-
-        this.term.clear();
-        this.userInput = "";
-        this.cursorPosition = this.hostname.length;
         break;
 
       default:
