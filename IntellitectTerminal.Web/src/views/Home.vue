@@ -244,8 +244,9 @@ export default class Home extends Vue {
           unknownArg(this.term, arg[0]);
           break;
         }
-        console.log(
           await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F")
+        console.log(
+          this.commandservice.request.result
         );
         break;
 
@@ -262,11 +263,11 @@ export default class Home extends Vue {
       case Commands.CD:
 
         // Arg[0] is required
-        if (arg[0] == undefined || arg[0] == ".") {
+        if (arg[0] == undefined || arg[0] == "." || arg[0] == "./") {
           break;
         }
 
-        if (arg[0] == "..") {
+        if (arg[0] == ".." || arg[0] == "./..") {
           if (this.path.parent != null) {
             this.updatePath(this.path.parent);
           }
