@@ -55,16 +55,20 @@ enum Commands {
   CAT = "cat",
   CLEAR = "clear",
   PROGRESS = "progress",
-  PWD = "pwd"
+  PWD = "pwd",
+  SUBMIT = "submit",
+  VERIFY = "verify"
 }
 
 @Component
+// WARNING: Despite being a vue project we are just using typescript :)
 export default class Home extends Vue {
 
   // Connects to the API
   commandservice = new CommandServiceViewModel();
   userservice = new UserServiceViewModel();
   user: User | null = null;
+  doc: HTMLInputElement | null = null;
 
   // The stored string the user is typing
   userInput: string = "";
@@ -107,6 +111,33 @@ export default class Home extends Vue {
 
     // XTerms input
     const input = document.getElementById('terminal');
+
+    // Get the file input element that is hidden in index.html
+    this.doc = document.getElementById("file") as HTMLInputElement;
+
+    // On doc input
+    this.doc?.addEventListener("change", (files) => {
+
+      console.log("ayup");
+
+      // Create the http request
+      let formData = new FormData();
+      formData.append("file", this.doc!.files![0]);
+      formData.append("userId", this.user!.userId!);
+      fetch("/api/CommandService/SubmitFile", {
+        method: "POST",
+        body: formData
+      }).then((response) => response.json()).then((result) => {
+        console.log('Success:', result);
+        this.term.writeln("intelliterm: File submitted. Use \x1b[31mverify\x1b[0m to confirm the submission.");
+        this.doc!.files = null;
+      }).catch((error) => {
+        console.error('Error:', error);
+        output("submit", this.term, "An error occured uploading the file.");
+        this.doc!.files = null;
+      });
+
+    })
     if (input != null) {
 
       // Request for the file system
@@ -243,9 +274,9 @@ export default class Home extends Vue {
           this.updatePath(this.fileSystemTree);
           this.updatePath(
             validatePath(
-              this.fileSystemTree, 
+              this.fileSystemTree,
               tempPwd.split("/")
-                .filter(element => element == "" ? false : true), 
+                .filter(element => element == "" ? false : true),
               this.term, tempPwd)
           );
         }
@@ -295,7 +326,7 @@ export default class Home extends Vue {
       case Commands.CAT:
         // Arg[0] is required
         if (arg[0] == undefined) {
-          err(Commands.CAT, this.term, "Missing file argument path");
+          output(Commands.CAT, this.term, "Missing file argument path");
           break;
         }
 
@@ -303,11 +334,11 @@ export default class Home extends Vue {
         let file: TreeNode | null = null;
         this.pathTree.Children.forEach((child) => file = (child.Name == arg[0]) ? child : null);
         if (file == null) {
-          err(Commands.CAT, this.term, `File not found '${arg[0]}'`)
+          output(Commands.CAT, this.term, `File not found '${arg[0]}'`)
           break;
         }
         if (!(file as TreeNode).isFile) {
-          err(Commands.CAT, this.term, "Argument is a directory and not a file");
+          output(Commands.CAT, this.term, "Argument is a directory and not a file");
         }
         await this.commandservice.cat(this.user?.userId!, (file as TreeNode).Name);
         let catouput = this.commandservice.cat.result;
@@ -324,28 +355,62 @@ export default class Home extends Vue {
         break;
 
       case Commands.PROGRESS:
+        if (arg.length > 0) {
+          unknownArg(Commands.HELP, this.term, arg[0]);
+          break;
+        }
         await this.commandservice.progress(this.user?.userId!);
         let progressoutput = this.commandservice.progress.result;
         this.term.writeln(`${progressoutput}`);
         break;
 
       case Commands.PWD:
+        if (arg.length > 0) {
+          unknownArg(Commands.HELP, this.term, arg[0]);
+          break;
+        }
         this.term.writeln(this.pwd);
         break;
 
+      case Commands.SUBMIT:
+
+        if (arg.length > 0) {
+          unknownArg(Commands.HELP, this.term, arg[0]);
+          break;
+        }
+
+        // Click the input element
+        this.doc?.click();
+        break;
+
+      case Commands.VERIFY:
+        if (arg.length > 0) {
+          unknownArg(Commands.HELP, this.term, arg[0]);
+          break;
+        }
+        await this.commandservice.verify(this.user!.userId!);
+        if (this.commandservice.verify.result) {
+          output("intelliterm", this.term, "Successful output! Run request to get another challenge");
+          break;
+        }
+        output("intelliterm", this.term, "Incorrect output. Submit another file ");
+        break;
+
+
+
       default:
-        err("intelliterm", this.term, `Command not found '${cmd}'`)
+        output("intelliterm", this.term, `Command not found '${cmd}'`)
     }
   }
 
 }
 
-function err(prefix: string, term: Terminal, msg: string) {
-  term.writeln(`${prefix}: ${msg}`);
+function output(prefix: string, term: Terminal, msg: string) {
+  term.writeln(`\x1b[34m${prefix}\x1b[0m: ${msg}`);
 }
 
 function unknownArg(prefix: string, term: Terminal, unArg: string) {
-  err(prefix, term, `Unknown argument '${unArg}'`);
+  output(prefix, term, `Unknown argument '${unArg}'`);
 }
 
 function validatePath(start: TreeNode, directions: string[], term: Terminal, arg: string): TreeNode {
@@ -365,11 +430,11 @@ function validatePath(start: TreeNode, directions: string[], term: Terminal, arg
 
     // If no node is found, the path is errornous. Return.
     if (i == undefined) {
-      err(Commands.CD, term, `Directory not found '${arg}'`);
+      output(Commands.CD, term, `Directory not found '${arg}'`);
       return;
     }
     if (i.isFile) {
-      err(Commands.CD, term, "Argument is a file and not a directory");
+      output(Commands.CD, term, "Argument is a file and not a directory");
       return;
     }
     traverse = i;
