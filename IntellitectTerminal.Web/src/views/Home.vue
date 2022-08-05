@@ -44,6 +44,7 @@ enum Keys {
   ARROW_RIGHT = "\x1B[C",
   ARROW_UP = "\x1B[A",
   ARROW_BOTTOM = "\x1B[B",
+  CTRL_L = "\f"
 }
 
 enum Commands {
@@ -52,6 +53,7 @@ enum Commands {
   LS = "ls",
   CD = "cd",
   CAT = "cat",
+  CLEAR = "clear"
 }
 
 @Component
@@ -180,6 +182,10 @@ export default class Home extends Vue {
       case Keys.ARROW_BOTTOM:
         break;
 
+      case Keys.CTRL_L:
+        this.term.clear();
+        break;
+
       default:
         console.log(event);
         this.term.write(event.key);
@@ -201,7 +207,6 @@ export default class Home extends Vue {
 
     switch (cmd.toLocaleLowerCase()) {
       case Commands.HELP:
-        console.log(arg);
         if (arg.length > 0) {
           unknownArg(Commands.HELP, this.term, arg[0]);
           break;
@@ -211,6 +216,7 @@ export default class Home extends Vue {
         this.term.writeln(" ls - Lists all files in the current directory");
         this.term.writeln(" cat - Displays the contents of a file");
         this.term.writeln(" mkdir - Creates a directory");
+        this.term.writeln(" clear - Clear the terminal");
         this.term.writeln(" challenge - Requests a challenge");
         this.term.writeln(" submit - Submits a challenge");
         this.term.writeln(" edit - Edits a file");
@@ -309,6 +315,14 @@ export default class Home extends Vue {
         if (!(file as TreeNode).isFile) {
           err(Commands.CAT, this.term, "Argument is a directory and not a file");
         }
+        break;
+
+      case Commands.CLEAR:
+        if (arg.length > 0) {
+          unknownArg(Commands.HELP, this.term, arg[0]);
+          break;
+        } 
+        this.term.clear();
         break;
 
       default:
