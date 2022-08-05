@@ -18,7 +18,6 @@ enum Commands {
   HELP = "help",
 }
 
-
 @Component
 export default class Home extends Vue {
 
