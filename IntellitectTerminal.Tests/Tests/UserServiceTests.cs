@@ -27,7 +27,7 @@ namespace IntellitectTerminal.Tests
         public void InitializeFileSystem_ExistingUser_ReturnExistingUser()
         {
             User user = TestData.AddUser();
-            User existingUser = UnderTest.InitializeFileSystem(user);
+            User existingUser = UnderTest.InitializeFileSystem(user.UserId);
             Assert.Equal(user, existingUser);
         }
     }

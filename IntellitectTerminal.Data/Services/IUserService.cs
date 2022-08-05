@@ -8,5 +8,5 @@ namespace IntellitectTerminal.Data.Services;
 [Coalesce, Service]
 public interface IUserService
 {
-    User InitializeFileSystem(User? user);
+    User InitializeFileSystem(Guid? userId);
 }

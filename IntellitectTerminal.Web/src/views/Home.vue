@@ -4,7 +4,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Terminal } from "xterm";
-import { CommandServiceViewModel } from '@/viewmodels.g';
+import { CommandServiceViewModel, UserServiceViewModel } from '@/viewmodels.g';
 
 enum Keys {
   BACKSPACE = "\x7F",
@@ -23,6 +23,7 @@ enum Commands {
 export default class Home extends Vue {
 
   commandservice = new CommandServiceViewModel();
+  userservice = new UserServiceViewModel();
   // The stored string the user is typing
   userInput: string = "";
 
@@ -39,9 +40,11 @@ export default class Home extends Vue {
     // XTerms input
     const input = document.getElementById('terminal');
     if (input != null) {
+      let user = await this.userservice.initializeFileSystem(null);
+      console.log(user.data.object?.fileSystem);
+      let challengeresult = await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
       this.initTerminal(input)
 
-    let challengeresult = await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
     console.table(challengeresult);
     console.log(challengeresult);
     }

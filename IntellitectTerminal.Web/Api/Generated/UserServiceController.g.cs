@@ -36,11 +36,11 @@ namespace IntellitectTerminal.Web.Api
         /// </summary>
         [HttpPost("InitializeFileSystem")]
         [Authorize]
-        public virtual ItemResult<UserDtoGen> InitializeFileSystem(UserDtoGen user)
+        public virtual ItemResult<UserDtoGen> InitializeFileSystem(System.Guid? userId)
         {
             IncludeTree includeTree = null;
             var _mappingContext = new MappingContext(User);
-            var _methodResult = Service.InitializeFileSystem(user.MapToModel(new IntellitectTerminal.Data.Models.User(), _mappingContext));
+            var _methodResult = Service.InitializeFileSystem(userId);
             var _result = new ItemResult<UserDtoGen>();
             _result.Object = Mapper.MapToDto<IntellitectTerminal.Data.Models.User, UserDtoGen>(_methodResult, _mappingContext, includeTree);
             return _result;

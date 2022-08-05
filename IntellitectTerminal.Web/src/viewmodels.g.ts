@@ -93,9 +93,9 @@ export class UserServiceViewModel extends ServiceViewModel<typeof $metadata.User
   public get initializeFileSystem() {
     const initializeFileSystem = this.$apiClient.$makeCaller(
       this.$metadata.methods.initializeFileSystem,
-      (c, user: $models.User | null) => c.initializeFileSystem(user),
-      () => ({user: null as $models.User | null, }),
-      (c, args) => c.initializeFileSystem(args.user))
+      (c, userId: string | null) => c.initializeFileSystem(userId),
+      () => ({userId: null as string | null, }),
+      (c, args) => c.initializeFileSystem(args.userId))
     
     Object.defineProperty(this, 'initializeFileSystem', {value: initializeFileSystem});
     return initializeFileSystem

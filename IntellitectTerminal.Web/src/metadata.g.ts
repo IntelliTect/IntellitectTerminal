@@ -184,11 +184,10 @@ export const UserService = domain.services.UserService = {
       transportType: "item",
       httpMethod: "POST",
       params: {
-        user: {
-          name: "user",
-          displayName: "User",
-          type: "model",
-          get typeDef() { return (domain.types.User as ModelType) },
+        userId: {
+          name: "userId",
+          displayName: "User Id",
+          type: "string",
           role: "value",
         },
       },
