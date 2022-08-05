@@ -32,7 +32,6 @@ export default class Home extends Vue {
   // Position the cursor is currently at. This is needed for back spaces.
   cursorPosition = this.path.length;
   term = new Terminal({ cursorBlink: true });
-
   history = [];
   welcomeMessage = "Welcome to the Intellitect CLI! View commands by typing help";
 
@@ -41,6 +40,7 @@ export default class Home extends Vue {
     const input = document.getElementById('terminal');
     if (input != null) {
       this.initTerminal(input)
+
     let challengeresult = await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
     console.table(challengeresult);
     console.log(challengeresult);

@@ -88,6 +88,25 @@ export class CommandServiceViewModel extends ServiceViewModel<typeof $metadata.C
 }
 
 
+export class UserServiceViewModel extends ServiceViewModel<typeof $metadata.UserService, $apiClients.UserServiceApiClient> {
+  
+  public get initializeFileSystem() {
+    const initializeFileSystem = this.$apiClient.$makeCaller(
+      this.$metadata.methods.initializeFileSystem,
+      (c, user: $models.User | null) => c.initializeFileSystem(user),
+      () => ({user: null as $models.User | null, }),
+      (c, args) => c.initializeFileSystem(args.user))
+    
+    Object.defineProperty(this, 'initializeFileSystem', {value: initializeFileSystem});
+    return initializeFileSystem
+  }
+  
+  constructor() {
+    super($metadata.UserService, new $apiClients.UserServiceApiClient())
+  }
+}
+
+
 const viewModelTypeLookup = ViewModel.typeLookup = {
   Challenge: ChallengeViewModel,
   Submission: SubmissionViewModel,
@@ -100,5 +119,6 @@ const listViewModelTypeLookup = ListViewModel.typeLookup = {
 }
 const serviceViewModelTypeLookup = ServiceViewModel.typeLookup = {
   CommandService: CommandServiceViewModel,
+  UserService: UserServiceViewModel,
 }
 
