@@ -104,7 +104,7 @@ export default class Home extends Vue {
   cursorPosition = this.hostname.length;
   term = new Terminal({ 
     cursorBlink: true,
-    fontSize: 25,
+    fontSize: 30,
     cols: 200,
     fontFamily: "monospace",
     });
