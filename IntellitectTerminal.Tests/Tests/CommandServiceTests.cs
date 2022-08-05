@@ -7,10 +7,12 @@ namespace IntellitectTerminal.Tests
     public class CommandServiceTests : UnitTestsBase
     {
         private ICommandService UnderTest { get; set; }
+        private IUserService userService { get; set; }
 
         public CommandServiceTests()
         {
             UnderTest = Mocker.CreateInstance<CommandService>();
+            userService = Mocker.CreateInstance<UserService>();
         }
 
         [Fact]
@@ -81,6 +83,52 @@ namespace IntellitectTerminal.Tests
         {
             User user = TestData.AddFullUser();
             Assert.StartsWith("Welcome to the Intellitect Terminal!", UnderTest.Cat(user.UserId, "readme.txt"));
+        }
+
+        [Fact]
+        public void Submit_samplescript_SubmitSuccessfully()
+        {
+            Challenge challenge = TestData.AddNewPythonChallenge(1);
+            User user = userService.InitializeFileSystem(null);
+            UnderTest.Request(user.UserId);
+            
+            var fileName = @"../../../Samples/sample_script.py";
+            using FileStream fs = File.OpenRead(fileName);
+            IntelliTect.Coalesce.Models.File file = new(fs);
+            UnderTest.SubmitFile(file, user.UserId);
+            Submission submission = Db.Submissions.Where(x => x.User == user && x.Challenge == challenge).First();
+            Assert.NotNull(submission.Content);
+            Assert.Equal($"{file.Name}_{user.UserId}", submission.Content);
+        }
+
+        [Fact]
+        public void Verify_samplescript_ReturnTrue()
+        {
+            Challenge challenge = TestData.AddNewPythonChallenge(1);
+            User user = userService.InitializeFileSystem(null);
+            UnderTest.Request(user.UserId);
+
+            var fileName = @"../../../Samples/sample_script.py";
+            using FileStream fs = File.OpenRead(fileName);
+            IntelliTect.Coalesce.Models.File file = new(fs);
+            UnderTest.SubmitFile(file, user.UserId);
+            Assert.True(UnderTest.Verify(user.UserId));
+        }
+
+        [Fact]
+        public void Submit_text_SubmitSuccessfully()
+        {
+            Challenge challenge = TestData.AddNewPythonChallenge(1);
+            User user = userService.InitializeFileSystem(null);
+            UnderTest.Request(user.UserId);
+
+            var fileName = @"../../../Samples/sample_script.py";
+            using FileStream fs = File.OpenRead(fileName);
+            IntelliTect.Coalesce.Models.File file = new(fs);
+            UnderTest.SubmitFile(file, user.UserId);
+            Submission submission = Db.Submissions.Where(x => x.User == user && x.Challenge == challenge).First();
+            Assert.NotNull(submission.Content);
+            Assert.Equal($"{file.Name}_{user.UserId}", submission.Content);
         }
     }
 }
