@@ -170,19 +170,13 @@ export default class Home extends Vue {
         this.cursorPosition = this.hostname.length;
         return;
 
+      // Breaks functionality that xterm already gives arrows
       case Keys.ARROW_LEFT:
-        // If the cursor is going out of our text... dont
-        if (this.cursorPosition == this.hostname.length) { return; }
-        this.term.write("\x1B[D");
-        this.cursorPosition--;
-        return;
+        break;
 
+      // Breaks functionality that xterm already gives arrows
       case Keys.ARROW_RIGHT:
-        // If the cursor is going out of our text... dont
-        if (this.cursorPosition >= (this.hostname.length + this.userInput.length)) { return; }
-        this.term.write("\x1B[C");
-        this.cursorPosition++;
-        return;
+        break;
 
       // Breaks functionality that xterm already gives arrows
       case Keys.ARROW_UP:
@@ -230,7 +224,6 @@ export default class Home extends Vue {
           unknownArg(Commands.REQUEST, this.term, arg[0]);
           break;
         }
-        
         this.term.writeln("intelliterm: mounting a challenge in /home/user/challenges");
 
         // Grab the result from the server
