@@ -131,7 +131,7 @@ export default class Home extends Vue {
         this.term.write("\r\n");
         this.term.write(" verify - Verifies a challenge");
         this.term.write("\r\n");
-        this.term.write('\x1B[1;3;31mIntelliTect\x1B[0m $ ');
+        this.term.write(this.path);
         break;
       default:
         this.term.write("Command not found.");
