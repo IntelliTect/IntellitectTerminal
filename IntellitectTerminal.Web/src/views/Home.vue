@@ -2,14 +2,14 @@
 </template>
 
 <script lang="ts">
-  import { Component, Prop, Vue } from "vue-property-decorator";
-  import { Terminal } from "xterm";
-  
+import { Component, Prop, Vue } from "vue-property-decorator";
+import { Terminal } from "xterm";
 
 @Component
 export default class Home extends Vue {
 
   helpView(term: Terminal) {
+    term.write("\r\n");
     term.write("help - Displays this message");
     term.write("\r\n");
     term.write("ls - Lists all files in the current directory");
@@ -28,6 +28,7 @@ export default class Home extends Vue {
     term.write("\r\n");
     term.write("verify - Verifies a challenge");
     term.write("\r\n");
+    term.write('\x1B[1;3;31mIntelliTect\x1B[0m $ ');
   }
 
   async created() {
