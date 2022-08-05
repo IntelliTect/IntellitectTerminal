@@ -5,7 +5,7 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Terminal } from "xterm";
 import { CommandServiceViewModel, UserServiceViewModel } from '@/viewmodels.g';
-import { User } from "@/models.g";
+import { User } from "../models.g";
 
 class TreeNode {
   Name: string;
@@ -37,7 +37,6 @@ function serializeFilesSystemToTree(node: FileNode | TreeNode) {
   return parent;
 }
 
-
 enum Keys {
   BACKSPACE = "\x7F",
   ENTER = "\r",
@@ -64,8 +63,6 @@ export default class Home extends Vue {
   commandservice = new CommandServiceViewModel();
   userservice = new UserServiceViewModel();
   user: User | null = null;
-
-  
 
   // The stored string the user is typing
   userInput: string = "";
@@ -102,22 +99,17 @@ export default class Home extends Vue {
       await this.userservice.initializeFileSystem(null);
 
       // Get user
-      this.user = this.userservice.initializeFileSystem.result;
-
+      let user = this.userservice.initializeFileSystem.result;
+      console.log(user);
+      this.user = user;
       // Serialize and cache filesystem to a Tree
       console.log(JSON.parse(this.user?.fileSystem!));
       this.filesystem = serializeFilesSystemToTree(JSON.parse(this.user?.fileSystem!));
       this.path = this.filesystem;
 
-      // Command services
-      //await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
-      //let challengeresult = this.commandservice.request.result;
-
-
-      //console.table(user);
-      //console.table(challengeresult);
-      //console.log(challengeresult);
-      this.initTerminal(input)
+      if (user != null) {
+        this.initTerminal(input)
+      }
     }
   }
 
@@ -208,7 +200,6 @@ export default class Home extends Vue {
       err(prefix, term, `Unknown argument '${unArg}'`);
     }
 
-
     switch (cmd.toLocaleLowerCase()) {
       case Commands.HELP:
         if (arg.length > 0) {
@@ -233,9 +224,17 @@ export default class Home extends Vue {
           unknownArg(Commands.REQUEST, this.term, arg[0]);
           break;
         }
-        console.log(
-          await this.commandservice.request(this.user!.userId)
-        );
+        await this.commandservice.request(this.user?.userId!);
+        let updatedFileSystem = this.commandservice.request.result;
+        console.log(updatedFileSystem);
+        if (updatedFileSystem != null) {
+          this.filesystem = serializeFilesSystemToTree(JSON.parse(updatedFileSystem));
+          console.table(this.filesystem);
+          this.path = this.filesystem;
+        }
+        else {
+          console.log('user id is unexpectedly null');
+        }
         break;
 
       case Commands.LS:
@@ -319,6 +318,11 @@ export default class Home extends Vue {
         if (!(file as TreeNode).isFile) {
           err(Commands.CAT, this.term, "Argument is a directory and not a file");
         }
+        console.log((file as TreeNode).Name);
+        this.commandservice.cat(this.user?.userId!, (file as TreeNode).Name);
+        let catouput = this.commandservice.cat.result;
+        this.term.writeln(`$: ${catouput}`);
+
         break;
 
       case Commands.CLEAR:
