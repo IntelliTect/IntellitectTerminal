@@ -16,11 +16,10 @@ public class CommandService : ICommandService
 
     public Challenge Request(Guid? userId)
     {
-        Db.Challenges.Add(new Challenge { Level = 1, CompilationLanguage = Challenge.CompilationLanguages.None, Answer = "InCorrect", Question = "Incorrect Question" });
         User foundUser = Db.Users.Where(x => x.UserId == userId).FirstOrDefault() ?? userService.CreateAndSaveNewUser();
         int highestCompletedLevel = Db.Submissions.Where(x => x.User == foundUser && x.IsCorrect == true)
             .Select(x => x.Challenge.Level).ToList().DefaultIfEmpty(0).Max();
         highestCompletedLevel++;
-        return Db.Challenges.Where(x => x.Level == highestCompletedLevel).OrderBy(x => EF.Functions.Random()).First();
+        return Db.Challenges.Where(x => x.Level == highestCompletedLevel).OrderBy(x => EF.Functions.Random()).FirstOrDefault() ?? throw new InvalidOperationException("Challenge to be returned cannot be found");
     }
 }
