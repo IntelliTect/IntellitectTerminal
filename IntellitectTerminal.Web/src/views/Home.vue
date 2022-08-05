@@ -40,7 +40,8 @@ export default class Home extends Vue {
     // XTerms input
     const input = document.getElementById('terminal');
     if (input != null) {
-      let user = await this.userservice.initializeFileSystem(null);
+      console.log('here');
+      let user = await this.userservice.initializeFileSystem("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
       console.log(user.data.object?.fileSystem);
       let challengeresult = await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
       this.initTerminal(input)

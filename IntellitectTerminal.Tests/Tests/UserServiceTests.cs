@@ -1,6 +1,7 @@
 using IntellitectTerminal.Data.Models;
 using IntellitectTerminal.Data.Services;
 using IntellitectTerminal.Tests.Helpers;
+using Newtonsoft.Json;
 
 namespace IntellitectTerminal.Tests
 {
@@ -26,9 +27,21 @@ namespace IntellitectTerminal.Tests
         [Fact]
         public void InitializeFileSystem_ExistingUser_ReturnExistingUser()
         {
-            User user = TestData.AddUser();
+            User user = TestData.AddFullUser();
             User existingUser = UnderTest.InitializeFileSystem(user.UserId);
             Assert.Equal(user, existingUser);
+        }
+
+        [Fact]
+        public void InitializeFileSystem_ExistingUserNoFileSystem_ReturnUserWithFileSystem()
+        {
+            User user = TestData.AddUserWithOnlyGuid();
+            User existingUser = UnderTest.InitializeFileSystem(user.UserId);
+            Assert.Equal(user.UserId, existingUser.UserId);
+            Assert.Equal(JsonConvert.SerializeObject(UserService.CreateDefaultFileSystem(), new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            }), existingUser.FileSystem);
         }
     }
 }
