@@ -395,9 +395,6 @@ export default class Home extends Vue {
         }
         output("intelliterm", this.term, "Incorrect output. Submit another file ");
         break;
-
-
-
       default:
         output("intelliterm", this.term, `Command not found '${cmd}'`)
     }
