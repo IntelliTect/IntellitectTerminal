@@ -8,6 +8,29 @@ import { Terminal } from "xterm";
 @Component
 export default class Home extends Vue {
 
+  helpView(term: Terminal) {
+    term.write("\r\n");
+    term.write("help - Displays this message");
+    term.write("\r\n");
+    term.write("ls - Lists all files in the current directory");
+    term.write("\r\n");
+    term.write("cat - Displays the contents of a file");
+    term.write("\r\n");
+    term.write("mkdir - Creates a directory");
+    term.write("\r\n");
+    term.write("challenge - Requests a challenge");
+    term.write("\r\n");
+    term.write("submit - Submits a challenge");
+    term.write("\r\n");
+    term.write("edit - Edits a file");
+    term.write("\r\n");
+    term.write("progress - Displays your progress");
+    term.write("\r\n");
+    term.write("verify - Verifies a challenge");
+    term.write("\r\n");
+    term.write('\x1B[1;3;31mIntelliTect\x1B[0m $ ');
+  }
+
   async created() {
 
     // The stored string the user is typing
@@ -20,6 +43,8 @@ export default class Home extends Vue {
     var cursorPosition = PATH.length;
     var term: Terminal = new Terminal();
 
+    var history = [];
+
     // XTerms input
     const input = document.getElementById('terminal');
     if (input != null) {
@@ -29,7 +54,7 @@ export default class Home extends Vue {
 
       // Main key handler. Anything pressed goes here.
       term.onKey((e) => {
-        console.log(cursorPosition);
+        console.log(e);
 
         // Command keys
         switch (e.key) {
@@ -46,15 +71,25 @@ export default class Home extends Vue {
 
           // Enter key
           case "\r":
+            term.write(e.key);
+            temp += e.key;
             term.write("\n");
+
+            // Print the command name out :)
+            if (temp.trim() != "") {
+              term.write(temp);
+              term.write("\n");
+              history.push(temp);
+            }
             term.write(PATH);
             temp = "";
+            cursorPosition = PATH.length;
             return;
 
           // // Left arrow
           case "\x1B[D":
             // If the cursor is going out of our text... dont
-            if (cursorPosition == PATH.length) {return;}
+            if (cursorPosition == PATH.length) { return; }
             term.write("\x1B[D");
             cursorPosition--;
             return;
@@ -66,6 +101,16 @@ export default class Home extends Vue {
             term.write("\x1B[C");
             cursorPosition++;
             return;
+
+          // Top arrow
+          case "\x1B[A":
+            break;
+
+          // Bottom arrow
+          case "\x1B[B":
+            break;
+          
+
 
           default:
             term.write(e.key);
