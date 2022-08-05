@@ -102,12 +102,12 @@ export default class Home extends Vue {
 
   // Position the cursor is currently at. This is needed for back spaces.
   cursorPosition = this.hostname.length;
-  term = new Terminal({ 
+  term = new Terminal({
     cursorBlink: true,
     fontSize: 30,
     cols: 200,
     fontFamily: "monospace",
-    });
+  });
 
   history = [];
   welcomeMessage = `\n\nWelcome to the \x1b[34mIntelliTect Terminal\x1b[0m! View commands by typing help.\n\n`;
@@ -123,8 +123,6 @@ export default class Home extends Vue {
     // On doc input
     this.doc?.addEventListener("change", (files) => {
 
-        console.log('aaaaa');
-
       // Create the http request
       // TODO: Bug with submitting the same file after request
       let formData = new FormData();
@@ -135,10 +133,12 @@ export default class Home extends Vue {
         body: formData
       }).then((response) => response.json()).then((result) => {
         console.log('Success:', result);
-        this.term.writeln("intelliterm: File submitted. Use \x1b[31mverify\x1b[0m to confirm the submission.");
+        output("submit", this.term, "File submitted. Use \x1b[31mverify\x1b[0m to confirm the submission.")
+        this.term.write(this.hostname);
       }).catch((error) => {
         console.error('Error:', error);
         output("submit", this.term, "An error occured uploading the file.");
+        this.term.write(this.hostname);
       });
     })
     if (input != null) {
@@ -394,12 +394,12 @@ export default class Home extends Vue {
         await this.commandservice.verify(this.user!.userId!);
         if (this.commandservice.verify.result) {
           output("intelliterm", this.term, "Successful output! Run request to get another challenge");
+          this.term.write(this.hostname);
           break;
         }
         output("intelliterm", this.term, "Incorrect output. Submit another file ");
+        this.term.write(this.hostname);
         break;
-
-
 
       default:
         output("intelliterm", this.term, `Command not found '${cmd}'`)
@@ -409,7 +409,7 @@ export default class Home extends Vue {
 }
 
 function output(prefix: string, term: Terminal, msg: string) {
-  term.writeln(`\x1b[34m${prefix}\x1b[0m: ${msg}`);
+  term.writeln(`\r\n\x1b[34m${prefix}\x1b[0m: ${msg}`);
 }
 
 function unknownArg(prefix: string, term: Terminal, unArg: string) {
