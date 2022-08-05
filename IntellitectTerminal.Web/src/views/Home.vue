@@ -108,12 +108,27 @@ export default class Home extends Vue {
     // XTerms input
     const input = document.getElementById('terminal');
     if (input != null) {
-
+       // if user is in cookies, get user id from cookies
+      let userId = Cookies.get('userId');
+      let user;
+      if (userId == null) {
+        // if user is not in cookies, get user id from api
+        await this.userservice.initializeFileSystem(null);
+        user = this.userservice.initializeFileSystem.result;
+        userId = user.userId;
+        // set user id in cookies
+        Cookies.set('userId', userId, { expires: 100 });
+      } else {
+        // if user is in cookies, get user from api
+        // Request for the file system
+        await this.userservice.initializeFileSystem(userId);
+        user = this.userservice.initializeFileSystem.result;
+      }
       // Request for the file system
-      await this.userservice.initializeFileSystem(null);
+      //await this.userservice.initializeFileSystem(null);
 
       // Get user
-      let user = this.userservice.initializeFileSystem.result;
+     // let user = this.userservice.initializeFileSystem.result;
       console.log(user);
       this.user = user;
       // Serialize and cache filesystem to a Tree
