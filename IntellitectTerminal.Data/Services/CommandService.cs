@@ -15,21 +15,28 @@ public class CommandService : ICommandService
         this.userService = new UserService(db);
     }
 
-    public TreeNode Request(Guid? userId)
+    public string Request(Guid? userId)
     {
         User foundUser = Db.Users.Where(x => x.UserId == userId).FirstOrDefault() ?? userService.CreateAndSaveNewUser();
         int highestCompletedLevel = GetHighestCompletedChallengeLevel(foundUser);
-        TreeNode foundUsersFileSystem = GetUsersSystem(foundUser);
+        TreeNode<string> foundUsersFileSystem = TreeNode<string>.DeserializeFileSystem(foundUser);
         highestCompletedLevel++;
+        TreeNode<string> challengesFolder = foundUsersFileSystem.Children.Where(x => x.Name == "challenges" && x.isFile is false).First();
         Submission? currentChallenge = Db.Submissions.Where(x => x.User == foundUser && x.Challenge.Level == highestCompletedLevel).FirstOrDefault();
         if (currentChallenge != null)
         {
-            return foundUsersFileSystem;
+            TreeNode<string> challengeFile = foundUsersFileSystem.Children.Where(x => x.Name == $"challenge_{highestCompletedLevel}.txt" && x.isFile is false).First();
+            return TreeNode<string>.SerializeFileSystem(foundUsersFileSystem);
         }
         else
         {
-            foundUsersFileSystem.GetChild("challenges");
-            return foundUsersFileSystem;
+            TreeNode<string> challengeFile = foundUsersFileSystem.Children.Where(x => x.Name == $"challenge_{highestCompletedLevel}.txt" && x.isFile is false).First();
+            if (challengeFile != null)
+            {
+                throw new InvalidOperationException($"challenge_{highestCompletedLevel}.txt does not exist");
+            }
+            challengesFolder.AddChild($"challenge_{highestCompletedLevel}.txt", true);
+            return TreeNode<string>.SerializeFileSystem(foundUsersFileSystem);
         }
     }
 
@@ -45,11 +52,5 @@ public class CommandService : ICommandService
             .Select(x => x.Challenge.Level).ToList().DefaultIfEmpty(0).Max();
         highestCompletedLevel++;
         return Db.Challenges.Where(x => x.Level == highestCompletedLevel).OrderBy(x => EF.Functions.Random()).FirstOrDefault() ?? throw new InvalidOperationException("Challenge to be returned cannot be found");
-
-    }
-
-    private static TreeNode GetUsersSystem(User foundUser)
-    {
-        return JsonConvert.DeserializeObject<TreeNode>(foundUser.FileSystem) ?? throw new InvalidOperationException("Deserializing User File System Failed");
     }
 }

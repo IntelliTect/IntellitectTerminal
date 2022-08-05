@@ -36,13 +36,11 @@ namespace IntellitectTerminal.Web.Api
         /// </summary>
         [HttpPost("Request")]
         [AllowAnonymous]
-        public virtual ItemResult<ChallengeDtoGen> Request(System.Guid? userId)
+        public virtual ItemResult<string> Request(System.Guid? userId)
         {
-            IncludeTree includeTree = null;
-            var _mappingContext = new MappingContext(User);
             var _methodResult = Service.Request(userId);
-            var _result = new ItemResult<ChallengeDtoGen>();
-            _result.Object = Mapper.MapToDto<IntellitectTerminal.Data.Models.Challenge, ChallengeDtoGen>(_methodResult, _mappingContext, includeTree);
+            var _result = new ItemResult<string>();
+            _result.Object = _methodResult;
             return _result;
         }
     }

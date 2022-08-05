@@ -6,9 +6,9 @@ import { ViewModel, ListViewModel, ServiceViewModel, DeepPartial, defineProps } 
 export interface ChallengeViewModel extends $models.Challenge {
   challengeId: number | null;
   question: string | null;
-  answer: string | null;
   level: number | null;
   compilationLanguage: $models.CompilationLanguages | null;
+  answer: string | null;
 }
 export class ChallengeViewModel extends ViewModel<$models.Challenge, $apiClients.ChallengeApiClient, number> implements $models.Challenge  {
   
@@ -30,8 +30,8 @@ export interface SubmissionViewModel extends $models.Submission {
   submissionId: number | null;
   user: UserViewModel | null;
   challenge: ChallengeViewModel | null;
-  content: string | null;
   isCorrect: boolean | null;
+  content: string | null;
 }
 export class SubmissionViewModel extends ViewModel<$models.Submission, $apiClients.SubmissionApiClient, number> implements $models.Submission  {
   

@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using IntellitectTerminal.Data.Models;
+using Newtonsoft.Json;
+using System.Collections.ObjectModel;
 
 namespace IntellitectTerminal.Data.Services;
 
@@ -27,7 +29,7 @@ public class TreeNode<T>
     }
 
 
-    public T Value { get { return name; } }
+    public T Name { get { return name; } }
 
     public ReadOnlyCollection<TreeNode<T>> Children
     {
@@ -60,19 +62,34 @@ public class TreeNode<T>
 
     public void Traverse(Action<T> action)
     {
-        action(Value);
+        action(Name);
         foreach (var child in children)
             child.Traverse(action);
     }
 
     public IEnumerable<T> Flatten()
     {
-        return new[] { Value }.Concat(children.SelectMany(x => x.Flatten()));
+        return new[] { Name }.Concat(children.SelectMany(x => x.Flatten()));
     }
     public TreeNode<T> InsertChild(TreeNode<T> parent, T value)
     {
         var node = new TreeNode<T>(value) { Parent = parent };
         parent.children.Add(node);
         return node;
+    }
+    public static TreeNode<string> DeserializeFileSystem(User foundUser)
+    {
+        return JsonConvert.DeserializeObject<TreeNode<string>>(foundUser.FileSystem) ?? throw new InvalidOperationException("Deserializing User File System Failed");
+    }
+    public static TreeNode<string> DeserializeFileSystem(string fileStructure)
+    {
+        return JsonConvert.DeserializeObject<TreeNode<string>>(fileStructure) ?? throw new InvalidOperationException("Deserializing User File System Failed");
+    }
+    public static string SerializeFileSystem(TreeNode<string> fileStructure)
+    {
+        return JsonConvert.SerializeObject(fileStructure, new JsonSerializerSettings()
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        });
     }
 }

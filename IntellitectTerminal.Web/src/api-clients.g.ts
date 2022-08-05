@@ -20,7 +20,7 @@ export class UserApiClient extends ModelApiClient<$models.User> {
 
 export class CommandServiceApiClient extends ServiceApiClient<typeof $metadata.CommandService> {
   constructor() { super($metadata.CommandService) }
-  public request(userId: string | null, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<$models.Challenge>> {
+  public request(userId: string | null, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<string>> {
     const $method = this.$metadata.methods.request
     const $params =  {
       userId,

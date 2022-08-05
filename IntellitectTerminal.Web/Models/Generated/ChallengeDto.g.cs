@@ -14,9 +14,9 @@ namespace IntellitectTerminal.Web.Models
 
         private int? _ChallengeId;
         private string _Question;
-        private string _Answer;
         private int? _Level;
         private IntellitectTerminal.Data.Models.Challenge.CompilationLanguages? _CompilationLanguage;
+        private string _Answer;
 
         public int? ChallengeId
         {
@@ -28,11 +28,6 @@ namespace IntellitectTerminal.Web.Models
             get => _Question;
             set { _Question = value; Changed(nameof(Question)); }
         }
-        public string Answer
-        {
-            get => _Answer;
-            set { _Answer = value; Changed(nameof(Answer)); }
-        }
         public int? Level
         {
             get => _Level;
@@ -42,6 +37,11 @@ namespace IntellitectTerminal.Web.Models
         {
             get => _CompilationLanguage;
             set { _CompilationLanguage = value; Changed(nameof(CompilationLanguage)); }
+        }
+        public string Answer
+        {
+            get => _Answer;
+            set { _Answer = value; Changed(nameof(Answer)); }
         }
 
         /// <summary>
@@ -56,9 +56,9 @@ namespace IntellitectTerminal.Web.Models
 
             this.ChallengeId = obj.ChallengeId;
             this.Question = obj.Question;
-            this.Answer = obj.Answer;
             this.Level = obj.Level;
             this.CompilationLanguage = obj.CompilationLanguage;
+            this.Answer = obj.Answer;
         }
 
         /// <summary>
@@ -72,9 +72,9 @@ namespace IntellitectTerminal.Web.Models
 
             if (ShouldMapTo(nameof(ChallengeId))) entity.ChallengeId = (ChallengeId ?? entity.ChallengeId);
             if (ShouldMapTo(nameof(Question))) entity.Question = Question;
-            if (ShouldMapTo(nameof(Answer))) entity.Answer = Answer;
             if (ShouldMapTo(nameof(Level))) entity.Level = (Level ?? entity.Level);
             if (ShouldMapTo(nameof(CompilationLanguage))) entity.CompilationLanguage = (CompilationLanguage ?? entity.CompilationLanguage);
+            if (ShouldMapTo(nameof(Answer))) entity.Answer = Answer;
         }
     }
 }

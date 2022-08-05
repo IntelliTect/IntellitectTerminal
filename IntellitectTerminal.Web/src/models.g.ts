@@ -9,9 +9,9 @@ export enum CompilationLanguages {
 export interface Challenge extends Model<typeof metadata.Challenge> {
   challengeId: number | null
   question: string | null
-  answer: string | null
   level: number | null
   compilationLanguage: CompilationLanguages | null
+  answer: string | null
 }
 export class Challenge {
   
@@ -36,8 +36,8 @@ export interface Submission extends Model<typeof metadata.Submission> {
   submissionId: number | null
   user: User | null
   challenge: Challenge | null
-  content: string | null
   isCorrect: boolean | null
+  content: string | null
 }
 export class Submission {
   
