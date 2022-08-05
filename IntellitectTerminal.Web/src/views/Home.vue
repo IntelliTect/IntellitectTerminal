@@ -119,7 +119,15 @@ export default class Home extends Vue {
     // XTerms input
     const input = document.getElementById('terminal');
     if (input != null) {
-      this.initTerminal(input);
+      console.log('here');
+      await this.userservice.initializeFileSystem("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
+      let user = this.userservice.initializeFileSystem.result;
+      await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
+      let challengeresult = this.commandservice.request.result;
+      console.table(user);
+      console.table(challengeresult);
+      console.log(challengeresult);
+      this.initTerminal(input)
     }
   }
 
