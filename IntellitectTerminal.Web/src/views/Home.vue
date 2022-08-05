@@ -123,6 +123,8 @@ export default class Home extends Vue {
     // On doc input
     this.doc?.addEventListener("change", (files) => {
 
+        console.log('aaaaa');
+
       // Create the http request
       // TODO: Bug with submitting the same file after request
       let formData = new FormData();
@@ -134,11 +136,9 @@ export default class Home extends Vue {
       }).then((response) => response.json()).then((result) => {
         console.log('Success:', result);
         this.term.writeln("intelliterm: File submitted. Use \x1b[31mverify\x1b[0m to confirm the submission.");
-        this.doc!.files = null;
       }).catch((error) => {
         console.error('Error:', error);
         output("submit", this.term, "An error occured uploading the file.");
-        this.doc!.files = null;
       });
     })
     if (input != null) {
