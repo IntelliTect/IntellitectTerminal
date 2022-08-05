@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "esnext",
+    "strict": true,
+    "jsx": "preserve",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "noEmitOnError": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "types": ["node", "vitest/globals"],
+    "paths": {
+      "@/*": ["src/*"],
+      "vuetify/lib": ["node_modules/vuetify/types/lib"]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "tests/**/*.ts",
+    "tests/**/*.tsx"
+  ],
+  "exclude": ["node_modules"]
+}
