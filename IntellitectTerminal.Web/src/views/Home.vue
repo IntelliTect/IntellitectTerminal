@@ -119,7 +119,7 @@ export default class Home extends Vue {
     // XTerms input
     const input = document.getElementById('terminal');
     if (input != null) {
-      this.initTerminal(input)
+      this.initTerminal(input);
     }
   }
 
