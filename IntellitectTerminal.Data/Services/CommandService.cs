@@ -1,6 +1,9 @@
-﻿using IntellitectTerminal.Data.Models;
+﻿using IntelliTect.Coalesce;
+using IntelliTect.Coalesce.Models;
+using IntellitectTerminal.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace IntellitectTerminal.Data.Services;
 
@@ -78,6 +81,38 @@ public class CommandService : ICommandService
         return $"You have completed {highestLevel} out of 3 challenge levels!";
     }
 
+    public bool Verify(Guid userId)
+    {
+        int highestCompletedLevel = GetHighestCompletedChallengeLevel(Db.Users.Where(x => x.UserId == userId).First());
+        highestCompletedLevel++;
+        Submission submission = Db.Submissions.Include(x=>x.Challenge).Where(x => x.User.UserId == userId && x.Challenge.Level == highestCompletedLevel).First();
+        switch (submission.Challenge.CompilationLanguage)
+        {
+            case Challenge.CompilationLanguages.None:
+                submission.IsCorrect = true;
+                break;
+
+            case Challenge.CompilationLanguages.Python:
+                string fileName = submission.Content ?? throw new InvalidOperationException("No submission content found");
+
+                Process? p = Process.Start(new ProcessStartInfo(@"python", fileName)
+                {
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                });
+
+                string output = p.StandardOutput.ReadToEnd();
+                p.WaitForExit();
+                submission.IsCorrect = output.ToLower().Trim().Equals(submission.Challenge.Answer?.ToLower().Trim());
+                Db.SaveChanges();
+                break;
+            default:
+                break;
+        }
+        return submission.IsCorrect ?? false;
+    }
+
     private int GetHighestCompletedChallengeLevel(User? user)
     {
         return Db.Submissions.AsNoTracking().Where(x => x.User == user && x.IsCorrect == true)
@@ -90,5 +125,30 @@ public class CommandService : ICommandService
             .Select(x => x.Challenge.Level).ToList().DefaultIfEmpty(0).Max();
         highestCompletedLevel++;
         return Db.Challenges.Where(x => x.Level == highestCompletedLevel).OrderBy(x => EF.Functions.Random()).FirstOrDefault() ?? throw new InvalidOperationException("Challenge to be returned cannot be found");
+    }
+
+    [Coalesce]
+    public async Task SubmitFile(IFile file, Guid userId)
+    {
+        if (file.Content == null) return;
+        MemoryStream ms = new MemoryStream();
+        file.Content.CopyTo(ms);
+        var bytearray = ms.ToArray();
+        string filename = $"{file.Name}_{userId}";
+        System.IO.File.WriteAllBytes(filename, bytearray);
+        int highestCompletedLevel = GetHighestCompletedChallengeLevel(Db.Users.Where(x => x.UserId == userId).First());
+        highestCompletedLevel++;
+        Submission submission = Db.Submissions.Where(x => x.User.UserId == userId && x.Challenge.Level == highestCompletedLevel).First();
+        submission.Content = filename;
+        Db.SaveChanges();
+    }
+    [Coalesce]
+    public async Task SubmitUserInput(string input, Guid userId)
+    {
+        int highestCompletedLevel = GetHighestCompletedChallengeLevel(Db.Users.Where(x => x.UserId == userId).First());
+        highestCompletedLevel++;
+        Submission submission = Db.Submissions.Where(x => x.User.UserId == userId && x.Challenge.Level == highestCompletedLevel).First();
+        submission.Content = input;
+        Db.SaveChanges();
     }
 }

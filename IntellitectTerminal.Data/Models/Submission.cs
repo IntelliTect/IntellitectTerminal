@@ -1,5 +1,13 @@
-namespace IntellitectTerminal.Data.Models;
+using IntelliTect.Coalesce;
+using IntelliTect.Coalesce.Api;
+using IntelliTect.Coalesce.DataAnnotations;
+using IntelliTect.Coalesce.Helpers;
+using IntelliTect.Coalesce.Models;
+using IntelliTect.Coalesce.Utilities;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
 
+namespace IntellitectTerminal.Data.Models;
 #nullable disable
 
 public class Submission
