@@ -80,7 +80,7 @@ export default class Home extends Vue {
   pathTree: TreeNode = new TreeNode("/", false, null, []);
 
   // Hostname relative to path we are on
-  hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${this.pathTree.Name}]$ `;
+  hostname = `[\x1b[34mintellitect\x1B[0m@localuser \x1b[34m${this.pathTree.Name}\x1b[0m]$ `;
 
   // Present working directory
   pwd: string = "/";
@@ -97,15 +97,20 @@ export default class Home extends Vue {
     }
 
     this.pathTree = location;
-    this.hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${location.Name}]$ `;
+    this.hostname = `[\x1b[34mintellitect\x1B[0m@localuser \x1b[34m${location.Name}\x1b[0m]$ `;
   }
 
   // Position the cursor is currently at. This is needed for back spaces.
   cursorPosition = this.hostname.length;
-  term = new Terminal({ cursorBlink: true });
+  term = new Terminal({ 
+    cursorBlink: true,
+    fontSize: 25,
+    cols: 200,
+    fontFamily: "monospace",
+    });
 
   history = [];
-  welcomeMessage = "Welcome to the Intellitect CLI! View commands by typing help";
+  welcomeMessage = `\n\nWelcome to the \x1b[34mIntelliTect Terminal\x1b[0m! View commands by typing help.\n\n`;
 
   async created() {
 
@@ -254,7 +259,7 @@ export default class Home extends Vue {
           unknownArg(Commands.REQUEST, this.term, arg[0]);
           break;
         }
-        this.term.writeln("intelliterm: mounting a challenge in /home/user/challenges");
+        this.term.writeln("intelliterm: mounting a challenge in /home/localuser/challenges");
 
         // Grab the result from the server
         await this.commandservice.request(this.user?.userId!);
@@ -292,7 +297,7 @@ export default class Home extends Vue {
         this.pathTree.Children.forEach((child: TreeNode) =>
 
           // append a ./ to show it is a folder
-          this.term.writeln(`${child.isFile ? "" : "./"} ${child.Name}`)
+          this.term.writeln(`${child.isFile ? "" : "./"}${child.Name}`)
         );
         break;
 
