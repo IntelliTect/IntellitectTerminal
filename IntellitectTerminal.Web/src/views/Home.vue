@@ -26,40 +26,6 @@ interface FileNode {
   Children: FileNode[];
 }
 
-const filesystem = {
-  name: "/",
-  parent: "",
-  isFile: false,
-  children: [
-    {
-      name: "home",
-      parent: "/",
-      isFile: false,
-      children: [
-        {
-          name: "username",
-          parent: "home",
-          isFile: false,
-          children: [
-            {
-              name: "file",
-              parent: "username",
-              isFile: true,
-              children: []
-            },
-            {
-              name: "file",
-              parent: "username",
-              isFile: true,
-              children: []
-            },
-          ]
-        }
-      ]
-    }
-  ]
-}
-
 function serializeFilesSystemToTree(node: FileNode | TreeNode) {
   let parent = new TreeNode(node.Value, node.isFile, null, []);
   node.Children.forEach((child) => {
@@ -99,7 +65,7 @@ export default class Home extends Vue {
 
   // File path
   path: TreeNode = new TreeNode("", false, null, []);
-  hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${filesystem.name}]$ `;
+  hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${this.path.Value}]$ `;
   updatePath(location: TreeNode) {
     this.path = location;
     this.hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${location.Value}]$ `;
