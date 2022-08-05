@@ -4,6 +4,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Terminal } from "xterm";
+import { CommandServiceViewModel } from '@/viewmodels.g';
 
 enum Keys {
   BACKSPACE = "\x7F",
@@ -21,6 +22,7 @@ enum Commands {
 @Component
 export default class Home extends Vue {
 
+  commandservice = new CommandServiceViewModel();
   // The stored string the user is typing
   userInput: string = "";
 
@@ -35,18 +37,18 @@ export default class Home extends Vue {
   welcomeMessage = "Welcome to the Intellitect CLI! View commands by typing help";
 
   async created() {
-
     // XTerms input
     const input = document.getElementById('terminal');
     if (input != null) {
       this.initTerminal(input)
+    let challengeresult = await this.commandservice.requestCommand("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
+    console.table(challengeresult);
+    console.log(challengeresult);
     }
   }
 
   initTerminal(input: HTMLElement) {
     this.term.open(input);
-    let challengeresult = await this.commandservice.requestCommand("test");
-
     // Message of the Day
     this.term.write(this.welcomeMessage);
     this.term.write("\r\n");
