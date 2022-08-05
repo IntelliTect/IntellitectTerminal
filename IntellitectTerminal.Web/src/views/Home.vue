@@ -4,121 +4,139 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Terminal } from "xterm";
-import { CommandServiceViewModel } from '@/viewmodels.g';
+
+enum Keys {
+  BACKSPACE = "\x7F",
+  ENTER = "\r",
+  ARROW_LEFT = "\x1B[D",
+  ARROW_RIGHT = "\x1B[C",
+  ARROW_UP = "\x1B[A",
+  ARROW_BOTTOM = "\x1B[B",
+}
+
+enum Commands {
+  HELP = "help",
+}
 
 @Component
 export default class Home extends Vue {
 
-  commandservice = new CommandServiceViewModel();
-  helpView(term: Terminal) {
-    term.write("\r\n");
-    term.write("help - Displays this message");
-    term.write("\r\n");
-    term.write("ls - Lists all files in the current directory");
-    term.write("\r\n");
-    term.write("cat - Displays the contents of a file");
-    term.write("\r\n");
-    term.write("mkdir - Creates a directory");
-    term.write("\r\n");
-    term.write("challenge - Requests a challenge");
-    term.write("\r\n");
-    term.write("submit - Submits a challenge");
-    term.write("\r\n");
-    term.write("edit - Edits a file");
-    term.write("\r\n");
-    term.write("progress - Displays your progress");
-    term.write("\r\n");
-    term.write("verify - Verifies a challenge");
-    term.write("\r\n");
-    term.write('\x1B[1;3;31mIntelliTect\x1B[0m $ ');
-  }
+  // The stored string the user is typing
+  userInput: string = "";
+
+  // File path, change this later
+  path = '\x1B[1;3;31mIntellitect\x1B[0m $ ';
+
+  // Position the cursor is currently at. This is needed for back spaces.
+  cursorPosition = this.path.length;
+  term = new Terminal({ cursorBlink: true });
+
+  history = [];
+  welcomeMessage = "Welcome to the Intellitect CLI! View commands by typing help";
 
   async created() {
-
-    // The stored string the user is typing
-    var userInput: string = "";
-
-    // File path, change this later
-    const PATH = '\x1B[1;3;31mIntellitect\x1B[0m $ ';
-
-    // Position the cursor is currently at. This is needed for back spaces.
-    var cursorPosition = PATH.length;
-    var term = new Terminal({ cursorBlink: true });
-
-    var history = [];
-    var welcomeMessage = "Welcome to the Intellitect CLI! View commands by typing help";
 
     // XTerms input
     const input = document.getElementById('terminal');
     if (input != null) {
-      term.open(input);
-      let challengeresult = await this.commandservice.requestCommand("test");
+      this.initTerminal(input)
+    }
+  }
 
-      term.write(welcomeMessage);
-      term.write("\r\n");
-      term.write(PATH);
+  initTerminal(input: HTMLElement) {
+    this.term.open(input);
 
-      // Main key handler. Anything pressed goes here.
-      term.onKey((e) => {
-        console.log(e);
+    // Message of the Day
+    this.term.write(this.welcomeMessage);
+    this.term.write("\r\n");
 
-        // Command keys
-        switch (e.key) {
-          // Backspace key
-          case "\x7F":
-            // If the cursor is going to delete from our path... dont
-            if (cursorPosition == PATH.length) { return; }
-            term.write("\b \b");
-            userInput = userInput.substring(0, userInput.length - 1);
-            cursorPosition--;
-            return;
+    // Log path you are on
+    this.term.write(this.path);
 
-          // Enter key
-          case "\r":
-            term.write(e.key);
-            userInput += e.key;
-            term.write("\n");
+    // Main key handler. Anything pressed goes here.
+    this.term.onKey((e) => this.keyPressedHandler(e));
+  }
 
-            if (userInput.trim() == "help") {
-              this.helpView(term);
-            }
-            
-            term.write(PATH);
-            userInput = "";
-            cursorPosition = PATH.length;
-            return;
+  keyPressedHandler(event: { key: any; domEvent?: KeyboardEvent; }) {
 
-          // // Left arrow
-          case "\x1B[D":
-            // If the cursor is going out of our text... dont
-            if (cursorPosition == PATH.length) { return; }
-            term.write("\x1B[D");
-            cursorPosition--;
-            return;
+    // Command keys
+    switch (event.key) {
 
-          // Right arrow
-          case "\x1B[C":
-            // If the cursor is going out of our text... dont
-            if (cursorPosition >= (PATH.length + userInput.length)) { return; }
-            term.write("\x1B[C");
-            cursorPosition++;
-            return;
+      case Keys.BACKSPACE:
+        // If the cursor is going to delete from our path... dont
+        if (this.cursorPosition == this.path.length) { return; }
+        this.term.write("\b \b");
+        this.userInput = this.userInput.substring(0, this.userInput.length - 1);
+        this.cursorPosition--;
+        return;
 
-          // Top arrow
-          case "\x1B[A":
-            break;
+      case Keys.ENTER:
+        this.term.write(event.key);
+        this.userInput += event.key;
+        this.term.write("\n");
 
-          // Bottom arrow
-          case "\x1B[B":
-            break;
-          
-          default:
-            term.write(e.key);
-            userInput += e.key;
-            cursorPosition++;
-        }
-      })
+        this.commandHandler(this.userInput.trim());
 
+        this.term.write(this.path);
+        this.userInput = "";
+        this.cursorPosition = this.path.length;
+        return;
+
+      case Keys.ARROW_LEFT:
+        // If the cursor is going out of our text... dont
+        if (this.cursorPosition == this.path.length) { return; }
+        this.term.write("\x1B[D");
+        this.cursorPosition--;
+        return;
+
+      case Keys.ARROW_RIGHT:
+        // If the cursor is going out of our text... dont
+        if (this.cursorPosition >= (this.path.length + this.userInput.length)) { return; }
+        this.term.write("\x1B[C");
+        this.cursorPosition++;
+        return;
+
+      // By breaking we dont allow xterm to handle the arrow key itself
+      case Keys.ARROW_UP:
+        break;
+      // By breaking we dont allow xterm to handle the arrow key itself
+      case Keys.ARROW_BOTTOM:
+        break;
+
+      default:
+        console.log(event);
+        this.term.write(event.key);
+        this.userInput += event.key;
+        this.cursorPosition++;
+    }
+  }
+
+  commandHandler(cmd: string) {
+    switch (cmd) {
+      case Commands.HELP:
+        this.term.write(" help - Displays this message");
+        this.term.write("\r\n");
+        this.term.write(" ls - Lists all files in the current directory");
+        this.term.write("\r\n");
+        this.term.write(" cat - Displays the contents of a file");
+        this.term.write("\r\n");
+        this.term.write(" mkdir - Creates a directory");
+        this.term.write("\r\n");
+        this.term.write(" challenge - Requests a challenge");
+        this.term.write("\r\n");
+        this.term.write(" submit - Submits a challenge");
+        this.term.write("\r\n");
+        this.term.write(" edit - Edits a file");
+        this.term.write("\r\n");
+        this.term.write(" progress - Displays your progress");
+        this.term.write("\r\n");
+        this.term.write(" verify - Verifies a challenge");
+        this.term.write("\r\n");
+        this.term.write(this.path);
+        break;
+      default:
+        this.term.write("Command not found.");
+        this.term.write("\r\n");
     }
   }
 }
