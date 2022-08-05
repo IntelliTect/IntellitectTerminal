@@ -99,7 +99,7 @@ export default class Home extends Vue {
       await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
       let challengeresult = this.commandservice.request.result;
 
-      
+
       console.table(user);
       console.table(challengeresult);
       console.log(challengeresult);
@@ -182,9 +182,14 @@ export default class Home extends Vue {
 
   async commandHandler(cmd: string, arg: string[]) {
 
-    function unknownArg(prefix: string, term: Terminal, unArg: string) {
-      term.write(`${prefix}: Unknown argument '${unArg}' \r\n`);
+    function err(prefix: string, term: Terminal, msg: string) {
+      term.write(`${prefix}: ${msg} \r\n`);
     }
+
+    function unknownArg(prefix: string, term: Terminal, unArg: string) {
+      err(prefix, term, `Unknown argument '${unArg}'`);
+    }
+
 
     switch (cmd.toLocaleLowerCase()) {
       case Commands.HELP:
@@ -193,6 +198,7 @@ export default class Home extends Vue {
           unknownArg(Commands.HELP, this.term, arg[0]);
           break;
         }
+
         this.term.write(" help - Displays this message");
         this.term.write("\r\n");
         this.term.write(" ls - Lists all files in the current directory");
@@ -253,36 +259,36 @@ export default class Home extends Vue {
           (child: TreeNode) => location = child.Value == arg[0] ? child : null
         );
         if (location == null) {
-          this.term.write(`cd: Directory not found '${arg[0]}' \r\n`);
+          err(Commands.CD, this.term, `Directory not found '${arg[0]}'`);
           break;
         }
         if ((location as TreeNode).isFile) {
-          this.term.write(`cd: Argument is a file and not a directory. \r\n`);
+          err(Commands.CD, this.term, "Argument is a file and not a directory");
           break;
         }
 
         this.updatePath(location);
         break;
 
-      case Commands.CAT: 
+      case Commands.CAT:
         // Arg[0] is required
         if (arg[0] == undefined) {
-          this.term.write("cat: Missing argument file path" + "\r\n");
+          err(Commands.CAT, this.term, "Missing file argument path");
           break;
         }
         let file: TreeNode | null = null;
         this.path.Children.forEach((child) => file = (child.Value == arg[0]) ? child : null);
         if (file == null) {
-          this.term.write(`cat: File not found '${arg[0]}' \r\n`)
+          err(Commands.CAT, this.term, `File not found '${arg[0]}'`)
           break;
         }
         if (!(file as TreeNode).isFile) {
-          this.term.write("cat: Argument is a directory and not a file." + "\r\n");
+          err(Commands.CAT, this.term, "Argument is a directory and not a file");
         }
         break;
 
       default:
-        this.term.write(`intelliterm: Command not found '${cmd}'`);
+        err("intelliterm", this.term, `Command not found '${cmd}'`)
         this.term.write("\r\n");
     }
   }
