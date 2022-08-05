@@ -215,7 +215,7 @@ export default class Home extends Vue {
         this.term.writeln(" help - Displays this message");
         this.term.writeln(" ls - Lists all files in the current directory");
         this.term.writeln(" cat - Displays the contents of a file");
-        this.term.writeln(" mkdir - Creates a directory");
+        this.term.writeln(" cd - Navigate to a directory");
         this.term.writeln(" clear - Clear the terminal");
         this.term.writeln(" challenge - Requests a challenge");
         this.term.writeln(" submit - Submits a challenge");

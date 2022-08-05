@@ -67,6 +67,13 @@ public class CommandService : ICommandService
         }
     }
 
+    public string Progress(Guid userId)
+    {
+        User foundUser = Db.Users.Where(x => x.UserId == userId).FirstOrDefault() ?? throw new InvalidOperationException($"User:{userId} not found");
+        int highestLevel = GetHighestCompletedChallengeLevel(foundUser);
+        return $"You have completed {highestLevel} out of 3 challenge levels!";
+    }
+
     private int GetHighestCompletedChallengeLevel(User? user)
     {
         return Db.Submissions.AsNoTracking().Where(x => x.User == user && x.IsCorrect == true)
