@@ -47,7 +47,7 @@ export default class Home extends Vue {
   initTerminal(input: HTMLElement) {
     this.term.open(input);
 
-    // MOTD
+    // Message of the Day
     this.term.write(this.welcomeMessage);
     this.term.write("\r\n");
 
