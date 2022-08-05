@@ -17,6 +17,7 @@ enum Keys {
 
 enum Commands {
   HELP = "help",
+  REQUEST = "request",
 }
 
 @Component
@@ -50,7 +51,7 @@ export default class Home extends Vue {
   initTerminal(input: HTMLElement) {
     this.term.open(input);
 
-    // MOTD
+    // Display welcome message
     this.term.write(this.welcomeMessage);
     this.term.write("\r\n");
 
@@ -119,7 +120,7 @@ export default class Home extends Vue {
     }
   }
 
-  commandHandler(cmd: string) {
+  async commandHandler(cmd: string) {
     switch (cmd.toLocaleLowerCase()) {
       case Commands.HELP:
         this.term.write(" help - Displays this message");
@@ -140,6 +141,11 @@ export default class Home extends Vue {
         this.term.write("\r\n");
         this.term.write(" verify - Verifies a challenge");
         this.term.write("\r\n");
+        break;
+      case Commands.REQUEST:
+        console.log(
+          await this.commandservice.requestCommand("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F")
+        );
         break;
       default:
         this.term.write("Command not found.");
