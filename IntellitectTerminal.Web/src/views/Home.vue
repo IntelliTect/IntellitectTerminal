@@ -183,7 +183,7 @@ export default class Home extends Vue {
   async commandHandler(cmd: string, arg: string[]) {
 
     function err(prefix: string, term: Terminal, msg: string) {
-      term.write(`${prefix}: ${msg} \r\n`);
+      term.writeln(`${prefix}: ${msg}`);
     }
 
     function unknownArg(prefix: string, term: Terminal, unArg: string) {
@@ -199,24 +199,15 @@ export default class Home extends Vue {
           break;
         }
 
-        this.term.write(" help - Displays this message");
-        this.term.write("\r\n");
-        this.term.write(" ls - Lists all files in the current directory");
-        this.term.write("\r\n");
-        this.term.write(" cat - Displays the contents of a file");
-        this.term.write("\r\n");
-        this.term.write(" mkdir - Creates a directory");
-        this.term.write("\r\n");
-        this.term.write(" challenge - Requests a challenge");
-        this.term.write("\r\n");
-        this.term.write(" submit - Submits a challenge");
-        this.term.write("\r\n");
-        this.term.write(" edit - Edits a file");
-        this.term.write("\r\n");
-        this.term.write(" progress - Displays your progress");
-        this.term.write("\r\n");
-        this.term.write(" verify - Verifies a challenge");
-        this.term.write("\r\n");
+        this.term.writeln(" help - Displays this message");
+        this.term.writeln(" ls - Lists all files in the current directory");
+        this.term.writeln(" cat - Displays the contents of a file");
+        this.term.writeln(" mkdir - Creates a directory");
+        this.term.writeln(" challenge - Requests a challenge");
+        this.term.writeln(" submit - Submits a challenge");
+        this.term.writeln(" edit - Edits a file");
+        this.term.writeln(" progress - Displays your progress");
+        this.term.writeln(" verify - Verifies a challenge");
         break;
 
       case Commands.REQUEST:
@@ -291,7 +282,6 @@ export default class Home extends Vue {
 
       default:
         err("intelliterm", this.term, `Command not found '${cmd}'`)
-        this.term.write("\r\n");
     }
   }
 }
