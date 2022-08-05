@@ -78,6 +78,7 @@ enum Keys {
   ARROW_RIGHT = "\x1B[C",
   ARROW_UP = "\x1B[A",
   ARROW_BOTTOM = "\x1B[B",
+  CTRL_L = "\f"
 }
 
 enum Commands {
@@ -188,6 +189,21 @@ export default class Home extends Vue {
       case Keys.ARROW_BOTTOM:
         break;
 
+      case Keys.CTRL_L:
+        this.term.write("\r");
+        this.userInput += "\r"
+        this.term.write("\n");
+
+        // Clear terminal
+        for (let i = 0; i < 50; i++) {
+          this.term.write("\n");
+        }
+
+        this.term.write(this.hostname);
+        this.userInput = "";
+        this.cursorPosition = this.hostname.length;
+        return;
+
       default:
         console.log(event);
         this.term.write(event.key);
@@ -235,7 +251,7 @@ export default class Home extends Vue {
           break;
         }
         console.log(
-          await this.commandservice.requestCommand("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F")
+          await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F")
         );
         break;
 
