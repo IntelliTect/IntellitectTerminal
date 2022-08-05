@@ -64,9 +64,16 @@ export default class Home extends Vue {
   // The stored string the user is typing
   userInput: string = "";
 
-  // File path
+  // Entire file system
+  filesystem: TreeNode = new TreeNode("/", false, null, []);
+
+  // Path we are on
   path: TreeNode = new TreeNode("/", false, null, []);
+
+  // Hostname relative to path we are on
   hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${this.path.Value}]$ `;
+
+  // Update the path we are on and display hostname correctly
   updatePath(location: TreeNode) {
     this.path = location;
     this.hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${location.Value}]$ `;
@@ -93,7 +100,8 @@ export default class Home extends Vue {
 
       // Serialize and cache filesystem to a Tree
       console.log(JSON.parse(user?.fileSystem!));
-      this.path = serializeFilesSystemToTree(JSON.parse(user?.fileSystem!));
+      this.filesystem = serializeFilesSystemToTree(JSON.parse(user?.fileSystem!));
+      this.path = this.filesystem;
 
       // Command services
       await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
@@ -242,6 +250,32 @@ export default class Home extends Vue {
           if (this.path.Parent != null) {
             this.updatePath(this.path.Parent);
           }
+          break;
+        }
+
+        // Root level navigation
+        if (arg[0].startsWith("/")) {
+
+          // Get each direction we need from the arg[0]. EX /home/user/file [home,user,file]
+          let pathMap = arg[0].split("/").filter(element => element == "" ? false: true);
+
+          console.log(pathMap);
+          let traverse: TreeNode = this.filesystem;
+          console.log(traverse);
+          pathMap.every((direction: string) => {
+
+            // Find the node that matches the path
+            let i = traverse.Children.find((child) => child.Value == direction);
+
+            // If no node is found, the path is errornous. Return.
+            if (i == undefined) {
+              err(Commands.CD, this.term, `Directory not found '${arg[0]}'`);
+              return;
+            }
+            traverse = i;
+          })
+
+          this.updatePath(traverse);
           break;
         }
 
