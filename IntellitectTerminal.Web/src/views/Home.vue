@@ -7,12 +7,12 @@ import { Terminal } from "xterm";
 import { CommandServiceViewModel, UserServiceViewModel } from '@/viewmodels.g';
 
 class TreeNode {
-  Value: string;
+  Name: string;
   isFile: boolean;
   Parent: TreeNode | null;
   Children: TreeNode[];
   constructor(name: string, isFile: boolean, parent: TreeNode | null, children: TreeNode[]) {
-    this.Value = name;
+    this.Name = name;
     this.isFile = isFile;
     this.Parent = parent;
     this.Children = children;
@@ -21,13 +21,13 @@ class TreeNode {
 
 interface FileNode {
   Parent: string;
-  Value: string;
+  Name: string;
   isFile: boolean;
   Children: FileNode[];
 }
 
 function serializeFilesSystemToTree(node: FileNode | TreeNode) {
-  let parent = new TreeNode(node.Value, node.isFile, null, []);
+  let parent = new TreeNode(node.Name, node.isFile, null, []);
   node.Children.forEach((child) => {
     let childNode: TreeNode = serializeFilesSystemToTree(child);
     childNode.Parent = parent;
@@ -73,12 +73,12 @@ export default class Home extends Vue {
   path: TreeNode = new TreeNode("/", false, null, []);
 
   // Hostname relative to path we are on
-  hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${this.path.Value}]$ `;
+  hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${this.path.Name}]$ `;
 
   // Update the path we are on and display hostname correctly
   updatePath(location: TreeNode) {
     this.path = location;
-    this.hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${location.Value}]$ `;
+    this.hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${location.Name}]$ `;
   }
 
   // Position the cursor is currently at. This is needed for back spaces.
@@ -229,9 +229,7 @@ export default class Home extends Vue {
           unknownArg(Commands.REQUEST, this.term, arg[0]);
           break;
         }
-        console.log(
-          await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F")
-        );
+        
         break;
 
       case Commands.LS:
@@ -240,7 +238,7 @@ export default class Home extends Vue {
           break;
         }
         this.path.Children.forEach((child: TreeNode) =>
-          this.term.write(child.Value + "\r\n")
+          this.term.write(child.Name + "\r\n")
         );
         break;
 
@@ -259,7 +257,7 @@ export default class Home extends Vue {
             }
 
             // Find the node that matches the path
-            let i = traverse.Children.find((child) => child.Value == direction);
+            let i = traverse.Children.find((child) => child.Name == direction);
 
 
             // If no node is found, the path is errornous. Return.
@@ -307,7 +305,7 @@ export default class Home extends Vue {
           break;
         }
         let file: TreeNode | null = null;
-        this.path.Children.forEach((child) => file = (child.Value == arg[0]) ? child : null);
+        this.path.Children.forEach((child) => file = (child.Name == arg[0]) ? child : null);
         if (file == null) {
           err(Commands.CAT, this.term, `File not found '${arg[0]}'`)
           break;
