@@ -4,6 +4,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Terminal } from "xterm";
+import { CommandServiceViewModel } from '@/viewmodels.g';
 
 enum Keys {
   BACKSPACE = "\x7F",
@@ -20,6 +21,9 @@ enum Commands {
 
 @Component
 export default class Home extends Vue {
+
+  // Connects to the API
+  commandservice = new CommandServiceViewModel();
 
   // The stored string the user is typing
   userInput: string = "";
@@ -46,7 +50,7 @@ export default class Home extends Vue {
   initTerminal(input: HTMLElement) {
     this.term.open(input);
 
-    // Message of the Day
+    // MOTD
     this.term.write(this.welcomeMessage);
     this.term.write("\r\n");
 
@@ -75,7 +79,10 @@ export default class Home extends Vue {
         this.userInput += event.key;
         this.term.write("\n");
 
-        this.commandHandler(this.userInput.trim());
+        // Do not allow a command that is blank to be ran.
+        if (this.userInput.trim() != "") {
+          this.commandHandler(this.userInput.trim());
+        }
 
         this.term.write(this.path);
         this.userInput = "";
@@ -96,10 +103,11 @@ export default class Home extends Vue {
         this.cursorPosition++;
         return;
 
-      // By breaking we dont allow xterm to handle the arrow key itself
+      // Breaks functionality that xterm already gives arrows
       case Keys.ARROW_UP:
         break;
-      // By breaking we dont allow xterm to handle the arrow key itself
+
+      // Breaks functionality that xterm already gives arrows
       case Keys.ARROW_BOTTOM:
         break;
 
@@ -112,7 +120,7 @@ export default class Home extends Vue {
   }
 
   commandHandler(cmd: string) {
-    switch (cmd) {
+    switch (cmd.toLocaleLowerCase()) {
       case Commands.HELP:
         this.term.write(" help - Displays this message");
         this.term.write("\r\n");
@@ -132,7 +140,6 @@ export default class Home extends Vue {
         this.term.write("\r\n");
         this.term.write(" verify - Verifies a challenge");
         this.term.write("\r\n");
-        this.term.write(this.path);
         break;
       default:
         this.term.write("Command not found.");
