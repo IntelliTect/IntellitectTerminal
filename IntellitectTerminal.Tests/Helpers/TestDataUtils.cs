@@ -1,5 +1,7 @@
 ﻿using IntellitectTerminal.Data;
+using IntellitectTerminal.Data.Services;
 using IntellitectTerminal.Data.Models;
+using Newtonsoft.Json;
 using System;
 
 namespace IntellitectTerminal.Tests.Helpers;
@@ -26,9 +28,24 @@ public class TestDataUtils
         Db.Challenges.AddRange(challenges);
         return challenges;
     }
-    public User AddUser()
+    public User AddUserWithOnlyGuid()
     {
         User user = new() { UserId = Guid.NewGuid() };
+        Db.Users.Add(user);
+        Db.SaveChanges();
+        return user;
+    }
+
+    public User AddFullUser()
+    {
+        User user = new()
+        {
+            UserId = Guid.NewGuid(),
+            FileSystem = JsonConvert.SerializeObject(UserService.CreateDefaultFileSystem(), new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            })
+        };
         Db.Users.Add(user);
         Db.SaveChanges();
         return user;

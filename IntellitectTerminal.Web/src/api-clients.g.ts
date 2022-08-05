@@ -31,3 +31,16 @@ export class CommandServiceApiClient extends ServiceApiClient<typeof $metadata.C
 }
 
 
+export class UserServiceApiClient extends ServiceApiClient<typeof $metadata.UserService> {
+  constructor() { super($metadata.UserService) }
+  public initializeFileSystem(userId: string | null, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<$models.User>> {
+    const $method = this.$metadata.methods.initializeFileSystem
+    const $params =  {
+      userId,
+    }
+    return this.$invoke($method, $params, $config)
+  }
+  
+}
+
+

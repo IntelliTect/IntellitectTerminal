@@ -39,6 +39,7 @@ services.AddDbContext<AppDbContext>(options =>
 
 services.AddCoalesce<AppDbContext>();
 services.AddScoped<ICommandService, CommandService>();
+services.AddScoped<IUserService, UserService>();
 
 services
     .AddMvc()

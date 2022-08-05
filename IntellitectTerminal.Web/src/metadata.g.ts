@@ -172,6 +172,35 @@ export const CommandService = domain.services.CommandService = {
     },
   },
 }
+export const UserService = domain.services.UserService = {
+  name: "UserService",
+  displayName: "User Service",
+  type: "service",
+  controllerRoute: "UserService",
+  methods: {
+    initializeFileSystem: {
+      name: "initializeFileSystem",
+      displayName: "Initialize File System",
+      transportType: "item",
+      httpMethod: "POST",
+      params: {
+        userId: {
+          name: "userId",
+          displayName: "User Id",
+          type: "string",
+          role: "value",
+        },
+      },
+      return: {
+        name: "$return",
+        displayName: "Result",
+        type: "model",
+        get typeDef() { return (domain.types.User as ModelType) },
+        role: "value",
+      },
+    },
+  },
+}
 
 interface AppDomain extends Domain {
   enums: {
@@ -184,6 +213,7 @@ interface AppDomain extends Domain {
   }
   services: {
     CommandService: typeof CommandService
+    UserService: typeof UserService
   }
 }
 
