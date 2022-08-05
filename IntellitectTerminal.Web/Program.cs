@@ -31,6 +31,8 @@ builder.Configuration
 
 var services = builder.Services;
 
+builder.Services.AddSwaggerGen();
+
 services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), opt => opt
         .EnableRetryOnFailure()
@@ -60,6 +62,9 @@ services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 #region Configure HTTP Pipeline
 
 var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 if (app.Environment.IsDevelopment())
 {
