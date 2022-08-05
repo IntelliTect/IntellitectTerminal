@@ -234,6 +234,8 @@ export default class Home extends Vue {
         this.term.write("\r\n");
         this.term.write(" mkdir - Creates a directory");
         this.term.write("\r\n");
+        this.term.write(" clear - Clears the console");
+        this.term.write("\r\n");
         this.term.write(" challenge - Requests a challenge");
         this.term.write("\r\n");
         this.term.write(" submit - Submits a challenge");
