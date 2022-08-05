@@ -66,5 +66,12 @@ namespace IntellitectTerminal.Tests
             TestData.AddSubmission(user, challenge, null);
             Assert.Equal(challenge.Question, UnderTest.Cat(user.UserId, "challenge_2.txt"));
         }
+
+        [Fact]
+        public void Cat_Readme_ReturnsReadmeContents()
+        {
+            User user = TestData.AddFullUser();
+            Assert.StartsWith("Welcome to the Intellitect Terminal!", UnderTest.Cat(user.UserId, "readme.txt"));
+        }
     }
 }
