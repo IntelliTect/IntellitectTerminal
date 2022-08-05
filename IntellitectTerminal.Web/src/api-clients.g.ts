@@ -37,6 +37,14 @@ export class CommandServiceApiClient extends ServiceApiClient<typeof $metadata.C
     return this.$invoke($method, $params, $config)
   }
   
+  public progress(userId: string | null, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<string>> {
+    const $method = this.$metadata.methods.progress
+    const $params =  {
+      userId,
+    }
+    return this.$invoke($method, $params, $config)
+  }
+  
 }
 
 

@@ -106,13 +106,13 @@ export default class Home extends Vue {
       this.path = this.filesystem;
 
       // Command services
-      await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
-      let challengeresult = this.commandservice.request.result;
+      //await this.commandservice.request("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F");
+      //let challengeresult = this.commandservice.request.result;
 
 
-      console.table(user);
-      console.table(challengeresult);
-      console.log(challengeresult);
+      //console.table(user);
+      //console.table(challengeresult);
+      //console.log(challengeresult);
       this.initTerminal(input)
     }
   }
@@ -215,7 +215,7 @@ export default class Home extends Vue {
         this.term.writeln(" help - Displays this message");
         this.term.writeln(" ls - Lists all files in the current directory");
         this.term.writeln(" cat - Displays the contents of a file");
-        this.term.writeln(" mkdir - Creates a directory");
+        this.term.writeln(" cd - Navigate to a directory");
         this.term.writeln(" clear - Clear the terminal");
         this.term.writeln(" challenge - Requests a challenge");
         this.term.writeln(" submit - Submits a challenge");

@@ -38,6 +38,7 @@ public class CommandService : ICommandService
             {
                 TreeNode<string>.GetChild(foundUsersFileSystem, $"challenge_{highestCompletedLevel}.txt", true);
             }
+            // If it can't find an existing file which should be the case, then add one.
             catch (InvalidOperationException)
             {
                 challengesFolder.AddChild($"challenge_{highestCompletedLevel}.txt", true);
@@ -65,6 +66,13 @@ public class CommandService : ICommandService
             default:
                 return "Error: File contents cannot be displayed with cat";
         }
+    }
+
+    public string Progress(Guid userId)
+    {
+        User foundUser = Db.Users.Where(x => x.UserId == userId).FirstOrDefault() ?? throw new InvalidOperationException($"User:{userId} not found");
+        int highestLevel = GetHighestCompletedChallengeLevel(foundUser);
+        return $"You have completed {highestLevel} out of 3 challenge levels!";
     }
 
     private int GetHighestCompletedChallengeLevel(User? user)
