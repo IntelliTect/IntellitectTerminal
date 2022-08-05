@@ -212,6 +212,7 @@ export default class Home extends Vue {
         this.term.writeln(" cat - Displays the contents of a file");
         this.term.writeln(" cd - Navigate to a directory");
         this.term.writeln(" clear - Clear the terminal");
+        this.term.writeln(" pwd - Display present working directory");
         this.term.writeln(" challenge - Requests a challenge");
         this.term.writeln(" submit - Submits a challenge");
         this.term.writeln(" edit - Edits a file");
@@ -260,7 +261,9 @@ export default class Home extends Vue {
           break;
         }
         this.pathTree.Children.forEach((child: TreeNode) =>
-          this.term.writeln(child.Name)
+
+          // append a ./ to show it is a folder
+          this.term.writeln(`${child.isFile ? "" : "./"} ${child.Name}`)
         );
         break;
 
@@ -295,6 +298,8 @@ export default class Home extends Vue {
           err(Commands.CAT, this.term, "Missing file argument path");
           break;
         }
+
+        // Find the file
         let file: TreeNode | null = null;
         this.pathTree.Children.forEach((child) => file = (child.Name == arg[0]) ? child : null);
         if (file == null) {
@@ -304,11 +309,10 @@ export default class Home extends Vue {
         if (!(file as TreeNode).isFile) {
           err(Commands.CAT, this.term, "Argument is a directory and not a file");
         }
-        console.log((file as TreeNode).Name);
         await this.commandservice.cat(this.user?.userId!, (file as TreeNode).Name);
         let catouput = this.commandservice.cat.result;
-        this.term.writeln(`$: ${catouput}`);
-
+        this.term.writeln("");
+        this.term.writeln(`${catouput}`);
         break;
 
       case Commands.CLEAR:
@@ -322,7 +326,7 @@ export default class Home extends Vue {
       case Commands.PROGRESS:
         await this.commandservice.progress(this.user?.userId!);
         let progressoutput = this.commandservice.progress.result;
-        this.term.write(`${progressoutput}\r\n`);
+        this.term.writeln(`${progressoutput}`);
         break;
 
       case Commands.PWD:
