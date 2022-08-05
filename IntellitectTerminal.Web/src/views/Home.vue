@@ -18,6 +18,7 @@ enum Commands {
   HELP = "help",
 }
 
+
 @Component
 export default class Home extends Vue {
 
@@ -54,10 +55,10 @@ export default class Home extends Vue {
     this.term.write(this.path);
 
     // Main key handler. Anything pressed goes here.
-    this.term.onKey((e) => this.keyHandler(e));
+    this.term.onKey((e) => this.keyPressedHandler(e));
   }
 
-  keyHandler(event: { key: any; domEvent?: KeyboardEvent; }) {
+  keyPressedHandler(event: { key: any; domEvent?: KeyboardEvent; }) {
 
     // Command keys
     switch (event.key) {
