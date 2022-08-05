@@ -278,7 +278,7 @@ export default class Home extends Vue {
         break;
 
       default:
-        this.term.write("Command not found.");
+        this.term.write(`intelliterm: Command not found '${cmd}'`);
         this.term.write("\r\n");
     }
   }
