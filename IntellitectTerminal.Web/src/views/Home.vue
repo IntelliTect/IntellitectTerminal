@@ -34,22 +34,24 @@ export default class Home extends Vue {
   async created() {
 
     // The stored string the user is typing
-    var temp: string = "";
+    var userInput: string = "";
 
     // File path, change this later
-    const PATH = 'Hello from \x1B[1;3;31mIntellitect\x1B[0m $ ';
+    const PATH = '\x1B[1;3;31mIntellitect\x1B[0m $ ';
 
     // Position the cursor is currently at. This is needed for back spaces.
     var cursorPosition = PATH.length;
-    var term: Terminal = new Terminal();
+    var term = new Terminal({ cursorBlink: true });
 
     var history = [];
+    var welcomeMessage = "Welcome to the Intellitect CLI! View commands by typing help";
 
     // XTerms input
     const input = document.getElementById('terminal');
     if (input != null) {
       term.open(input);
-
+      term.write(welcomeMessage);
+      term.write("\r\n");
       term.write(PATH);
 
       // Main key handler. Anything pressed goes here.
@@ -58,31 +60,27 @@ export default class Home extends Vue {
 
         // Command keys
         switch (e.key) {
-
           // Backspace key
           case "\x7F":
-
             // If the cursor is going to delete from our path... dont
             if (cursorPosition == PATH.length) { return; }
             term.write("\b \b");
-            temp = temp.substring(0, temp.length - 1);
+            userInput = userInput.substring(0, userInput.length - 1);
             cursorPosition--;
             return;
 
           // Enter key
           case "\r":
             term.write(e.key);
-            temp += e.key;
+            userInput += e.key;
             term.write("\n");
 
-            // Print the command name out :)
-            if (temp.trim() != "") {
-              term.write(temp);
-              term.write("\n");
-              history.push(temp);
+            if (userInput.trim() == "help") {
+              this.helpView(term);
             }
+            
             term.write(PATH);
-            temp = "";
+            userInput = "";
             cursorPosition = PATH.length;
             return;
 
@@ -97,7 +95,7 @@ export default class Home extends Vue {
           // Right arrow
           case "\x1B[C":
             // If the cursor is going out of our text... dont
-            if (cursorPosition >= (PATH.length + temp.length)) { return; }
+            if (cursorPosition >= (PATH.length + userInput.length)) { return; }
             term.write("\x1B[C");
             cursorPosition++;
             return;
@@ -110,11 +108,9 @@ export default class Home extends Vue {
           case "\x1B[B":
             break;
           
-
-
           default:
             term.write(e.key);
-            temp += e.key;
+            userInput += e.key;
             cursorPosition++;
         }
       })
