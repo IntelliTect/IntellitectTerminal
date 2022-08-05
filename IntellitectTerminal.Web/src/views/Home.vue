@@ -6,6 +6,47 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { Terminal } from "xterm";
 import { CommandServiceViewModel } from '@/viewmodels.g';
 
+interface FileNode {
+    parent: string;
+    name: string;
+    isFile: boolean;
+    children: Array<FileNode>;
+}
+
+const filesystem = {
+  name: "/",
+  parent: "",
+  isFile: false,
+  children: [
+    {
+      name: "home",
+      parent: "/",
+      isFile: false,
+      children: [
+        {
+          name: "username",
+          parent: "home",
+          isFile: false,
+          children: [
+            {
+              name: "file",
+              parent: "username",
+              isFile: true,
+              children: []
+            },
+            {
+              name: "file",
+              parent: "username",
+              isFile: true,
+              children: []
+            },
+          ]
+        }
+      ]
+    }
+  ]
+}
+
 enum Keys {
   BACKSPACE = "\x7F",
   ENTER = "\r",
@@ -18,6 +59,7 @@ enum Keys {
 enum Commands {
   HELP = "help",
   REQUEST = "request",
+  LS = "ls",
 }
 
 @Component
@@ -29,11 +71,16 @@ export default class Home extends Vue {
   // The stored string the user is typing
   userInput: string = "";
 
-  // File path, change this later
-  path = '\x1B[1;3;31mIntellitect\x1B[0m $ ';
+  // File path
+  path: FileNode = filesystem;
+  hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${filesystem.name}]$ `;
+  updatePath(location: FileNode) {
+    this.path = location;
+    this.hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${location.name}]$ `;
+  }
 
   // Position the cursor is currently at. This is needed for back spaces.
-  cursorPosition = this.path.length;
+  cursorPosition = this.hostname.length;
   term = new Terminal({ cursorBlink: true });
 
   history = [];
@@ -56,7 +103,7 @@ export default class Home extends Vue {
     this.term.write("\r\n");
 
     // Log path you are on
-    this.term.write(this.path);
+    this.term.write(this.hostname);
 
     // Main key handler. Anything pressed goes here.
     this.term.onKey((e) => this.keyPressedHandler(e));
@@ -69,7 +116,7 @@ export default class Home extends Vue {
 
       case Keys.BACKSPACE:
         // If the cursor is going to delete from our path... dont
-        if (this.cursorPosition == this.path.length) { return; }
+        if (this.cursorPosition == this.hostname.length) { return; }
         this.term.write("\b \b");
         this.userInput = this.userInput.substring(0, this.userInput.length - 1);
         this.cursorPosition--;
@@ -85,21 +132,21 @@ export default class Home extends Vue {
           this.commandHandler(this.userInput.trim());
         }
 
-        this.term.write(this.path);
+        this.term.write(this.hostname);
         this.userInput = "";
-        this.cursorPosition = this.path.length;
+        this.cursorPosition = this.hostname.length;
         return;
 
       case Keys.ARROW_LEFT:
         // If the cursor is going out of our text... dont
-        if (this.cursorPosition == this.path.length) { return; }
+        if (this.cursorPosition == this.hostname.length) { return; }
         this.term.write("\x1B[D");
         this.cursorPosition--;
         return;
 
       case Keys.ARROW_RIGHT:
         // If the cursor is going out of our text... dont
-        if (this.cursorPosition >= (this.path.length + this.userInput.length)) { return; }
+        if (this.cursorPosition >= (this.hostname.length + this.userInput.length)) { return; }
         this.term.write("\x1B[C");
         this.cursorPosition++;
         return;
@@ -142,11 +189,20 @@ export default class Home extends Vue {
         this.term.write(" verify - Verifies a challenge");
         this.term.write("\r\n");
         break;
+
       case Commands.REQUEST:
         console.log(
           await this.commandservice.requestCommand("3A20F4E1-628F-4FD2-810B-6ABC9EB7D34F")
         );
         break;
+
+      case Commands.LS:
+        this.path.children.forEach( (child: FileNode) =>
+          this.term.write(child.name + "\r\n")
+        );
+        break;
+
+
       default:
         this.term.write("Command not found.");
         this.term.write("\r\n");
