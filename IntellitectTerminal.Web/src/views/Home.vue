@@ -65,7 +65,7 @@ export default class Home extends Vue {
   userInput: string = "";
 
   // File path
-  path: TreeNode = new TreeNode("", false, null, []);
+  path: TreeNode = new TreeNode("/", false, null, []);
   hostname = `[\x1b[34mintellitect\x1B[0m@usrname ${this.path.Value}]$ `;
   updatePath(location: TreeNode) {
     this.path = location;
