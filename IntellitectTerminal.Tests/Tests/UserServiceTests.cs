@@ -15,13 +15,17 @@ namespace IntellitectTerminal.Tests
         }
 
         [Fact]
-        public void InitializeFileSystem_NullUser_ReturnNewUser()
+        public void InitializeFileSystem_NullUser_ReturnFullNewUser()
         {
             TestData.AddNewChallenges();
             User newUser = UnderTest.InitializeFileSystem(null);
             Assert.NotNull(newUser);
             // You can't Assert.NotNull a value type (xUnit2002 https://xunit.net/xunit.analyzers/rules/xUnit2002)
             Assert.True(Guid.TryParse(newUser.UserId.ToString(), out _));
+            Assert.Equal(JsonConvert.SerializeObject(UserService.CreateDefaultFileSystem(), new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            }), newUser.FileSystem);
         }
 
         [Fact]
@@ -33,7 +37,7 @@ namespace IntellitectTerminal.Tests
         }
 
         [Fact]
-        public void InitializeFileSystem_ExistingUserNoFileSystem_ReturnUserWithFileSystem()
+        public void InitializeFileSystem_ExistingUserWithoutFileSystem_ReturnUserWithDefaultFileSystem()
         {
             User user = TestData.AddUserWithOnlyGuid();
             User existingUser = UnderTest.InitializeFileSystem(user.UserId);
