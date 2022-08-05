@@ -319,7 +319,7 @@ export default class Home extends Vue {
           err(Commands.CAT, this.term, "Argument is a directory and not a file");
         }
         console.log((file as TreeNode).Name);
-        this.commandservice.cat(this.user?.userId!, (file as TreeNode).Name);
+        await this.commandservice.cat(this.user?.userId!, (file as TreeNode).Name);
         let catouput = this.commandservice.cat.result;
         this.term.writeln(`$: ${catouput}`);
 

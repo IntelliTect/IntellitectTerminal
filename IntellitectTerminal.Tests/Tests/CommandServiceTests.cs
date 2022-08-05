@@ -68,6 +68,15 @@ namespace IntellitectTerminal.Tests
         }
 
         [Fact]
+        public void Cat_ExistingUserWithFirstChallengeAfterRequest_ReturnsChallengeAnswer()
+        {
+            Challenge challenge = TestData.AddNewChallenge(1);
+            User user = TestData.AddFullUser();
+            UnderTest.Request(user.UserId);
+            Assert.Equal(challenge.Question, UnderTest.Cat(user.UserId, "challenge_1.txt"));
+        }
+
+        [Fact]
         public void Cat_Readme_ReturnsReadmeContents()
         {
             User user = TestData.AddFullUser();
