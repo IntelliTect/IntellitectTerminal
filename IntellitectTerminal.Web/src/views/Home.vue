@@ -51,6 +51,7 @@ enum Commands {
   REQUEST = "request",
   LS = "ls",
   CD = "cd",
+  CAT = "cat",
 }
 
 @Component
@@ -181,15 +182,15 @@ export default class Home extends Vue {
 
   async commandHandler(cmd: string, arg: string[]) {
 
-    function unknownArg(term: Terminal, unArg: string) {
-      term.write("Unknown argument: " + unArg + "\r\n");
+    function unknownArg(prefix: string, term: Terminal, unArg: string) {
+      term.write(`${prefix}: Unknown argument '${unArg}' \r\n`);
     }
 
     switch (cmd.toLocaleLowerCase()) {
       case Commands.HELP:
         console.log(arg);
         if (arg.length > 0) {
-          unknownArg(this.term, arg[0]);
+          unknownArg(Commands.HELP, this.term, arg[0]);
           break;
         }
         this.term.write(" help - Displays this message");
@@ -214,7 +215,7 @@ export default class Home extends Vue {
 
       case Commands.REQUEST:
         if (arg.length > 0) {
-          unknownArg(this.term, arg[0]);
+          unknownArg(Commands.REQUEST, this.term, arg[0]);
           break;
         }
         console.log(
@@ -223,8 +224,8 @@ export default class Home extends Vue {
         break;
 
       case Commands.LS:
-        if (arg.length > 1) {
-          unknownArg(this.term, arg[1]);
+        if (arg.length > 0) {
+          unknownArg(Commands.LS, this.term, arg[0]);
           break;
         }
         this.path.Children.forEach((child: TreeNode) =>
@@ -252,11 +253,28 @@ export default class Home extends Vue {
           (child: TreeNode) => location = child.Value == arg[0] ? child : null
         );
         if (location == null) {
-          this.term.write("Directory not found: " + arg[0] +"\r\n");
+          this.term.write(`cd: Directory not found '${arg[0]}' \r\n`);
           break;
         }
 
         this.updatePath(location);
+        break;
+
+      case Commands.CAT: 
+        // Arg[0] is required
+        if (arg[0] == undefined) {
+          this.term.write("cat: Missing argument file path" + "\r\n");
+          break;
+        }
+        let file: TreeNode | null = null;
+        this.path.Children.forEach((child) => file = (child.Value == arg[0]) ? child : null);
+        if (file == null) {
+          this.term.write(`cat: File not found '${arg[0]}' \r\n`)
+          break;
+        }
+        if (!(file as TreeNode).isFile) {
+          this.term.write("cat: Argument is a directory not a file." + "\r\n");
+        }
         break;
 
       default:
