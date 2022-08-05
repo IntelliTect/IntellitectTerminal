@@ -35,7 +35,7 @@ namespace IntellitectTerminal.Web.Api
         /// Method: Request
         /// </summary>
         [HttpPost("Request")]
-        [Authorize]
+        [AllowAnonymous]
         public virtual ItemResult<ChallengeDtoGen> Request(System.Guid? userId)
         {
             IncludeTree includeTree = null;

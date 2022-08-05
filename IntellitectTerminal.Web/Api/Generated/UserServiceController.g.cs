@@ -35,7 +35,7 @@ namespace IntellitectTerminal.Web.Api
         /// Method: InitializeFileSystem
         /// </summary>
         [HttpPost("InitializeFileSystem")]
-        [Authorize]
+        [AllowAnonymous]
         public virtual ItemResult<UserDtoGen> InitializeFileSystem(System.Guid? userId)
         {
             IncludeTree includeTree = null;

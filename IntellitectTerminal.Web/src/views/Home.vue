@@ -115,8 +115,6 @@ export default class Home extends Vue {
 
   async created() {
 
-    console.log(serializeFilesSystemToTree(filesystem));
-
     // XTerms input
     const input = document.getElementById('terminal');
     if (input != null) {
