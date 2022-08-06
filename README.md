@@ -1,11 +1,12 @@
 <a name="readme-top"></a>
-
-<!-- PROJECT SHIELDS -->
+<div align="center">
+  
 [![Build, Test, and Deploy Intellitect Terminal](https://github.com/IntelliTect/IntellitectTerminal/actions/workflows/Build-Test-And-Deploy.yml/badge.svg?event=push)](https://github.com/IntelliTect/IntellitectTerminal/actions/workflows/Build-Test-And-Deploy.yml)
+</div>
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/IntelliTect/IntellitectTerminal">
+  <a href="https://console.intellitect.com">
     <img src="logo.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -48,7 +49,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![IntellitectTerminal][product-screenshot]](https://console.intellitect.com)
+[![Intellitect Terminal](./screenshot.png)](https://console.intellitect.com)
 
 Of course, no one terminal will serve all your need since your needs may be different. But give it a try.
 
