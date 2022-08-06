@@ -18,6 +18,9 @@
     <script src="/node_modules/xterm/lib/xterm.js" type="module"></script>
 </head>
 <body>
+    <form id="file-submit" action="/api/CommandService/SubmitFile" style="display:none" method="post" enctype="multipart/form-data">
+        <input type="file" id="file" style="display:none" accept=".py"/>
+    </form>
     <div class="terminal-container">
         <div id="terminal"></div>
     </div>
