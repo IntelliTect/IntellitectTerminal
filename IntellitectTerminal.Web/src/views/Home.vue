@@ -6,6 +6,8 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { Terminal } from "xterm";
 import { CommandServiceViewModel, UserServiceViewModel } from '@/viewmodels.g';
 import { User } from "../models.g";
+import * as Cookies from 'tiny-cookie';
+import { isCookieEnabled, getCookie, setCookie, removeCookie } from 'tiny-cookie'
 
 class TreeNode {
   Name: string;
@@ -142,12 +144,28 @@ export default class Home extends Vue {
       });
     })
     if (input != null) {
-
+       // if user is in cookies, get user id from cookies
+      let userId = getCookie('userId');
+      let user;
+      if (userId == null) {
+        // if user is not in cookies, get user id from api
+        await this.userservice.initializeFileSystem(null);
+        user = this.userservice.initializeFileSystem.result;
+        userId = user!.userId;
+        if(userId != null) {
+          setCookie('userId', userId, { expires: 100 });
+        } 
+      } else {
+        // if user is in cookies, get user from api
+        // Request for the file system
+        await this.userservice.initializeFileSystem(userId);
+        user = this.userservice.initializeFileSystem.result;
+      }
       // Request for the file system
-      await this.userservice.initializeFileSystem(null);
+      //await this.userservice.initializeFileSystem(null);
 
       // Get user
-      let user = this.userservice.initializeFileSystem.result;
+     // let user = this.userservice.initializeFileSystem.result;
       console.log(user);
       this.user = user;
       // Serialize and cache filesystem to a Tree
