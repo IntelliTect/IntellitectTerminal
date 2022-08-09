@@ -142,6 +142,14 @@ export const User = domain.types.User = {
       type: "string",
       role: "value",
     },
+    creationTime: {
+      name: "creationTime",
+      displayName: "Creation Time",
+      type: "date",
+      dateKind: "datetime",
+      noOffset: true,
+      role: "value",
+    },
   },
   methods: {
   },

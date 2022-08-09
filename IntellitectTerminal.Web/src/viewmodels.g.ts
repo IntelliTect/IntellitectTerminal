@@ -52,6 +52,7 @@ export class SubmissionListViewModel extends ListViewModel<$models.Submission, $
 export interface UserViewModel extends $models.User {
   userId: string | null;
   fileSystem: string | null;
+  creationTime: Date | null;
 }
 export class UserViewModel extends ViewModel<$models.User, $apiClients.UserApiClient, string> implements $models.User  {
   

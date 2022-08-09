@@ -14,6 +14,7 @@ namespace IntellitectTerminal.Web.Models
 
         private System.Guid? _UserId;
         private string _FileSystem;
+        private System.DateTime? _CreationTime;
 
         public System.Guid? UserId
         {
@@ -24,6 +25,11 @@ namespace IntellitectTerminal.Web.Models
         {
             get => _FileSystem;
             set { _FileSystem = value; Changed(nameof(FileSystem)); }
+        }
+        public System.DateTime? CreationTime
+        {
+            get => _CreationTime;
+            set { _CreationTime = value; Changed(nameof(CreationTime)); }
         }
 
         /// <summary>
@@ -38,6 +44,7 @@ namespace IntellitectTerminal.Web.Models
 
             this.UserId = obj.UserId;
             this.FileSystem = obj.FileSystem;
+            this.CreationTime = obj.CreationTime;
         }
 
         /// <summary>
@@ -51,6 +58,7 @@ namespace IntellitectTerminal.Web.Models
 
             if (ShouldMapTo(nameof(UserId))) entity.UserId = (UserId ?? entity.UserId);
             if (ShouldMapTo(nameof(FileSystem))) entity.FileSystem = FileSystem;
+            if (ShouldMapTo(nameof(CreationTime))) entity.CreationTime = (CreationTime ?? entity.CreationTime);
         }
     }
 }
