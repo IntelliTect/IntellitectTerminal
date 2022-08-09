@@ -26,6 +26,11 @@ export interface FileNode {
     Children: FileNode[];
 }
 
+export interface KeydownEvent {
+    key: string,
+    domEvent: KeyboardEvent
+}
+
 export enum Command {
     HELP = "help",
     REQUEST = "request",
@@ -37,7 +42,7 @@ export enum Command {
     PWD = "pwd",
     SUBMIT = "submit",
     VERIFY = "verify"
-  }
+}
 
 export enum Key {
     BACKSPACE = "\x7F",
