@@ -40,7 +40,8 @@ public class UserService : IUserService
             FileSystem = JsonConvert.SerializeObject(CreateDefaultFileSystem(), new JsonSerializerSettings()
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            })
+            }),
+            CreationTime = DateTime.UtcNow
         };
         Db.Users.Add(user);
         Db.SaveChanges();

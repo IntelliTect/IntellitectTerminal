@@ -96,15 +96,15 @@ public class CommandService : ICommandService
             case Challenge.CompilationLanguages.Python:
                 string fileName = submission.Content ?? throw new InvalidOperationException("No submission content found");
 
-                Process? p = Process.Start(new ProcessStartInfo(@"python", fileName)
+                Process? process = Process.Start(new ProcessStartInfo(@"python", fileName)
                 {
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
                     CreateNoWindow = true
                 });
 
-                string output = p.StandardOutput.ReadToEnd();
-                p.WaitForExit();
+                string output = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
                 submission.IsCorrect = output.ToLower().Trim().Equals(submission.Challenge.Answer?.ToLower().Trim());
                 Db.SaveChanges();
                 break;
@@ -141,7 +141,7 @@ public class CommandService : ICommandService
         highestCompletedLevel++;
         Submission submission = Db.Submissions.Where(x => x.User.UserId == userId && x.Challenge.Level == highestCompletedLevel).First();
         submission.Content = filename;
-        Db.SaveChanges();
+        await Db.SaveChangesAsync();
     }
     [Coalesce]
     public async Task SubmitUserInput(string input, Guid userId)
@@ -150,6 +150,6 @@ public class CommandService : ICommandService
         highestCompletedLevel++;
         Submission submission = Db.Submissions.Where(x => x.User.UserId == userId && x.Challenge.Level == highestCompletedLevel).First();
         submission.Content = input;
-        Db.SaveChanges();
+        await Db.SaveChangesAsync();
     }
 }
