@@ -4,10 +4,15 @@ import { Terminal } from "xterm";
 import { IntelliTermKeyHelper } from "./intelliterm-helpers";
 import { Command, Key } from "./utils";
 
+// Provides a decorator that maps any method with the @KeyListener(Key.KEY) syntax to
+// a list of keyListeners that are iterated through every key press
 export abstract class KeyListener {
 
     // All of the key listener functions
-    private static keyListeners: { key: Key, action: (event: {key: string, domEvent: KeyboardEvent}) => void }[] = [];
+    private static keyListeners: { 
+        key: Key, 
+        action: 
+        (event: {key: string, domEvent: KeyboardEvent}) => void }[] = [];
 
     // Bind a key to a function call
     static on = (key: Key) => (target: Object, propertyKey: string,
@@ -48,6 +53,8 @@ export abstract class KeyListener {
     }
 }
 
+// Provides a decorator that maps any method with the @CommandProcessor(Command.COMMAND) syntax
+// to an action
 export abstract class CommandProcessor {
 
     // All of the commands
