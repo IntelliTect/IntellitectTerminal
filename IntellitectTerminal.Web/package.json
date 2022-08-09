@@ -41,7 +41,7 @@
     "vite": "2.9.12",
     "vite-plugin-checker": "0.4.6",
     "vite-plugin-vue2": "2.0.1",
-    "vitest": "^0.15.1",
+    "vitest": "^0.21.1",
     "vls": "0.8.1",
     "vue-template-compiler": "2.6.14"
   }
