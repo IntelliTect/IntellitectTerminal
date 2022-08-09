@@ -1,7 +1,7 @@
 import { User } from "@/models.g";
 import { Terminal } from "xterm";
 import { KeyListener } from "./decorators";
-import { IntelliTermCommandHelper, IntelliTermKeyHelper } from "./intelliterm-helpers";
+import { ITCHelper } from "./commands";
 import { API, serializeFilesSystemToTree, TreeNode } from "./utils";
 
 export class IntelliTerm extends Terminal {
@@ -41,9 +41,10 @@ export class IntelliTerm extends Terminal {
 
         this.motd();
 
-        // Key pressed handler
-        new IntelliTermCommandHelper(this);
-        KeyListener.engage(this, new IntelliTermKeyHelper(this));
+        // Key pressed and command handlers
+        let a = ITKHelper.init(this);
+        let b = ITCHelper.init(this);
+        KeyListener.engage(this);
     }
 
     // TODO: Bug with submitting the same file after request
