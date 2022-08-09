@@ -23,8 +23,6 @@ export default class Home extends Vue {
 
     if (xtermElement != null) {
 
-      console.log("here1");
-
       const api: API = {
         command: new CommandServiceViewModel(),
         user: new UserServiceViewModel()
