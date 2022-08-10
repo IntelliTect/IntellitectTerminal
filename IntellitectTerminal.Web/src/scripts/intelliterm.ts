@@ -1,9 +1,9 @@
 import { User } from "@/models.g";
 import { Terminal } from "xterm";
 import { KeyListener } from "./decorators";
-import { ITCHelper } from "./commands";
+import { Commands } from "./commands";
 import { API, serializeFilesSystemToTree, TreeNode } from "./utils";
-import { ITKHelper } from "./onkey";
+import { OnKeys } from "./onkey";
 
 export class IntelliTerm extends Terminal {
 
@@ -43,8 +43,10 @@ export class IntelliTerm extends Terminal {
         this.motd();
 
         // Key pressed and command handlers
-        ITKHelper.init(this);
-        ITCHelper.init(this);
+        OnKeys.init(this);
+        Commands.init(this);
+
+        // Puts all of the ITKHelper keys
         KeyListener.engage(this);
     }
 
