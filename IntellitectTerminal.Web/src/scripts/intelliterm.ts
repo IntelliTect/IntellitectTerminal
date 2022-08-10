@@ -1,9 +1,9 @@
 import { User } from "@/models.g";
 import { Terminal } from "xterm";
 import { KeyListener } from "./decorators";
-import { Commands } from "./commands";
+import { Commands } from "./listeners/commands";
 import { API, serializeFilesSystemToTree, TreeNode } from "./utils";
-import { OnKeys } from "./onkey";
+import { OnKeys } from "./listeners/onkey";
 
 export class IntelliTerm extends Terminal {
 
