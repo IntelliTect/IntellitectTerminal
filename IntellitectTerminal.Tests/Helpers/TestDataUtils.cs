@@ -1,4 +1,5 @@
-﻿using IntellitectTerminal.Data;
+﻿using Hangfire;
+using IntellitectTerminal.Data;
 using IntellitectTerminal.Data.Models;
 using IntellitectTerminal.Data.Services;
 using Newtonsoft.Json;
@@ -12,6 +13,38 @@ public class TestDataUtils
     public TestDataUtils(AppDbContext db)
     {
         Db = db;
+    }
+
+    public User AddTwoDayOldUser()
+    {
+        User user = new()
+        {
+            UserId = Guid.NewGuid(),
+            FileSystem = JsonConvert.SerializeObject(UserService.CreateDefaultFileSystem(), new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            }),
+            CreationTime = DateTime.Now.AddDays(-2)
+        };
+        Db.Users.Add(user);
+        Db.SaveChanges();
+        return user;
+    }
+
+    public User AddOneDayInFutureUser()
+    {
+        User user = new()
+        {
+            UserId = Guid.NewGuid(),
+            FileSystem = JsonConvert.SerializeObject(UserService.CreateDefaultFileSystem(), new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            }),
+            CreationTime = DateTime.Now.AddDays(+1)
+        };
+        Db.Users.Add(user);
+        Db.SaveChanges();
+        return user;
     }
 
     public List<Challenge> AddNewChallenges()
@@ -62,7 +95,8 @@ public class TestDataUtils
             FileSystem = JsonConvert.SerializeObject(UserService.CreateDefaultFileSystem(), new JsonSerializerSettings()
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            })
+            }),
+            CreationTime = DateTime.Now
         };
         Db.Users.Add(user);
         Db.SaveChanges();

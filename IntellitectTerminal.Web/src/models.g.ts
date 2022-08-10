@@ -62,6 +62,7 @@ export class Submission {
 export interface User extends Model<typeof metadata.User> {
   userId: string | null
   fileSystem: string | null
+  creationTime: Date | null
 }
 export class User {
   

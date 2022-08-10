@@ -1,8 +1,12 @@
+using Hangfire;
+using Hangfire.SqlServer;
 using IntelliTect.Coalesce;
 using IntellitectTerminal.Data;
 using IntellitectTerminal.Data.Services;
+using IntellitectTerminal.Web.Hangfire;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.Net.Http.Headers;
@@ -51,6 +55,23 @@ services
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
+
+// Add Hangfire services.
+SqlConnection hangfireSqlConnection =
+    new SqlConnection(builder.Configuration.GetConnectionString("DefaultConnection"));
+services.AddHangfire(configuration => configuration
+        .UseSqlServerStorage(hangfireSqlConnection.ConnectionString, new SqlServerStorageOptions
+        {
+            CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+            SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+            QueuePollInterval = TimeSpan.Zero,
+            UseRecommendedIsolationLevel = true,
+            DisableGlobalLocks = true // Migration to Schema 7 is required
+        }));
+
+// Add the processing server as IHostedService
+services.AddHangfireServer();
+services.AddTransient<IStartupFilter, HangfireStartup>();
 
 services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddCookie();
