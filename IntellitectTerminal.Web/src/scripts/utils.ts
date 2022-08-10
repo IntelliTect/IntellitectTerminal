@@ -6,11 +6,22 @@ export class TreeNode {
     isFile: boolean;
     Parent: TreeNode | null;
     Children: TreeNode[];
-    constructor(name: string, isFile: boolean, parent: TreeNode | null, children: TreeNode[]) {
-        this.Name = name;
-        this.isFile = isFile;
-        this.Parent = parent;
-        this.Children = children;
+    constructor(args: {
+        name: string, isFile: boolean, parent: TreeNode | null, children: TreeNode[]
+    }) {
+        this.Name = args.name;
+        this.isFile = args.isFile;
+        this.Parent = args.parent;
+        this.Children = args.children;
+    }
+
+    static fromRootNode(): TreeNode {
+        return new TreeNode({
+            name: "/",
+            isFile: false,
+            parent: null,
+            children: []
+        });
     }
 }
 
@@ -56,18 +67,28 @@ export enum Key {
     DEFAULT = ""
 }
 
-export function output(prefix: string, term: Terminal, msg: string) {
-    term.writeln(`\r\n\x1b[34m${prefix}\x1b[0m: ${msg}`);
+export function output(params: { prefix: string, term: Terminal, msg: string }) {
+    params.term.writeln(`\x1b[34m${params.prefix}\x1b[0m: ${params.msg}`);
 }
 
-export function unknownArg(prefix: string, term: Terminal, unArg: string) {
-    output(prefix, term, `Unknown argument '${unArg}'`);
+export function unknownArg(params: { prefix: string, term: Terminal, unArg: string }) {
+    output({
+        prefix: params.prefix,
+        term: params.term,
+        msg: params.unArg
+    });
 }
 
-export function validatePath(start: TreeNode, directions: string[], term: Terminal, arg: string): TreeNode {
+/**
+ * Finds if the path given exists.
+ * @param params.start Beginning TreeNode to search from
+ * @returns a new path if valid, params.start if invalid
+ */
+export function validatePath(params: { start: TreeNode, directions: string[], term: Terminal, arg: string }): TreeNode {
     // Start on the dir we are on
-    let traverse: TreeNode = start;
-    directions.every((direction: string) => {
+    // Clone the object since we don't want to iterate on our actual path
+    let traverse: TreeNode = structuredClone(params.start);
+    let res = params.directions.every((direction: string) => {
 
         // Navigate up one on ..
         if (direction == "..") {
@@ -78,24 +99,36 @@ export function validatePath(start: TreeNode, directions: string[], term: Termin
         // Find the node that matches the path
         let i = traverse.Children.find((child) => child.Name == direction);
 
-
         // If no node is found, the path is errornous. Return.
         if (i == undefined) {
-            output(Command.CD, term, `Directory not found '${arg}'`);
-            return;
+            output({
+                prefix: Command.CD,
+                term: params.term,
+                msg: `Directory not found '${params.arg}'`
+            });
+            return false;;
         }
         if (i.isFile) {
-            output(Command.CD, term, "Argument is a file and not a directory");
-            return;
+            output({
+                prefix: Command.CD,
+                term: params.term,
+                msg: `Argument is a file not a directory.'${params.arg}'`
+            });
+            return false;
         }
         traverse = i;
         return true;
     })
-    return traverse;
+    return res ? traverse : params.start;
 }
 
 export function serializeFilesSystemToTree(node: FileNode | TreeNode) {
-    let parent = new TreeNode(node.Name, node.isFile, null, []);
+    let parent = new TreeNode({
+        name: node.Name,
+        isFile: node.isFile,
+        parent: null,
+        children: []
+    });
     node.Children.forEach((child) => {
         let childNode: TreeNode = serializeFilesSystemToTree(child);
         childNode.Parent = parent;

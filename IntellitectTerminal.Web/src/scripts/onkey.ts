@@ -52,7 +52,15 @@ export class OnKeys {
         // Do not allow a command that is blank to be ran.
         if (OnKeys.userInput.trim() != "") {
             var cmd: string[] = OnKeys.userInput.trim().split(" ");
-            CommandProcessor.process(cmd[0] as Command, cmd.slice(1, cmd.length), () => output("intelliterm", OnKeys.term, `Command not found '${cmd}'`));
+            CommandProcessor.process({
+                command: cmd[0] as Command,
+                args: cmd.slice(1, cmd.length),
+                _default: () => output({
+                    prefix: "intellterm",
+                    term: OnKeys.term,
+                    msg: `Command not found '${cmd}'`
+                })
+            });
         }
 
         // Reset and give input prompt

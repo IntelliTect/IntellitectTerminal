@@ -16,8 +16,8 @@ import { Command, Key, KeydownEvent } from "./utils";
 */
 export abstract class KeyListener {
 
-    // All of the key listener functions
-    // This map is filled during compilation
+    // All of the key listener methods
+    // Filled during compilation
     private static keyListeners: Map<Key, (event: KeydownEvent) => void> = new Map()
 
     /** @param key Maps to the method the decorator corresponds to */
@@ -61,12 +61,11 @@ export abstract class KeyListener {
  */
 export abstract class CommandProcessor {
 
-    // Filled at run time
+    // All of the command listener methods
+    // Filled during compilation
     private static commands: Map<Command, (args: string[]) => void> = new Map();
 
-    /**
-     * @param command Maps to the method the decorator corresponds to
-     */
+    /** @param command Maps to the method the decorator corresponds to */
     static on = (command: Command) => (
         target: Object,
         propertyKey: string,
@@ -75,19 +74,17 @@ export abstract class CommandProcessor {
         );
 
     /**
-     * 
      * @param command The command that is the key to the map
      * @param args Additional arguments to the command EX: -rf
      * @param _default Default method to run if no command is mapped
-     * @returns 
      */
-    static process(command: Command, args: string[], _default: (args: string[]) => void): void {
-        let action = CommandProcessor.commands.get(command);
+    static process(params: { command: Command, args: string[], _default: (args: string[]) => void }): void {
+        let action = CommandProcessor.commands.get(params.command);
         if (action != undefined) {
-            action(args);
+            action(params.args);
             return;
         }
-        _default(args);
+        params._default(params.args);
 
     }
 }

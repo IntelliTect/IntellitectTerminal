@@ -23,7 +23,7 @@ export class IntelliTerm extends Terminal {
     user: User | null;
 
     // Entire file system
-    fileSystemTree: TreeNode = new TreeNode("/", false, null, []);
+    fileSystemTree: TreeNode = TreeNode.fromRootNode();
 
     // Hostname relative to path we are on
     hostname = `[\x1b[34mintellitect\x1B[0m@localuser \x1b[34m${this.fileSystemTree.Name}\x1b[0m]$ `;

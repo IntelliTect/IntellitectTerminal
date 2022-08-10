@@ -8,22 +8,27 @@ import { CommandProcessor } from "./decorators";
 export class Commands {
 
     // Path we are on
-    static pathTree: TreeNode = new TreeNode("/", false, null, []);
+    static pathTree: TreeNode = TreeNode.fromRootNode();
 
     // Present working directory
     static pwd: string = "/";
 
     static term: IntelliTerm
 
-    static init(term: IntelliTerm): Commands {
+    /** Initializes all of the values of @class Commands */
+    static init(term: IntelliTerm) {
         Commands.term = term;
-        return new Commands();
     }
 
     // Update the path we are on and display hostname correctly
     static updatePath(location: TreeNode): void {
 
-        // Traverse up the tree until root to get the pwd.
+        // If the path is the same, don't change everything.
+        if (location == this.pathTree) {
+            return;
+        }
+
+        // Traverse up the tree until root to get the pwd output.
         Commands.pwd = "";
         let traverse: TreeNode = location;
         while (traverse.Parent != null) {
@@ -52,7 +57,11 @@ export class Commands {
     @CommandProcessor.on(Command.LS)
     ls(args: string[]) {
         if (args.length > 0) {
-            unknownArg(Command.LS, Commands.term, args[0]);
+            unknownArg({
+                prefix: Command.LS,
+                term: Commands.term,
+                unArg: args[0]
+            });
             return;
         }
         Commands.pathTree.Children.forEach((child: TreeNode) =>
@@ -75,7 +84,12 @@ export class Commands {
             // Get each direction we need from the arg[0]. EX /home/user/file [home,user,file]
             let directions = args[0].split("/").filter(element => element == "" ? false : true);
 
-            Commands.updatePath(validatePath(Commands.term.fileSystemTree, directions, Commands.term, args[0]));
+            Commands.updatePath(validatePath({
+                start: Commands.term.fileSystemTree,
+                directions: directions,
+                term: Commands.term,
+                arg: args[0]
+            }));
             return;
         }
 
@@ -83,7 +97,12 @@ export class Commands {
         // Get each direction we need from the arg[0]. EX ./user/file [user,file]
         let directions = args[0].split("/").filter(element => element == "" || element == "." ? false : true);
 
-        Commands.updatePath(validatePath(Commands.pathTree, directions, Commands.term, args[0]));
+        Commands.updatePath(validatePath({
+            start: Commands.pathTree,
+            directions: directions,
+            term: Commands.term,
+            arg: args[0]
+        }));
     }
 
     // TODO: Cat into any dir?
@@ -91,7 +110,11 @@ export class Commands {
     async cat(args: string[]) {
         // Arg[0] is required
         if (args[0] == undefined) {
-            output(Command.CAT, Commands.term, "Missing file argument path");
+            output({
+                prefix: Command.CAT,
+                term: Commands.term,
+                msg: "Missing file argument path"
+            });
             return;
         }
 
@@ -99,11 +122,19 @@ export class Commands {
         let file: TreeNode | null = null;
         Commands.pathTree.Children.forEach((child) => file = (child.Name == args[0]) ? child : null);
         if (file == null) {
-            output(Command.CAT, Commands.term, `File not found '${args[0]}'`)
+            output({
+                prefix: Command.CAT,
+                term: Commands.term,
+                msg: `File not found '${args[0]}'`
+            })
             return;
         }
         if (!(file as TreeNode).isFile) {
-            output(Command.CAT, Commands.term, "Argument is a directory and not a file");
+            output({
+                prefix: Command.CAT,
+                term: Commands.term,
+                msg: "Argument is a directory and not a file"
+            });
         }
         await Commands.term.api.command.cat(Commands.term.user?.userId!, (file as TreeNode)!.Name);
         let catouput = Commands.term.api.command.cat.result;
@@ -113,7 +144,11 @@ export class Commands {
     @CommandProcessor.on(Command.CLEAR)
     clear(args: string[]) {
         if (args.length > 0) {
-            unknownArg(Command.HELP, Commands.term, args[0]);
+            unknownArg({
+                prefix: Command.CLEAR,
+                term: Commands.term,
+                unArg: args[0]
+            });
             return;
         }
         Commands.term.clear();
@@ -122,18 +157,28 @@ export class Commands {
     @CommandProcessor.on(Command.PWD)
     pwdCommand(args: string[]) {
         if (args.length > 0) {
-            unknownArg(Command.PWD, Commands.term, args[0]);
+            unknownArg({
+                prefix: Command.PWD,
+                term: Commands.term,
+                unArg: args[0]
+            });
             return;
         }
+
         Commands.term.writeln(Commands.pwd);
     }
 
     @CommandProcessor.on(Command.REQUEST)
     async request(args: string[]) {
         if (args.length > 0) {
-            unknownArg(Command.REQUEST, Commands.term, args[0]);
+            unknownArg({
+                prefix: Command.PWD,
+                term: Commands.term,
+                unArg: args[0]
+            });
             return;
         }
+
         Commands.term.writeln("intelliterm: mounting a challenge in /home/localuser/challenges");
 
         // Grab the result from the server
@@ -151,11 +196,12 @@ export class Commands {
             let tempPwd = Commands.pwd;
             Commands.updatePath(Commands.term.fileSystemTree);
             Commands.updatePath(
-                validatePath(
-                    Commands.term.fileSystemTree,
-                    tempPwd.split("/")
-                        .filter(element => element == "" ? false : true),
-                    Commands.term, tempPwd)
+                validatePath({
+                    start: Commands.term.fileSystemTree,
+                    directions: tempPwd.split("/").filter(element => element == "" ? false : true),
+                    term: Commands.term,
+                    arg: tempPwd
+                })
             );
             return;
         }
@@ -164,7 +210,11 @@ export class Commands {
     @CommandProcessor.on(Command.SUBMIT)
     submit(args: string[]) {
         if (args.length > 0) {
-            unknownArg(Command.SUBMIT, Commands.term, args[0]);
+            unknownArg({
+                prefix: Command.SUBMIT,
+                term: Commands.term,
+                unArg: args[0]
+            });
             return;
         }
 
@@ -175,7 +225,11 @@ export class Commands {
     @CommandProcessor.on(Command.PROGRESS)
     async progress(args: string[]) {
         if (args.length > 0) {
-            unknownArg(Command.PROGRESS, Commands.term, args[0]);
+            unknownArg({
+                prefix: Command.PROGRESS,
+                term: Commands.term,
+                unArg: args[0]
+            });
             return;
         }
         await Commands.term.api.command.progress(Commands.term.user?.userId!);
@@ -186,16 +240,28 @@ export class Commands {
     @CommandProcessor.on(Command.VERIFY)
     async verify(args: string[]) {
         if (args.length > 0) {
-            unknownArg(Command.VERIFY, Commands.term, args[0]);
+            unknownArg({
+                prefix: Command.VERIFY,
+                term: Commands.term,
+                unArg: args[0]
+            });
             return;
         }
         await Commands.term.api.command.verify(Commands.term.user!.userId!);
         if (Commands.term.api.command.verify.result) {
-            output("intelliterm", Commands.term, "Successful output! Run request to get another challenge");
+            output({
+                prefix: "intelliterm",
+                term: Commands.term,
+                msg: "Successful output! Run request to get another challenge"
+            });
             Commands.term.write(Commands.term.hostname);
             return;
         }
-        output("intelliterm", Commands.term, "Incorrect output. Submit another file ");
+        output({
+            prefix: "intelliterm",
+            term: Commands.term,
+            msg: "Invalid output. Submit another file."
+        });
         Commands.term.write(Commands.term.hostname);
     }
 }
