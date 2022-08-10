@@ -12,6 +12,13 @@ export class ITCHelper {
     // Present working directory
     static pwd: string = "/";
 
+    static term: IntelliTerm
+
+    static init(term: IntelliTerm): ITCHelper {
+        ITCHelper.term = term;
+        return new ITCHelper();
+    }
+
     // Update the path we are on and display hostname correctly
     static updatePath(location: TreeNode): void {
 
@@ -27,15 +34,8 @@ export class ITCHelper {
         ITCHelper.term.hostname = `[\x1b[34mintellitect\x1B[0m@localuser \x1b[34m${location.Name}\x1b[0m]$ `;
     }
 
-    static term: IntelliTerm
-
-    static init(term: IntelliTerm): ITCHelper {
-        ITCHelper.term = term;
-        return new ITCHelper();
-    }
-
     @CommandProcessor.on(Command.HELP)
-    static help() {
+    help() {
         ITCHelper.term.writeln(" help - Displays ITCHelper message");
         ITCHelper.term.writeln(" ls - Lists all files in the current directory");
         ITCHelper.term.writeln(" cd - Navigate to a directory");
@@ -48,9 +48,8 @@ export class ITCHelper {
         ITCHelper.term.writeln(" verify - Verifies a challenge");
     }
 
-
     @CommandProcessor.on(Command.LS)
-    static ls(args: string[]) {
+    ls(args: string[]) {
         if (args.length > 0) {
             unknownArg(Command.LS, ITCHelper.term, args[0]);
             return;
@@ -63,7 +62,7 @@ export class ITCHelper {
     }
 
     @CommandProcessor.on(Command.CD)
-    static cd(args: string[]) {
+    cd(args: string[]) {
         // Arg[0] is required
         if (args[0] == undefined || args[0] == ".") {
             return;
@@ -88,7 +87,7 @@ export class ITCHelper {
 
     // TODO: Cat into any dir?
     @CommandProcessor.on(Command.CAT)
-    static async cat(args: string[]) {
+    async cat(args: string[]) {
         // Arg[0] is required
         if (args[0] == undefined) {
             output(Command.CAT, ITCHelper.term, "Missing file argument path");
@@ -112,7 +111,7 @@ export class ITCHelper {
     }
 
     @CommandProcessor.on(Command.CLEAR)
-    static clear(args: string[]) {
+    clear(args: string[]) {
         if (args.length > 0) {
             unknownArg(Command.HELP, ITCHelper.term, args[0]);
             return;
@@ -121,7 +120,7 @@ export class ITCHelper {
     }
 
     @CommandProcessor.on(Command.PWD)
-    static pwdCommand(args: string[]) {
+    pwdCommand(args: string[]) {
         if (args.length > 0) {
             unknownArg(Command.PWD, ITCHelper.term, args[0]);
             return;
@@ -130,7 +129,7 @@ export class ITCHelper {
     }
 
     @CommandProcessor.on(Command.REQUEST)
-    static async request(args: string[]) {
+    async request(args: string[]) {
         if (args.length > 0) {
             unknownArg(Command.REQUEST, ITCHelper.term, args[0]);
             return;
@@ -163,7 +162,7 @@ export class ITCHelper {
     }
 
     @CommandProcessor.on(Command.SUBMIT)
-    static submit(args: string[]) {
+    submit(args: string[]) {
         if (args.length > 0) {
             unknownArg(Command.SUBMIT, ITCHelper.term, args[0]);
             return;
@@ -174,7 +173,7 @@ export class ITCHelper {
     }
 
     @CommandProcessor.on(Command.PROGRESS)
-    static async progress(args: string[]) {
+    async progress(args: string[]) {
         if (args.length > 0) {
             unknownArg(Command.PROGRESS, ITCHelper.term, args[0]);
             return;
@@ -185,7 +184,7 @@ export class ITCHelper {
     }
 
     @CommandProcessor.on(Command.VERIFY)
-    static async verify(args: string[]) {
+    async verify(args: string[]) {
         if (args.length > 0) {
             unknownArg(Command.VERIFY, ITCHelper.term, args[0]);
             return;

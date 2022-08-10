@@ -3,6 +3,7 @@ import { Terminal } from "xterm";
 import { KeyListener } from "./decorators";
 import { ITCHelper } from "./commands";
 import { API, serializeFilesSystemToTree, TreeNode } from "./utils";
+import { ITKHelper } from "./onkey";
 
 export class IntelliTerm extends Terminal {
 
@@ -42,8 +43,8 @@ export class IntelliTerm extends Terminal {
         this.motd();
 
         // Key pressed and command handlers
-        let a = ITKHelper.init(this);
-        let b = ITCHelper.init(this);
+        ITKHelper.init(this);
+        ITCHelper.init(this);
         KeyListener.engage(this);
     }
 

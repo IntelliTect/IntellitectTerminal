@@ -44,6 +44,7 @@ export enum Command {
     VERIFY = "verify"
 }
 
+
 export enum Key {
     BACKSPACE = "\x7F",
     ENTER = "\r",
@@ -51,7 +52,8 @@ export enum Key {
     ARROW_RIGHT = "\x1B[C",
     ARROW_UP = "\x1B[A",
     ARROW_BOTTOM = "\x1B[B",
-    CTRL_L = "\f"
+    CTRL_L = "\f",
+    DEFAULT = ""
 }
 
 export function output(prefix: string, term: Terminal, msg: string) {
