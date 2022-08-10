@@ -1,6 +1,6 @@
 <a name="readme-top"></a>
 <div align="center">
-  
+
 [![Build, Test, and Deploy Intellitect Terminal](https://github.com/IntelliTect/IntellitectTerminal/actions/workflows/Build-Test-And-Deploy.yml/badge.svg?event=push)](https://github.com/IntelliTect/IntellitectTerminal/actions/workflows/Build-Test-And-Deploy.yml)
 </div>
 <!-- PROJECT LOGO -->
@@ -16,11 +16,11 @@
     An awesome README template to jumpstart your projects!
     <br />
     <br />
-    <a href="https://console.intellitect.com">View Project</a>
+    <a href="https://console.intellitect.com">View Console</a>
     ·
-    <a href="https://github.com/IntelliTect/IntellitectTerminal/issues">Report Bug</a>
+    <a href="https://github.com/IntelliTect/IntellitectTerminal/issues">Report Bug/Feature</a>
     ·
-    <a href="https://github.com/IntelliTect/IntellitectTerminal/issues">Request Feature</a>
+    <a href="https://github.com/IntelliTect/IntellitectTerminal/files/9295965/presentation.pptx">Powerpoint Presentation</a>
   </p>
 </div>
 
@@ -41,7 +41,6 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#license">License</a></li>
   </ol>
 </details>
@@ -57,7 +56,10 @@ Of course, no one terminal will serve all your need since your needs may be diff
 
 ### Built With
 
-* [![Vue][Vue.js]][Vue-url]
+* Vue.js with typescript
+* Asp.net
+* [Coalesce](https://github.com/IntelliTect/Coalesce)
+* [XTerm.js](https://xtermjs.org/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -66,29 +68,35 @@ Of course, no one terminal will serve all your need since your needs may be diff
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
+To run this locally, you will need
 
-  ```sh
-  npm 
-  ```
+* node/npm
+* dotnet
+* Visual Studio (optional)
+* Sql server
 
 ### Installation
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/your_username_/Project-Name.git
+   git clone https://github.com/IntelliTect/IntellitectTerminal.git
    ```
 2. Cd into Web
    ```sh
    cd IntellitectTerminal.Web/
    ```
    
-3. Install NPM packages (inside ./Web directory)
+3. Install NPM packages (inside IntellitectTerminal.Web directory)
    ```sh
    npm ci
    ```
-   
-4. Open Web Browser
+
+4. Build and run from root directory
+   ```js
+   dotnet run
+   ```
+
+5. Open Web Browser
    ```js
    localhost:3000
    ```
@@ -98,7 +106,7 @@ This is an example of how to list things you need to use the software and how to
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-_For more documentation, please refer to the [Coalesce Documentation](https://intellitect.github.io/Coalesce/)_
+_For more documentation on coalese, please refer to the [Coalesce Documentation](https://intellitect.github.io/Coalesce/) and [XTerm Documentation](https://xtermjs.org/docs/)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
