@@ -28,7 +28,7 @@ export default class Home extends Vue {
         user: new UserServiceViewModel()
       }
 
-       let userId = getCookie('userId');
+       let userId = Cookies.getCookie('userId');
        let user;
         if (userId == null) {
         // if user is not in cookies, get user id from api
