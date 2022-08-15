@@ -50,7 +50,7 @@
 
 [![Intellitect Terminal](./screenshot.png)](https://console.intellitect.com)
 
-Of course, no one terminal will serve all your need since your needs may be different. But give it a try.
+The IntelliTect terminal was the winning project created for the 2022 Intelliect Intern Hackathon. The project was inspired by Google Foobar. Intellitect Terminal, or IntelliTerm is a virtual bash-like command line interface for a pseudo filesystem. On the IntelliTerm, the user can request text based challenges such as coding problems, which will be appended to a directory on the filesystem. After navigating to that directory, the user can view the challenge, and respond with a text document or an executable python file. Once the response is ready, they can then submit the file via the submit command, sending it to the server. To review if the answer was marked as correct or incorrect, the command verify can be ran. Once verify gives a satisfying output, another challenge can be submitted. When all three challenges are complete, an email will be sent to the recruiting department. This CLI-challenge was created to be used by IntelliTect to recruit more developers. The prompt to access the CLI will appear randomly on the IntelliTect website, allowing the user to begin the challenge.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

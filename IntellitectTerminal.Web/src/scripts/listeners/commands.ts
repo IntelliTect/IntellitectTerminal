@@ -16,8 +16,9 @@ export class Commands {
     static term: IntelliTerm
 
     /** Initializes all of the values of @class Commands */
-    static init(term: IntelliTerm) {
+    static init(term: IntelliTerm, pathTree: TreeNode) {
         Commands.term = term;
+        Commands.pathTree = pathTree;
     }
 
     // Update the path we are on and display hostname correctly
