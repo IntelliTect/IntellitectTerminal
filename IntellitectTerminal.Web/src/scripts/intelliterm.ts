@@ -44,7 +44,7 @@ export class IntelliTerm extends Terminal {
 
         // Key pressed and command handlers
         OnKeys.init(this);
-        Commands.init(this);
+        Commands.init(this, this.fileSystemTree);
 
         // Puts all of the ITKHelper keys
         KeyListener.engage(this);
