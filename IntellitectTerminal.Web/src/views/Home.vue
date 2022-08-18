@@ -50,7 +50,7 @@ export default class Home extends Vue {
       if (user != null) {
 
         if(userId != null) {
-          Cookies.setCookie('userId', userId, { expires: 100 });
+          Cookies.setCookie('userId', userId, { expires: '1D' });
         } 
 
         // spawn the intelliterm console into the html element
