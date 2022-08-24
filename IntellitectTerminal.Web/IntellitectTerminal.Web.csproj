@@ -25,4 +25,8 @@
   <ItemGroup>
     <DotNetCliToolReference Include="IntelliTect.Coalesce.Tools" Version="$(CoalesceVersion)" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="src\components\" />
+  </ItemGroup>
 </Project>
