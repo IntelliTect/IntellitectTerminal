@@ -63,6 +63,17 @@ jobs:
         with:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/IntellitectTerminal
+          
+  automerge:
+    needs: [build-and-test]
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
+      contents: write
+
+    steps:
+      - uses: fastify/github-action-merge-dependabot@v3.4.2  
 
   deploy:
     if: github.event_name != 'pull_request'
