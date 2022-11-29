@@ -8,6 +8,19 @@ on:
   workflow_dispatch:
 
 jobs:
+  automerge:
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
+      contents: write
+
+    steps:
+      - uses: fastify/github-action-merge-dependabot@v3.5.1
+        with:
+          use-github-auto-merge: true
+
   build-and-test:
     runs-on: ubuntu-latest
 
@@ -63,20 +76,6 @@ jobs:
         with:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/IntellitectTerminal
-        
-  automerge:
-    if: ${{ github.event_name == 'pull_request' }}
-    needs: [build-and-test]
-    runs-on: ubuntu-latest
-
-    permissions:
-      pull-requests: write
-      contents: write
-
-    steps:
-      - uses: fastify/github-action-merge-dependabot@v3.5.1
-        with:
-          use-github-auto-merge: true
 
   deploy:
     if: github.event_name != 'pull_request'
