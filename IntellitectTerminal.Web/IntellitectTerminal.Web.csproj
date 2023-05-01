@@ -13,7 +13,7 @@
     <PackageReference Include="Hangfire" Version="1.7.30" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.8.0" />
     <PackageReference Include="Hangfire.Core" Version="1.8.0" />
-    <PackageReference Include="Hangfire.SqlServer" Version="1.7.30" />
+    <PackageReference Include="Hangfire.SqlServer" Version="1.8.0" />
     <PackageReference Include="IntelliTect.Coalesce.Vue" Version="$(CoalesceVersion)" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.0.2">
       <PrivateAssets>all</PrivateAssets>
