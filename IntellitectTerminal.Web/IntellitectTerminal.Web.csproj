@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <DotnetCliToolTargetFramework>net6.0</DotnetCliToolTargetFramework>
@@ -12,7 +12,7 @@
   <ItemGroup>
     <PackageReference Include="Hangfire" Version="1.7.30" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.30" />
-    <PackageReference Include="Hangfire.Core" Version="1.7.30" />
+    <PackageReference Include="Hangfire.Core" Version="1.8.0" />
     <PackageReference Include="Hangfire.SqlServer" Version="1.7.30" />
     <PackageReference Include="IntelliTect.Coalesce.Vue" Version="$(CoalesceVersion)" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.0.2">
